@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest something Parla could do better.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do, and where does Parla get in the way?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+      description: Describe the behaviour you have in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other ways you solved this, in Parla or elsewhere.
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Parla version or commit
+      placeholder: "0.0.1 or 981ca0a"
+    validations:
+      required: false

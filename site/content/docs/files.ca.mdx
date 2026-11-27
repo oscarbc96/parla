@@ -1,0 +1,121 @@
+---
+title: Fitxers
+description: Previsualitza, obre, baixa i puja fitxers, llegeix fragments de codi i reprodueix clips a Parla.
+---
+
+## Previsualitzacions
+
+Els fitxers compartits en una conversa apareixen com a targetes sota el missatge:
+
+- **Imatges**: es mostren en línia, ajustades a un requadre.
+- **PDF**: mostren la miniatura que proporciona el servei. Parla no dibuixa les
+  pàgines del PDF.
+- **Fragments**: mostren el nom del fitxer, el llenguatge, els números de línia i
+  les primeres línies.
+- **Clips**: són fitxers de vídeo o àudio amb pòster, nom, mida i durada.
+- **Altres fitxers**: mostren una icona, el nom i la mida.
+- Els fitxers esborrats mostren un marcador de posició.
+
+El paràmetre **Imatges en línia** a Paràmetres, General controla quan es carreguen:
+**Sempre**, **En fer clic** o **Mai**. El valor predeterminat és **En fer clic**.
+Les imatges de més de 10 MB no es carreguen en línia, i les animades només es
+reprodueixen mentre són visibles.
+
+## Obrir un fitxer
+
+Fes clic en una imatge per obrir-la al visor multimèdia. El visor mostra el nom del
+fitxer, qui el va enviar, quan i la seva mida.
+
+- Usa **Anterior** i **Següent**, les fletxes esquerra i dreta, o les miniatures
+  per recórrer les imatges carregades de la conversa.
+- Ajusta el zoom amb `+` i `-`, usa `0` per a la mida real i `F` per ajustar a la
+  finestra. Arrossega o desplaça't per moure't quan la imatge és més gran que la
+  finestra.
+- **Copia la imatge**, **Baixa**, **Obre a l'app predeterminada** i **Obre al
+  canal** són a la barra d'eines. Escape tanca el visor.
+
+Fes clic en un fitxer de codi o text, o a **Obre al visor** d'una targeta de
+fragment, per obrir el visor de codi. Mostra el nom del fitxer, qui el va enviar,
+on i quan, amb números de línia, ajustament de línia, copiar i baixar. `cmd-f` obre
+la cerca dins del fitxer; Escape tanca la cerca i un segon Escape tanca la finestra.
+
+Els fragments mostren una previsualització de com a màxim 400 línies o 64 KB. Quan
+la previsualització és només una part del fitxer, la targeta ho indica, **Copia la
+previsualització** copia només les línies visibles i **Baixa** desa el fitxer
+sencer.
+
+## Clips
+
+A macOS, **Reprodueix** baixa el clip a la memòria cau i el reprodueix amb el
+descodificador del sistema. Parla no inicia mai un clip per si sol. Fes clic una
+altra vegada a la targeta per pausar i reprendre sense treure el teclat del
+compositor.
+
+La targeta mostra pausa i represa, una barra de cerca, velocitat (1x, 1,5x i 2x),
+silenci i volum, i subtítols quan el servei els proporciona. Amb la targeta
+enfocada, Espai reprodueix o pausa, Esquerra i Dreta mouen 5 segons i `m` silencia.
+Un clip es pausa quan surt de la vista o la finestra perd el focus.
+
+A Windows i Linux, i a macOS quan la reproducció no és possible, la targeta mostra
+el pòster i **Obre al navegador**.
+
+## Baixades
+
+**Baixa** desa el fitxer a la teva carpeta de baixades amb un nom únic, així que no
+se sobrescriu res. Un avís confirma el desament i ofereix **Mostra a la carpeta**.
+
+**Obre a l'app predeterminada** desa primer el fitxer i després obre només fitxers
+PNG, JPEG, GIF, WebP, HEIC i PDF el nom i el tipus dels quals coincideixin.
+Qualsevol altre fitxer només es desa. Els fitxers baixats porten la marca del
+sistema per a fitxers d'internet, així que el sistema operatiu pregunta abans
+d'obrir o executar res.
+
+## Pujades
+
+Adjunta fitxers de tres maneres:
+
+- Arrossega fitxers des del teu gestor de fitxers a la línia de temps.
+- Enganxa fitxers o una imatge del porta-retalls al compositor amb `cmd-v`
+  (`ctrl-v` a Linux i Windows).
+- Usa el botó **Adjunta fitxers** del compositor.
+
+Els fitxers no es pugen fins que prems **Envia**. Es queden al compositor com a
+fitxes amb una miniatura o una insígnia de tipus, el nom i la mida, i cadascuna té
+un botó per treure-la. El teu text es converteix en el comentari dels fitxers i pot
+ser buit. El compositor del fil funciona igual.
+
+En enviar, cada fitxa mostra **Pujant** amb la seva mida i un botó **Cancel·la**.
+**Envia** espera que acabin les pujades. Si una pujada falla, la fitxa es posa
+vermella amb el motiu i ofereix **Torna-ho a provar** i **Treu**. Les pujades
+necessiten connexió i no es posen en cua: enviar sense connexió mostra un error i
+manté els fitxers adjunts.
+
+Els fitxers de més d'1 GB es refusen, i els directoris també. Els altres fitxers
+del mateix arrossegament sí que es pugen.
+
+## Els textos llargs es converteixen en fragments
+
+Enganxar més de 20 línies o més de 2.000 caràcters al compositor no omple
+l'esborrany. Parla ofereix compartir el text com a fragment: dona-li un títol,
+comprova el llenguatge que ha endevinat i tria **Comparteix com a fragment**. El
+text s'adjunta com una fitxa de fitxer i s'envia com qualsevol altre fitxer.
+
+Tria **Enganxa com a text** o prem Escape per posar el text a l'esborrany. Un
+enganxat de més d'1 MB no és mai un fragment; Parla ofereix adjuntar-lo com un
+fitxer de text normal.
+
+## La pestanya Fitxers
+
+La pestanya **Fitxers** sota la capçalera d'una conversa enumera els fitxers
+compartits en ella, del més recent al més antic, incloses les respostes dels fils.
+Cada fila mostra el tipus, el nom, la mida, qui el va compartir i quan.
+
+Fes clic en una fila, o mou-te amb les fletxes i prem Retorn o Espai, per obrir-la:
+les imatges i els PDF al visor multimèdia, els fragments i fitxers de codi al visor
+de codi, i els altres fitxers com a baixades. La llista es carrega per pàgines en
+desplaçar-te, fins a 500 fitxers. **Missatges** torna a la conversa.
+
+La pestanya enumera els fitxers dels missatges que Parla té desats, així que els
+fitxers antics apareixen quan es carreguen els seus missatges.
+
+Següent: [Notificacions](/parla/ca/docs/notifications/).

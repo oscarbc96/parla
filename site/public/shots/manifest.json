@@ -1,0 +1,60 @@
+{
+  "shots": {
+    "thread-light.webp": {
+      "scenario": "thread_open",
+      "appearance": "light",
+      "source": "crates/ui_testing/baselines/macos/components/thread_open@2x-light.png",
+      "hash": "9be0cf47a1daa10ad73173507883295477f68e015eb2542427aac5ccfa1ef5ab",
+      "bytes": 54416
+    },
+    "thread-dark.webp": {
+      "scenario": "thread_open",
+      "appearance": "dark",
+      "source": "crates/ui_testing/baselines/macos/components/thread_open@2x-dark.png",
+      "hash": "7f4974adb1c547e23c4b1d780a3fea11c77d624233791b607625d5309b7a49f6",
+      "bytes": 54262
+    },
+    "search-light.webp": {
+      "scenario": "search_results",
+      "appearance": "light",
+      "source": "crates/ui_testing/baselines/macos/components/search_results@2x-light.png",
+      "hash": "fad49e474553c4dadb6fe191aceada3f39f4050a8e996c7dc66e3d8587bb66bc",
+      "bytes": 62434
+    },
+    "search-dark.webp": {
+      "scenario": "search_results",
+      "appearance": "dark",
+      "source": "crates/ui_testing/baselines/macos/components/search_results@2x-dark.png",
+      "hash": "ba93dd5254eed5feedca96499274fbd0a3a57dd5ddd19939c7c216543e61c4f8",
+      "bytes": 63134
+    },
+    "switcher-light.webp": {
+      "scenario": "quick_switcher_open",
+      "appearance": "light",
+      "source": "crates/ui_testing/baselines/macos/components/quick_switcher_open@2x-light.png",
+      "hash": "9fdf51590e3da134df9e6a25466f07524c7bb5f049d179a85afa635251ef90bd",
+      "bytes": 28944
+    },
+    "switcher-dark.webp": {
+      "scenario": "quick_switcher_open",
+      "appearance": "dark",
+      "source": "crates/ui_testing/baselines/macos/components/quick_switcher_open@2x-dark.png",
+      "hash": "df42d6a12b28563f7231cdf936c9b7160cae2ffec401bb23bd05bcf949d010ae",
+      "bytes": 29008
+    },
+    "huddle-light.webp": {
+      "scenario": "huddle_awareness",
+      "appearance": "light",
+      "source": "crates/ui_testing/baselines/macos/components/huddle_awareness@2x-light.png",
+      "hash": "908efd1b1faebc43b05a21fdeac993087b3f2cf636916eeed046e07a7195c433",
+      "bytes": 41720
+    },
+    "huddle-dark.webp": {
+      "scenario": "huddle_awareness",
+      "appearance": "dark",
+      "source": "crates/ui_testing/baselines/macos/components/huddle_awareness@2x-dark.png",
+      "hash": "41e6efaedbbf8b65b1e2bad41769df936aa4b53f724f6f0552241fb3a6bd1c30",
+      "bytes": 41850
+    }
+  }
+}

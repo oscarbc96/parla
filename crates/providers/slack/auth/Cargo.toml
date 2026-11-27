@@ -1,0 +1,38 @@
+[package]
+name = "slack_auth"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+slack_api = { path = "../api" }
+settings = { path = "../../../settings" }
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+url.workspace = true
+zeroize.workspace = true
+gpui.workspace = true
+futures.workspace = true
+wry.workspace = true
+
+[features]
+test-support = []
+
+[dev-dependencies]
+slack_auth = { path = ".", features = ["test-support"] }
+tempfile.workspace = true
+tokio.workspace = true
+wiremock.workspace = true
+tracing.workspace = true
+gpui_platform.workspace = true
+cookie = "0.18"
+
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+block2 = "0.6"
+objc2-web-kit = { version = "0.3", features = ["WKWebView", "block2", "objc2-app-kit"] }

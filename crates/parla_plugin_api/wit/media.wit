@@ -1,0 +1,32 @@
+/// Media search for the GIF picker: an
+/// optional export. Every URL must be on a host the plugin's `network`
+/// grant holds. The host renders the picker and sends the pick; a provider
+/// never posts. Deadline 5 s per call.
+interface media-provider {
+  use types.{error, cursor};
+
+  enum content-rating { g, pg, pg13, r, unrated }
+
+  record media-item {
+    id: string,
+    preview-url: string,
+    full-url: string,
+    /// Of the full item, for example `image/gif` or `video/mp4`.
+    mime-type: string,
+    width: u32,
+    height: u32,
+    bytes: u64,
+    title: string,
+    rating: content-rating,
+    /// Shown under the item, for example the source's name.
+    attribution: option<string>,
+  }
+
+  record media-page { items: list<media-item>, next: cursor }
+
+  /// `id` is the manifest's `[[media]]` id; `query` at most 256 bytes;
+  /// `limit` 1 to 50.
+  media-search: func(id: string, query: string, cursor: cursor, limit: u32) -> result<media-page, error>;
+  media-trending: func(id: string, cursor: cursor, limit: u32) -> result<media-page, error>;
+  media-resolve: func(id: string, item-id: string) -> result<media-item, error>;
+}

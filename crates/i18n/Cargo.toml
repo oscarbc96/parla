@@ -1,0 +1,43 @@
+[package]
+name = "i18n"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+unic-langid.workspace = true
+fluent-bundle.workspace = true
+fluent-langneg.workspace = true
+fluent-pseudo.workspace = true
+intl-memoizer.workspace = true
+rust-embed.workspace = true
+fixed_decimal.workspace = true
+icu_calendar.workspace = true
+icu_datetime.workspace = true
+icu_decimal.workspace = true
+icu_locale.workspace = true
+jiff.workspace = true
+jiff-icu.workspace = true
+gpui = { workspace = true, optional = true }
+sys-locale = { workspace = true, optional = true }
+fluent-syntax = { workspace = true, optional = true }
+regex = { workspace = true, optional = true }
+
+[features]
+# App global, hot switch and OS languages.
+gpui = ["dep:gpui", "dep:sys-locale"]
+# Catalog completeness checks (tests only; keeps fluent-syntax and regex out of the app).
+check = ["dep:fluent-syntax", "dep:regex"]
+
+[dev-dependencies]
+insta.workspace = true
+i18n = { path = ".", features = ["check"] }
+syn.workspace = true
+proc-macro2.workspace = true

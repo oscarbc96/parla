@@ -1,0 +1,4 @@
+{"teams":{
+"E0000001":{"id":"E0000001","name":"Big Org","url":"https://workspace4.slack.com/","token":"{{TOKEN_E}}"},
+"T0000001":{"id":"T0000001","name":"Team One","url":"https://workspace5.slack.com/","token":"{{TOKEN_A}}","enterprise_id":"E0000001"}
+}}

@@ -1,0 +1,51 @@
+{
+  "data": {
+    "json": {
+      "draft": {
+        "blocks": [
+          {
+            "block_id": "Wj6k9",
+            "elements": [
+              {
+                "elements": [
+                  {
+                    "text": "lorem",
+                    "type": "text"
+                  }
+                ],
+                "type": "rich_text_section"
+              }
+            ],
+            "type": "rich_text"
+          }
+        ],
+        "client_msg_id": "87f6f381-cc13-4c44-ade9-ae0481fb5e83",
+        "date_created": 1794525938,
+        "date_scheduled": 0,
+        "destinations": [
+          {
+            "channel_id": "D0000006",
+            "user_ids": [
+              "U0000003"
+            ]
+          }
+        ],
+        "file_ids": [],
+        "id": "Dr0000000001",
+        "is_deleted": false,
+        "is_from_composer": false,
+        "is_sent": false,
+        "last_updated_client": "Chrome",
+        "last_updated_ts": "1794525938.850180",
+        "team_id": "T0000001",
+        "user_id": "U0000001"
+      },
+      "draft_id": "Dr0000000001",
+      "event_ts": "1794525938.315300",
+      "type": "draft_create"
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794521867%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000001-1&batch_presence_aware=1"
+}

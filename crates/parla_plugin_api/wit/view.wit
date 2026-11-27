@@ -1,0 +1,134 @@
+/// View trees a plugin hands the host to draw. WIT has no
+/// recursive types, so a tree is a flat node list in document order.
+/// Colours are semantic tones only; no raw colours, fonts or sizes.
+///
+/// Validation rules: the host rejects a tree that breaks any of them with
+/// `invalid` (or `limit` for the size rules) and draws nothing. The rules
+/// are checked in this order and the first broken one is reported. Shared
+/// test vectors: `crates/parla_plugin_api/tests/fixtures/view-trees/`.
+/// 1. Root: a tree has at least one node (an empty tree is `invalid`), and
+///    node 0 is the only node without a parent.
+/// 2. Order: every other node's `parent` is less than its own index.
+/// 3. Ids: node ids are unique within the tree. After `ui.patch` they are
+///    unique within the whole patched view.
+/// 4. Interactive: input nodes (`input`, `textarea`, `select`, `checkbox`,
+///    `switch`, `segmented`, `button`, `form`, both pickers), `tabs`,
+///    `tree`, and `table` or `list` with `selectable` or `load-more`, need
+///    an id.
+/// 5. Leaves: only `column`, `row`, `grid`, `card`, `tabs`, `split`,
+///    `form` and `list` have children.
+/// 6. Tabs: a `tabs` node has exactly one child per label.
+/// 7. Split: a `split` node has exactly 2 children, main then side.
+/// 8. Size: at most 2,000 nodes and 256 KB (262,144 bytes) per tree,
+///    reported as `limit`. The size is measured, not encoded: each node
+///    counts 16 bytes; each string counts its UTF-8 length (the node id and
+///    every string in the node kind: texts, labels, titles, notes, values,
+///    placeholders, links, languages, URLs, alt texts, names, hunk headers,
+///    diff lines, column headers and table cells; an absent optional string
+///    counts 0); each element of a list inside a node kind (a span, tab
+///    label, column header, table row, table cell, choice, tree entry, diff
+///    hunk or diff line) counts 4 bytes more. Numbers, booleans and enums
+///    count 0.
+/// 9. Labels: every input node (`input`, `textarea`, `select`, `checkbox`,
+///    `switch`, `segmented`, both pickers) has a non-blank label, every
+///    `button` a non-blank label and every `icon` a non-blank label, so
+///    each has an accessible name.
+/// 10. Images: an `image` `src` is a bundled `assets/` path (relative, no
+///    `..` segment) or an `https://` URL; the host also requires the URL's
+///    host to be in the plugin's `network` grant.
+interface view {
+  use types.{node-id, conversation-target, user-target};
+
+  enum tone { accent, success, warning, danger, info, muted }
+  enum button-look { primary, default, ghost, danger }
+  enum diff-line-kind { context, added, removed }
+
+  record span {
+    text: string,
+    bold: bool,
+    italic: bool,
+    code: bool,
+    link: option<string>,
+  }
+  record code-block { text: string, language: option<string>, line-numbers: bool, highlight: option<tuple<u32, u32>> }
+  record diff-line { kind: diff-line-kind, text: string }
+  record diff-hunk { header: string, lines: list<diff-line> }
+  record diff-block { split: bool, hunks: list<diff-hunk> }
+  /// `load-more` shows a load-more row that sends the `load-more` event.
+  record table-block { columns: list<string>, rows: list<list<string>>, selectable: bool, load-more: bool }
+  /// A virtual list; its children are the rows.
+  record list-block { selectable: bool, load-more: bool }
+  /// `expandable` entries send `expand` when opened; the plugin then adds
+  /// the children with `ui.update` or `ui.patch`.
+  record tree-entry { label: string, depth: u16, expandable: bool, expanded: bool }
+  record stat-block { label: string, value: string, note: option<string> }
+  /// `value` in 0.0 to 1.0; `none` is indeterminate.
+  record progress-block { value: option<f32>, label: option<string> }
+  record badge-block { text: string, tone: tone }
+  record avatar-block { name: string, url: option<string> }
+  /// `src` is a bundled `assets/` path or an https URL on a granted host.
+  record image-block { src: string, alt: string, width: option<u32>, height: option<u32> }
+  record icon-block { name: string, label: string, tone: option<tone> }
+  record text-input { label: string, value: string, placeholder: option<string> }
+  record choice { value: string, label: string }
+  record select-input { label: string, options: list<choice>, value: option<string> }
+  record toggle-input { label: string, checked: bool }
+  record button-block { label: string, look: button-look, disabled: bool }
+  /// Drawn and searched by the host; the plugin gets only the picked id.
+  record picker { label: string }
+  record callout-block { tone: tone, title: option<string>, text: string }
+  record empty-block { title: string, text: option<string> }
+
+  variant node-kind {
+    // Layout.
+    column, row, grid(u8), card, divider, spacer,
+    /// Tab labels; child i is the body of tab i.
+    tabs(list<string>),
+    /// Main plus side: exactly two children.
+    split,
+    // Text.
+    heading(string), text(list<span>), label(string), caption(string),
+    code(code-block), diff(diff-block),
+    // Data.
+    table(table-block), %list(list-block), tree(list<tree-entry>),
+    stat(stat-block), progress(progress-block), badge(badge-block),
+    chip(string), avatar(avatar-block), image(image-block), icon(icon-block),
+    // Input.
+    input(text-input), textarea(text-input), select(select-input),
+    checkbox(toggle-input), switch(toggle-input), segmented(select-input),
+    button(button-block), form, conversation-picker(picker), user-picker(picker),
+    // Feedback.
+    callout(callout-block), empty(empty-block), spinner, skeleton,
+  }
+
+  /// `parent` is the index of the parent node; `none` only for node 0.
+  record node { id: option<node-id>, parent: option<u32>, kind: node-kind }
+  record view-tree { nodes: list<node> }
+
+  variant field-value {
+    text(string), toggle(bool), choice(string),
+    conversation(conversation-target), user(user-target),
+  }
+  record change-event { node: node-id, value: field-value }
+  record submit-event { form: node-id, values: list<tuple<node-id, field-value>> }
+  /// A row, list item, tab or tree entry by index.
+  record index-event { node: node-id, index: u32 }
+
+  /// Events delivered to the `views` export.
+  variant event {
+    click(node-id),
+    change(change-event),
+    submit(submit-event),
+    /// A table row or list item was selected.
+    select(index-event),
+    tab(index-event),
+    /// An `expandable` tree entry was opened.
+    expand(index-event),
+    /// A `table` or `list` with `load-more` reached its end.
+    load-more(node-id),
+    /// A `ui.refresh-after` request came due.
+    refresh,
+    closed,
+    popped-out,
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "verdict": "invalid",
+  "rule": 6,
+  "nodes": [
+    {
+      "parent": null,
+      "id": "t",
+      "kind": {
+        "tabs": [
+          "One",
+          "Two"
+        ]
+      }
+    },
+    {
+      "parent": 0,
+      "kind": "card"
+    }
+  ]
+}

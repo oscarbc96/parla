@@ -1,0 +1,12 @@
+/// The plugin's own settings, declared in its manifest and stored under
+/// `plugins.<id>.config`. Changes arrive through the
+/// `settings-listener` export.
+interface settings {
+  use types.{error};
+
+  variant setting-value { text(string), number(f64), toggle(bool), choice(string) }
+
+  /// Capability: none; only keys the manifest declares (at most 128 bytes),
+  /// else `not-found`.
+  setting: func(key: string) -> result<option<setting-value>, error>;
+}

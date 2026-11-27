@@ -1,0 +1,40 @@
+{
+  "type": "message",
+  "subtype": "bot_message",
+  "ts": "1794530000.000100",
+  "text": "",
+  "blocks": [
+    {
+      "type": "call",
+      "block_id": "Xq1aB",
+      "call_id": "R0000020",
+      "api_decoration_available": false,
+      "call": {
+        "v1": {
+          "id": "R0000020",
+          "app_id": "A0000002",
+          "app_name": "Example Meet",
+          "name": "Weekly planning",
+          "display_id": "123-456-789",
+          "external_unique_id": "5f3c1c0e-7a52-4a6e-9a0e-0d6d3f4b1e11",
+          "join_url": "https://meet.example.com/join/123-456-789",
+          "desktop_app_join_url": "examplemeet://join/123-456-789",
+          "date_start": 1794530000,
+          "date_end": 0,
+          "has_ended": false,
+          "created_by": "U0000001",
+          "channels": ["C0000005"],
+          "active_participants": [
+            { "slack_id": "U0000001", "external_id": "", "display_name": "Alex Doe" },
+            { "slack_id": "U0000002", "external_id": "", "display_name": "Sam Roe" }
+          ],
+          "all_participants": [
+            { "slack_id": "U0000001", "external_id": "", "display_name": "Alex Doe" },
+            { "slack_id": "U0000002", "external_id": "", "display_name": "Sam Roe" },
+            { "slack_id": "U0000003", "external_id": "", "display_name": "Kim Poe" }
+          ]
+        }
+      }
+    }
+  ]
+}

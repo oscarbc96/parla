@@ -1,0 +1,65 @@
+{
+  "method": "POST",
+  "url": "https://workspace-1.example.test/api/conversations.history",
+  "request": {
+    "headers": [
+      [
+        "content-type",
+        "application/x-www-form-urlencoded"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "REDACTED"
+      ]
+    ],
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "channel",
+          "C0000001"
+        ],
+        [
+          "limit",
+          "28"
+        ]
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "mime": "application/json",
+    "headers": [],
+    "body": {
+      "json": {
+        "ok": true,
+        "messages": [
+          {
+            "type": "message",
+            "user": "U0000001",
+            "text": "hello",
+            "ts": "1700000000.000100",
+            "thread_ts": "1700000000.000100",
+            "reply_count": 2
+          },
+          {
+            "type": "message",
+            "user": "U0000002",
+            "text": "hi",
+            "ts": "1700000001.000100",
+            "subtype": "channel_join"
+          }
+        ],
+        "has_more": true,
+        "response_metadata": {
+          "next_cursor": "cursor-2"
+        }
+      }
+    }
+  }
+}

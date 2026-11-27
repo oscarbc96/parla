@@ -1,0 +1,81 @@
+# The performance budgets are the source of truth in this file.
+# `[budgets]` holds one Budget cell per ID, lower is better. `[ceilings]` are the
+# deterministic counter ceilings (measured + 20 %, run on every PR).
+# `[limits]` are the numeric absolute limits `perf_check` applies to the
+# reports of `mise run perf:measure` (`<scenario>.<metric>`, lower is better).
+
+[budgets]
+"mem.idle1" = "<= 60 MB"
+"mem.idle3" = "<= 80 MB"
+"mem.ws" = "lean <= +8 MB; shown <= +15 MB"
+"mem.scroll" = "<= 120 MB"
+"mem.soak" = "memory at 8 h within +10 MB of the 1 h value; live heap after idle within 2 % of the 1 h value"
+"mem.cache" = "message window 200 per open conversation; render cache 512 rows; images `performance.image_cache_mb` (32 MB); SQLite page cache `storage.cache_mb` (8 MB, all databases); emoji and avatar atlases 16 MB"
+"cpu.idle" = "< 0.1 % of one core averaged over 5 min; 0 frames drawn; 0 pending timers"
+"wake.idle" = "< 1.5 process wakeups/s averaged over 5 min; at most one keepalive per workspace per 60 s of socket silence"
+"energy.idle" = "Activity Monitor Energy Impact average <= 1.0 visible, <= 0.5 hidden"
+"cpu.scroll" = "one core < 30 %"
+"cpu.anim" = "focused: one core < 5 %, <= 10 frames/s; hidden or inactive: 0 frames drawn and `cpu.idle`"
+"frame.scroll" = "frame CPU time p95 <= 6 ms, p99 <= 8.3 ms; <= 1 % dropped frames"
+"frame.type" = "key to presented frame p95 <= 16 ms, p99 <= 25 ms"
+"lat.switch" = "content painted < 50 ms"
+"lat.event" = "< 50 ms"
+"start.paint" = "< 200 ms"
+"start.content" = "< 400 ms"
+"start.cold" = "< 1,000 ms"
+"alloc.event" = "mean allocations per event <= ceiling in `perf_budget.toml`"
+"net.idle" = "0 provider HTTP calls; socket keepalive only"
+"disk.cache" = "media 256 MB (pruned at startup); crash reports 20 (M6); log files <= 20 MB in total, if logs are written to disk; store pruned by `storage.retention_days` (90)"
+"size.bin" = "growth <= 1 MB or 3 % per PR without a reason in the PR; absolute ceiling 31 MB; `.dmg` (universal) <= 60 MB"
+"call.parent" = "during: <= idle row + 30 MB; 10 s after hang-up: back within the idle row (+5 MB) and `cpu.idle`"
+"call.helper" = "measured in M5 Task 12, then budget = measured + 20 %; all of them gone within 10 s of hang-up"
+"call.native" = "measured in M5b, then budget = measured + 20 %, target <= idle row + 40 MB and <= 6 % of one core; media thread and buffers gone within 2 s of leave"
+"mcp.shim" = "< 10 MB; MCP off adds 0 wakeups"
+
+[ceilings]
+# alloc.event: measured 14 allocations per live MessagePosted (debug test build).
+alloc_per_event = 17
+# alloc.redraw_long_alerts: measured 9083 allocations per forced full redraw of a screen of long bot-alert messages (debug test build).
+alloc_per_long_alert_redraw = 10900
+# alloc.event on a lean workspace: measured 14 allocations per live MessagePosted (debug test build).
+alloc_per_lean_event = 17
+# mem.ws (counter form): measured +2.66 MB shown, +2.64 MB lean per extra perf workspace (debug test build, counting store).
+heap_ws_shown_bytes = 3200000
+heap_ws_lean_bytes = 3200000
+# call.parent: measured 2928 bytes of live-heap growth over 10 join/leave cycles with the fake call helper (debug test build).
+heap_call_cycles_bytes = 3514
+
+[limits]
+"idle.mem_mb" = 60.0
+"idle.cpu_pct" = 0.1
+"idle.wakeups_per_s" = 1.5
+"idle.frames" = 0.0
+"idle-hidden.mem_mb" = 80.0
+"idle-hidden.cpu_pct" = 0.1
+"idle-hidden.wakeups_per_s" = 1.0
+"idle-hidden.frames" = 0.0
+"emoji.cpu_pct" = 5.0
+"emoji.frames_per_s" = 10.0
+"emoji-hidden.cpu_pct" = 0.1
+"emoji-hidden.frames_per_s" = 0.0
+"scroll.mem_mb" = 120.0
+"scroll.cpu_pct" = 30.0
+"scroll.frame_p95_ms" = 6.0
+"scroll.frame_p99_ms" = 8.3
+"scroll.dropped_pct" = 1.0
+"scroll-input.mem_mb" = 120.0
+"scroll-input.cpu_pct" = 30.0
+"scroll-input.dropped_pct" = 1.0
+"type.frame_p95_ms" = 16.0
+"type.frame_p99_ms" = 25.0
+"switch.latency_ms" = 50.0
+"start.paint_ms" = 200.0
+"start.content_ms" = 400.0
+"start-cold.content_ms" = 1000.0
+"size.bin_mb" = 31.0
+# call.native: targets, not yet measure-plus-20 %.
+# `mem_delta_mb` is the peak growth of one process over its pre-call
+# footprint (the "idle row + 40 MB" target), `cpu_pct` the mean of one core.
+"call-native.mem_delta_mb" = 40.0
+"call-native.cpu_pct" = 6.0
+"call-native.leave_ms" = 2000.0

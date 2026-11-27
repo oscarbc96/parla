@@ -1,0 +1,19 @@
+[package]
+name = "slack_redact"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+redact = { path = "../../../redact" }
+regex.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+recon = { path = "../../../recon" }
+serde_json.workspace = true
+tempfile.workspace = true

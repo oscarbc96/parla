@@ -1,0 +1,369 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "limit",
+          "30"
+        ],
+        [
+          "_x_reason",
+          "fetch-huddles-history"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "huddles": [
+          {
+            "access_type_by_user": {
+              "U0000002": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "A_WALK_IN_THE_FOREST",
+            "channel_type": "dm",
+            "channels": [
+              "D0000007"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1793618746,
+            "date_start": 1793616791,
+            "external_unique_id": "a22857d4-039a-4ba3-95b2-973199ff2713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000007",
+            "id": "R0000001",
+            "last_invite_status_by_user": {
+              "U0000002": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000002",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1793616791.856119"
+          },
+          {
+            "access_type_by_user": {
+              "U0000002": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "THE_DREAM_OF_THE_FISH",
+            "channel_type": "dm",
+            "channels": [
+              "D0000007"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1791558828,
+            "date_start": 1791556274,
+            "external_unique_id": "f255a06d-d256-46bc-82c7-7ae2b8a12713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000007",
+            "id": "R0000002",
+            "last_invite_status_by_user": {
+              "U0000002": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000002",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1791556274.959649"
+          },
+          {
+            "access_type_by_user": {
+              "U0000001": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "GRADIENT_01",
+            "channel_type": "dm",
+            "channels": [
+              "D0000006"
+            ],
+            "created_by": "U0000003",
+            "date_end": 1786028277,
+            "date_start": 1786025942,
+            "external_unique_id": "87878819-1844-4d14-acb3-8e8fd7ff2713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000006",
+            "id": "R0000003",
+            "last_invite_status_by_user": {},
+            "name": "",
+            "participant_history": [
+              "U0000003",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1786025942.497799"
+          },
+          {
+            "access_type_by_user": {
+              "U0000002": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "GARDEN_OFFICE",
+            "channel_type": "dm",
+            "channels": [
+              "D0000007"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1786017558,
+            "date_start": 1786012178,
+            "external_unique_id": "7c8f5d9d-ed10-4366-b8fc-b2c1ea6a2713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000007",
+            "id": "R0000004",
+            "last_invite_status_by_user": {
+              "U0000002": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000002",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1786012178.732589"
+          },
+          {
+            "access_type_by_user": {
+              "U0000002": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "THE_DREAM_OF_THE_FISH",
+            "channel_type": "dm",
+            "channels": [
+              "D0000007"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1783002224,
+            "date_start": 1782998670,
+            "external_unique_id": "c7a18fb1-9b89-4a83-94f4-077a81872713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000007",
+            "id": "R0000005",
+            "last_invite_status_by_user": {
+              "U0000002": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000002",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1782998670.419169"
+          },
+          {
+            "access_type_by_user": {
+              "U0000002": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "GARDEN_OFFICE",
+            "channel_type": "dm",
+            "channels": [
+              "D0000007"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1776242711,
+            "date_start": 1776242622,
+            "external_unique_id": "c1367c5d-a44d-4913-9ff8-dca96ff32713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000007",
+            "id": "R0000006",
+            "last_invite_status_by_user": {
+              "U0000002": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000002",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1776242623.115169"
+          },
+          {
+            "access_type_by_user": {
+              "U0000002": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "GARDEN_OFFICE",
+            "channel_type": "dm",
+            "channels": [
+              "D0000007"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1775808000,
+            "date_start": 1775807904,
+            "external_unique_id": "eed111d1-9ed5-4011-bda6-345634b82713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000007",
+            "id": "R0000007",
+            "last_invite_status_by_user": {
+              "U0000002": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000002",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1775807904.459239"
+          },
+          {
+            "access_type_by_user": {
+              "U0000003": 1
+            },
+            "attached_file_ids": [],
+            "background_id": "THE_DREAM_OF_THE_FISH",
+            "channel_type": "dm",
+            "channels": [
+              "D0000006"
+            ],
+            "created_by": "U0000001",
+            "date_end": 1775780991,
+            "date_start": 1775755285,
+            "external_unique_id": "588f03f8-559a-4921-bcbb-cee95f412713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000006",
+            "id": "R0000008",
+            "last_invite_status_by_user": {
+              "U0000003": "accepted"
+            },
+            "name": "",
+            "participant_history": [
+              "U0000003",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1775755285.642809"
+          },
+          {
+            "access_type_by_user": {},
+            "attached_file_ids": [],
+            "background_id": "GRADIENT_03",
+            "channel_type": "dm",
+            "channels": [
+              "D0000006"
+            ],
+            "created_by": "U0000003",
+            "date_end": 1775753206,
+            "date_start": 1775752408,
+            "external_unique_id": "2cd63f87-da08-4f14-a179-7d4607be2713",
+            "has_ended": true,
+            "huddle_link": "https://app.slack.com/huddle/T0000001/D0000006",
+            "id": "R0000009",
+            "last_invite_status_by_user": {},
+            "name": "",
+            "participant_history": [
+              "U0000003",
+              "U0000001"
+            ],
+            "participants": [],
+            "pending_invitees": {},
+            "prototypes": {
+              "is_prewarmed": true,
+              "is_scheduled": false
+            },
+            "recording": {
+              "can_record_summary": "unavailable"
+            },
+            "thread_root_ts": "1775752408.602399"
+          }
+        ],
+        "ok": true,
+        "response_metadata": {
+          "next_cursor": ""
+        }
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/huddles.history?_x_id=9aeb8a04-1794525644.937&_x_gantry=true&_x_desktop_ia=4&_x_csid=FT7MR33vSRg&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=66&_x_num_retries=0"
+}

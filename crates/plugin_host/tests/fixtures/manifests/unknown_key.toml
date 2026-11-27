@@ -1,0 +1,13 @@
+id = "typo-plugin"
+name = "Typo"
+version = "0.1.0"
+api = "0.1"
+
+[capabilities]
+storage = true
+netwrok = ["api.example.com"]
+
+[[commands]]
+id = "open"
+title = "Open"
+shortcut = "cmd-o"

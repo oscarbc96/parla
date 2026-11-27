@@ -1,0 +1,630 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/*
+ * Self-hosted variable fonts, Latin and Latin Extended only (every site
+ * locale fits); `unicode-range` makes the browser fetch just what a page uses.
+ * The Inter file is preloaded in Layout.astro. The "Fallback" faces are local
+ * system fonts scaled to Inter/JetBrains Mono metrics so the swap does not
+ * move the layout.
+ */
+@font-face {
+    font-family: "Inter Variable";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url("../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
+        format("woff2-variations");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+        U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+        U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "Inter Variable";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url("../../node_modules/@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2")
+        format("woff2-variations");
+    unicode-range:
+        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+        U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+        U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: "JetBrains Mono Variable";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 800;
+    src: url("../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2")
+        format("woff2-variations");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+        U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+        U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "JetBrains Mono Variable";
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 800;
+    src: url("../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-ext-wght-normal.woff2")
+        format("woff2-variations");
+    unicode-range:
+        U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+        U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+        U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: "Inter Fallback";
+    src: local("Arial"), local("Helvetica Neue"), local("Liberation Sans");
+    size-adjust: 107.12%;
+    ascent-override: 90.44%;
+    descent-override: 22.52%;
+    line-gap-override: 0%;
+}
+@font-face {
+    font-family: "JetBrains Mono Fallback";
+    src: local("Courier New"), local("Liberation Mono");
+    size-adjust: 100%;
+    ascent-override: 102%;
+    descent-override: 30%;
+    line-gap-override: 0%;
+}
+
+@theme {
+    --font-sans:
+        "Inter Variable", "Inter Fallback", ui-sans-serif, system-ui,
+        -apple-system, "Segoe UI", sans-serif;
+    --font-mono:
+        "JetBrains Mono Variable", "JetBrains Mono Fallback", ui-monospace,
+        "SF Mono", Menlo, Consolas, monospace;
+}
+
+/*
+ * Design tokens, copied from the Parla design project
+ * (`tokens/parla.tokens.json`, `theme.light` / `theme.dark`, and the app's
+ * generated `tokens.css`). The site and the app read one palette: navy ink on
+ * warm paper with the orange signal, and the same names (`--parla-*`) the
+ * landing page, the downloads page and the docs all style with. Fumadocs'
+ * `--color-fd-*` tokens are pointed at these, so docs match the pages.
+ * Contrast (WCAG, measured): light text on app 16.4:1, muted 6.8:1 (7.3:1 on
+ * surface), subtle 5.0:1, signal text 5.4:1 (4.8:1 on its soft tint), link
+ * 6.9:1, white on accent 15.5:1; dark text on app 16.0:1, muted 9.1:1 (8.6:1
+ * on surface), accent text 6.0:1, link 9.0:1.
+ */
+:root {
+    /* Ground and surfaces */
+    --parla-app: #f8f7f5;
+    --parla-surface: #ffffff;
+    --parla-raised: #ffffff;
+    --parla-sunken: #f1efec;
+    --parla-hover: #f1efec;
+    --parla-active: #e5e2dd;
+    --parla-selected: #e8e7f5;
+    --parla-overlay: rgba(18, 16, 39, 0.42);
+    /* Lines */
+    --parla-line: #e5e2dd;
+    --parla-line-subtle: #efede9;
+    --parla-line-strong: #d3cfc8;
+    --parla-focus: #fe6129;
+    /* Text */
+    --parla-text: #1a1917;
+    --parla-muted: #5a5650;
+    --parla-subtle: #6f6a62;
+    --parla-link: #4f4c99;
+    --parla-on-accent: #ffffff;
+    /* Accent and signal */
+    --parla-accent: #211e4c;
+    --parla-accent-hover: #2e2a66;
+    --parla-accent-text: #ffffff;
+    --parla-accent-soft: #e8e7f5;
+    --parla-accent-soft-text: #2e2a66;
+    --parla-signal: #fe6129;
+    --parla-signal-soft: #ffe6db;
+    --parla-signal-text: #b83a0f;
+    /* Sidebar and the full-bleed band */
+    --parla-sidebar: #211e4c;
+    --parla-sidebar-text: #d7d5ee;
+    --parla-sidebar-strong: #ffffff;
+    --parla-sidebar-muted: #9c99cf;
+    --parla-sidebar-active: #3a3a78;
+    --parla-rail: #17153a;
+    --parla-band: #211e4c;
+    --parla-band-text: #d7d5ee;
+    /* Status */
+    --parla-success: #1f7a55;
+    --parla-success-soft: #e3f4ec;
+    --parla-warning: #a15c00;
+    --parla-warning-soft: #fff1d6;
+    --parla-danger: #b5163a;
+    --parla-danger-soft: #ffe1e7;
+    --parla-info: #4f4c99;
+    --parla-info-soft: #e8e7f5;
+    /* Code and mentions */
+    --parla-code-bg: #f1efec;
+    --parla-code-text: #2e2a66;
+    --parla-mention-bg: #ffe6db;
+    --parla-mention-text: #b83a0f;
+    /* Elevation */
+    --parla-shadow-sm: 0 1px 2px rgba(26, 25, 23, 0.06);
+    --parla-shadow-md:
+        0 4px 12px rgba(26, 25, 23, 0.08), 0 1px 2px rgba(26, 25, 23, 0.06);
+    --parla-shadow-lg:
+        0 18px 48px rgba(18, 16, 39, 0.18), 0 2px 6px rgba(18, 16, 39, 0.08);
+    /* The mark's three accents, fixed in both themes for artwork on the band
+       and in the theme previews (they sit on navy, never on the page ground). */
+    --parla-mark-amber: #ffa611;
+    --parla-mark-orange: #fe6129;
+    --parla-mark-coral: #fd3459;
+    /* The Parla mark (assets/brand/logo.svg, inlined by lib/logo.ts); the same
+       names as the app's `logo.*` theme tokens. */
+    --parla-logo-bubble: #211e4c;
+    --parla-logo-rim: none;
+    --parla-logo-accent-1: #ffa611;
+    --parla-logo-accent-2: #fe6129;
+    --parla-logo-accent-3: #fd3459;
+
+    /* Fumadocs, on the same tokens */
+    --color-fd-background: var(--parla-app);
+    --color-fd-foreground: var(--parla-text);
+    --color-fd-muted: var(--parla-sunken);
+    --color-fd-muted-foreground: var(--parla-muted);
+    --color-fd-popover: var(--parla-raised);
+    --color-fd-popover-foreground: var(--parla-text);
+    --color-fd-card: var(--parla-surface);
+    --color-fd-card-foreground: var(--parla-text);
+    --color-fd-border: var(--parla-line);
+    --color-fd-primary: var(--parla-accent);
+    --color-fd-primary-foreground: var(--parla-accent-text);
+    --color-fd-secondary: var(--parla-sunken);
+    --color-fd-secondary-foreground: var(--parla-text);
+    --color-fd-accent: var(--parla-accent-soft);
+    --color-fd-accent-foreground: var(--parla-accent-soft-text);
+    --color-fd-ring: var(--parla-focus);
+    --color-fd-overlay: var(--parla-overlay);
+}
+
+.dark {
+    --parla-app: #121215;
+    --parla-surface: #18181c;
+    --parla-raised: #1e1e24;
+    --parla-sunken: #0e0e11;
+    --parla-hover: #1e1e24;
+    --parla-active: #25252d;
+    --parla-selected: #252447;
+    --parla-overlay: rgba(0, 0, 0, 0.6);
+    --parla-line: #2a2a33;
+    --parla-line-subtle: #212128;
+    --parla-line-strong: #3d3d4a;
+    --parla-focus: #ffa611;
+    --parla-text: #ededf3;
+    --parla-muted: #b4b4c2;
+    --parla-subtle: #8a8a99;
+    --parla-link: #ff9a6b;
+    --parla-on-accent: #16151f;
+    --parla-accent: #fe6129;
+    --parla-accent-hover: #ff7a47;
+    --parla-accent-text: #16151f;
+    --parla-accent-soft: rgba(254, 97, 41, 0.16);
+    --parla-accent-soft-text: #ffb08f;
+    --parla-signal: #fe6129;
+    --parla-signal-soft: rgba(254, 97, 41, 0.18);
+    --parla-signal-text: #ffb08f;
+    --parla-sidebar: #17162f;
+    --parla-sidebar-text: #c9c7e6;
+    --parla-sidebar-strong: #ffffff;
+    --parla-sidebar-muted: #8f8cc4;
+    --parla-sidebar-active: #2e2d5e;
+    --parla-rail: #0e0d1f;
+    --parla-band: #16152e;
+    --parla-band-text: #c9c7e6;
+    --parla-success: #3dd68c;
+    --parla-success-soft: rgba(61, 214, 140, 0.14);
+    --parla-warning: #ffb840;
+    --parla-warning-soft: rgba(255, 166, 17, 0.14);
+    --parla-danger: #ff5c7a;
+    --parla-danger-soft: rgba(253, 52, 89, 0.14);
+    --parla-info: #a9a6e8;
+    --parla-info-soft: rgba(79, 76, 153, 0.25);
+    --parla-code-bg: #0e0e11;
+    --parla-code-text: #ffb08f;
+    --parla-mention-bg: rgba(254, 97, 41, 0.18);
+    --parla-mention-text: #ffb08f;
+    --parla-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --parla-shadow-md:
+        0 6px 16px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.4);
+    --parla-shadow-lg:
+        0 24px 64px rgba(0, 0, 0, 0.62), 0 2px 8px rgba(0, 0, 0, 0.5);
+    --parla-logo-bubble: #211f47;
+    --parla-logo-rim: #3a3a78;
+    --parla-logo-accent-1: #fea604;
+    --parla-logo-accent-2: #f85e22;
+    --parla-logo-accent-3: #fd2e57;
+}
+
+/* Utilities for the tokens: bg-parla-surface, text-parla-muted, ... */
+@theme inline {
+    --color-parla-app: var(--parla-app);
+    --color-parla-surface: var(--parla-surface);
+    --color-parla-raised: var(--parla-raised);
+    --color-parla-sunken: var(--parla-sunken);
+    --color-parla-hover: var(--parla-hover);
+    --color-parla-active: var(--parla-active);
+    --color-parla-selected: var(--parla-selected);
+    --color-parla-line: var(--parla-line);
+    --color-parla-line-subtle: var(--parla-line-subtle);
+    --color-parla-line-strong: var(--parla-line-strong);
+    --color-parla-text: var(--parla-text);
+    --color-parla-muted: var(--parla-muted);
+    --color-parla-subtle: var(--parla-subtle);
+    --color-parla-link: var(--parla-link);
+    --color-parla-accent: var(--parla-accent);
+    --color-parla-accent-hover: var(--parla-accent-hover);
+    --color-parla-accent-text: var(--parla-accent-text);
+    --color-parla-accent-soft: var(--parla-accent-soft);
+    --color-parla-accent-soft-text: var(--parla-accent-soft-text);
+    --color-parla-signal: var(--parla-signal);
+    --color-parla-signal-soft: var(--parla-signal-soft);
+    --color-parla-signal-text: var(--parla-signal-text);
+    --color-parla-sidebar: var(--parla-sidebar);
+    --color-parla-sidebar-text: var(--parla-sidebar-text);
+    --color-parla-sidebar-strong: var(--parla-sidebar-strong);
+    --color-parla-sidebar-muted: var(--parla-sidebar-muted);
+    --color-parla-sidebar-active: var(--parla-sidebar-active);
+    --color-parla-band: var(--parla-band);
+    --color-parla-band-text: var(--parla-band-text);
+    --color-parla-success: var(--parla-success);
+    --color-parla-success-soft: var(--parla-success-soft);
+    --color-parla-warning: var(--parla-warning);
+    --color-parla-warning-soft: var(--parla-warning-soft);
+    --color-parla-danger: var(--parla-danger);
+    --color-parla-danger-soft: var(--parla-danger-soft);
+    --color-parla-info: var(--parla-info);
+    --color-parla-info-soft: var(--parla-info-soft);
+    --color-parla-code-bg: var(--parla-code-bg);
+    --color-parla-code-text: var(--parla-code-text);
+    --color-parla-mention-bg: var(--parla-mention-bg);
+    --color-parla-mention-text: var(--parla-mention-text);
+    --color-parla-mark-amber: var(--parla-mark-amber);
+    --color-parla-mark-orange: var(--parla-mark-orange);
+    --color-parla-mark-coral: var(--parla-mark-coral);
+    --shadow-parla-sm: var(--parla-shadow-sm);
+    --shadow-parla-md: var(--parla-shadow-md);
+    --shadow-parla-lg: var(--parla-shadow-lg);
+}
+
+/*
+ * One highlight for every menu, list and active item: the accent token and
+ * its soft tint. Fumadocs paints the active sidebar link, the current
+ * popover item and the TOC marker with primary/10, which washes out, so
+ * those are pointed at the accent tokens (the same colours as the app's
+ * selected rows).
+ */
+#nd-sidebar a[data-active="true"],
+[class~="bg-fd-primary/10"] {
+    background-color: var(--color-fd-accent);
+    color: var(--color-fd-accent-foreground);
+}
+#nd-toc a[data-active="true"] {
+    color: var(--color-fd-accent-foreground);
+}
+
+/* Docs read flat on the page ground, like the rest of the site: the sidebar is
+   a bordered column, not a second card. */
+#nd-sidebar {
+    background-color: var(--color-fd-background);
+    border-inline-end: 0;
+}
+
+/* The design's component vocabulary, taken from the app's tokens.css so the
+   pages can use the same names as the design artifacts. Utilities win over
+   these (they are in the components layer, below utilities). */
+@layer components {
+    .parla {
+        font-feature-settings: "cv11", "ss01";
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .parla-caps {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--parla-subtle);
+    }
+
+    /* The artifact type scale (tokens.font.size / line-height / tracking). */
+    .parla-display {
+        font-size: 44px;
+        line-height: 1.1;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+    .parla-h1 {
+        font-size: 24px;
+        line-height: 1.2;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+    .parla-h2 {
+        font-size: 20px;
+        line-height: 1.25;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+    .parla-h3 {
+        font-size: 15px;
+        line-height: 1.35;
+        font-weight: 600;
+    }
+    .parla-sm {
+        font-size: 13px;
+    }
+    .parla-xs {
+        font-size: 12px;
+    }
+
+    /* Inputs (tokens.css `.input`). */
+    .input {
+        height: 40px;
+        width: 100%;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid var(--parla-line-strong);
+        background: var(--parla-surface);
+        color: var(--parla-text);
+        font:
+            400 14px "Inter Variable",
+            system-ui,
+            sans-serif;
+    }
+    .input::placeholder {
+        color: var(--parla-subtle);
+    }
+    .input:focus-visible {
+        outline: 2px solid var(--parla-focus);
+        outline-offset: -1px;
+        border-color: transparent;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 8px;
+        border: 1px solid var(--parla-line-strong);
+        background: var(--parla-surface);
+        color: var(--parla-text);
+        font:
+            500 13px/1 "Inter Variable",
+            system-ui,
+            sans-serif;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .btn:hover {
+        background: var(--parla-hover);
+    }
+    .btn-primary {
+        background: var(--parla-accent);
+        border-color: transparent;
+        color: var(--parla-accent-text);
+    }
+    .btn-primary:hover {
+        background: var(--parla-accent-hover);
+    }
+    .btn-ghost {
+        background: transparent;
+        border-color: transparent;
+        color: var(--parla-muted);
+    }
+    .btn-ghost:hover {
+        background: var(--parla-hover);
+        color: var(--parla-text);
+    }
+    .btn-lg {
+        height: 44px;
+        padding: 0 20px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+    .btn-sm {
+        height: 28px;
+        padding: 0 10px;
+        font-size: 12px;
+        border-radius: 6px;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 26px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: var(--parla-sunken);
+        color: var(--parla-muted);
+        font-size: 12px;
+        font-weight: 500;
+        border: 1px solid var(--parla-line);
+    }
+    .chip-soft {
+        background: var(--parla-accent-soft);
+        color: var(--parla-accent-soft-text);
+        border-color: transparent;
+    }
+
+    .card {
+        background: var(--parla-surface);
+        border: 1px solid var(--parla-line);
+        border-radius: 12px;
+    }
+
+    .kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 5px;
+        border-radius: 5px;
+        border: 1px solid var(--parla-line);
+        border-bottom-width: 2px;
+        background: var(--parla-surface);
+        color: var(--parla-muted);
+        font:
+            500 11px "Inter Variable",
+            system-ui,
+            sans-serif;
+    }
+
+    .code {
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        background: var(--parla-code-bg);
+        color: var(--parla-code-text);
+        border: 1px solid var(--parla-line);
+        border-radius: 4px;
+        padding: 0 4px;
+    }
+
+    .signature {
+        display: flex;
+        height: 3px;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    .signature span {
+        flex: 1;
+    }
+    .signature span:nth-child(1) {
+        background: var(--parla-mark-amber);
+    }
+    .signature span:nth-child(2) {
+        background: var(--parla-mark-orange);
+    }
+    .signature span:nth-child(3) {
+        background: var(--parla-mark-coral);
+    }
+}
+
+.parla-logo .bubble {
+    fill: var(--parla-logo-bubble);
+    stroke: var(--parla-logo-rim);
+}
+
+.parla-logo .accent-1 {
+    fill: var(--parla-logo-accent-1);
+}
+
+.parla-logo .accent-2 {
+    fill: var(--parla-logo-accent-2);
+}
+
+.parla-logo .accent-3 {
+    fill: var(--parla-logo-accent-3);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    overflow-x: clip;
+    background: var(--color-fd-background);
+    color: var(--color-fd-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+.parla-wordmark {
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+/* Readable prose and clean inline code. */
+.prose :where(p, li) {
+    line-height: 1.75;
+}
+
+/* Docs links use the theme's link colour, like the rest of the site. */
+.prose :where(a) {
+    color: var(--parla-link);
+}
+
+code {
+    font-family: var(--font-mono);
+}
+
+/* Current page / language in the static header. */
+header [aria-current] {
+    color: var(--color-fd-foreground);
+    font-weight: 600;
+}
+
+/*
+ * Screenshots come as a light and a dark image (public/shots, made by
+ * `mise run site:shots`); the theme class picks one. Docs write two Markdown
+ * images (`name-light.webp`, then `name-dark.webp`) so the Markdown export and
+ * search stay plain; the home page uses Shot.astro with the same classes.
+ */
+.parla-shot {
+    margin: 1.5rem 0;
+}
+
+/* A screenshot in the design's window frame (`.win`): one border, one radius,
+   the shadow on the outside. The Shot images carry their own border for prose,
+   so the frame removes it and fills the card edge to edge. */
+.shot-frame {
+    overflow: hidden;
+    border: 1px solid var(--color-fd-border);
+    border-radius: 0.75rem;
+    background: var(--parla-surface);
+    box-shadow: var(--parla-shadow-lg);
+}
+
+.shot-frame .parla-shot {
+    margin: 0;
+}
+
+.shot-frame .parla-shot img {
+    border: 0;
+    border-radius: 0;
+}
+
+.parla-shot img,
+img[src*="/shots/"] {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-fd-border);
+    border-radius: 0.75rem;
+}
+
+img[src*="/shots/"] {
+    aspect-ratio: 1600 / 1000;
+}
+
+img[src*="/shots/switcher-"] {
+    aspect-ratio: 1600 / 600;
+}
+
+.parla-shot-dark,
+img[src*="/shots/"][src$="-dark.webp"],
+.dark .parla-shot-light,
+.dark img[src*="/shots/"][src$="-light.webp"] {
+    display: none !important;
+}
+
+.dark .parla-shot-dark,
+.dark img[src*="/shots/"][src$="-dark.webp"] {
+    display: block !important;
+}

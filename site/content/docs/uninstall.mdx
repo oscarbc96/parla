@@ -1,0 +1,60 @@
+---
+title: Uninstall
+description: Remove Parla, its local data, cache, keychain items and login item from your computer.
+---
+
+To remove Parla completely, delete the app, remove its local data and cache, and
+clean up the login item and stored credentials.
+
+## Remove the app
+
+Quit Parla. On macOS, move `Parla.app` from Applications to the Trash. If you
+installed from source, remove the build or bundle you created.
+
+## Turn off launch at login
+
+If you turned on **Open Parla at login**, turn it off in Settings, General before
+you remove the app. You can also remove the login item file
+`~/Library/LaunchAgents/Parla.plist`.
+
+## Delete local data and cache
+
+Parla stores data in separate configuration, data and cache folders:
+
+| Kind          | macOS                                 | Linux                                            | Windows                |
+| ------------- | ------------------------------------- | ------------------------------------------------ | ---------------------- |
+| Configuration | `~/.config/parla`                     | `$XDG_CONFIG_HOME/parla` or `~/.config/parla`    | `%APPDATA%\parla`      |
+| Data          | `~/Library/Application Support/parla` | `$XDG_DATA_HOME/parla` or `~/.local/share/parla` | `%APPDATA%\parla`      |
+| Cache         | `~/Library/Caches/parla`              | `$XDG_CACHE_HOME/parla` or `~/.cache/parla`      | `%LOCALAPPDATA%\parla` |
+
+The data folder contains local databases, the update check state, crash reports
+and, in debug builds, `development_credentials.json`. It also contains logs and,
+on macOS and Linux, the MCP socket at `run/mcp.sock`. The cache folder contains
+cached media and temporary upload files. The configuration folder contains
+`settings.json`, `keymap.json`, themes, workspace setting files and plugins.
+
+To remove everything Parla stored on this device, delete the data and cache
+folders. Delete the configuration folder as well if you do not want to keep your
+settings, keymap, themes or plugins. On Windows, configuration and data use the
+same folder (`%APPDATA%\parla`), so deleting it also deletes your settings.
+
+You can also use **Delete all data** inside Parla: it signs you out of every
+workspace and deletes the data and cache folders, but keeps the configuration
+folder.
+
+## Keychain items
+
+In release builds, Parla stores saved sign-ins and store encryption keys in the
+system keychain as internet passwords whose server starts with `parla://`.
+These include `parla://workspace/<id>` for workspace sign-ins and
+`parla://store/app` and `parla://store/<provider>/<id>` for store encryption
+keys.
+
+After deleting Parla's data, open Keychain Access and search for `parla://` to
+remove any remaining entries if you want to fully remove stored credentials.
+
+Debug builds keep credentials in `development_credentials.json` inside the data
+folder instead of the keychain, unless `PARLA_DEV_USE_KEYCHAIN=1` was set.
+Removing the data folder removes that file.
+
+Next: [Troubleshooting](/parla/docs/troubleshooting/).

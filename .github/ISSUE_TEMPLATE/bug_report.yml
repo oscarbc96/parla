@@ -1,0 +1,64 @@
+name: Bug report
+description: Report something that does not work in Parla.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste tokens, cookies, `xoxc` or `xoxd` values, or unredacted logs.**
+        Remove workspace names, IDs and message text before you post. A session
+        token is full account access.
+
+  - type: input
+    id: version
+    attributes:
+      label: Parla version or commit
+      description: The version from Settings, About, or the commit you built.
+      placeholder: "0.1.0 or abc1234"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: Name and version, and your Mac's chip if it is a Mac.
+      placeholder: "macOS 14.5, Apple silicon"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What you did, in order, and how often it happens.
+      placeholder: |
+        1. Open a channel
+        2. Press cmd-shift-t on a message
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead. Screenshots are welcome if they show no real workspace data.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs
+      description: From Settings, Advanced, Copy diagnostics or Export. Check that it has no tokens, cookies, real names or IDs.
+      render: text
+    validations:
+      required: false

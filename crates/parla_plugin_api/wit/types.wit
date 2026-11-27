@@ -1,0 +1,163 @@
+package parla:plugin@0.1.0;
+
+/// Shared types. Every host function returns
+/// `result<T, error>`. Ids are opaque strings the host hands out; a plugin
+/// never builds one itself. Nothing here is specific to one chat provider.
+/// Workspace area names (`messages:read`, ...) are listed once, in
+/// `parla_plugin_api::READ_AREAS` and `WRITE_AREAS`.
+interface types {
+  /// Why a call failed.
+  variant error {
+    /// The grant lacks this capability or area, for example `network` or
+    /// `messages:read`. The host also logs it and may show a toast (§7.1).
+    denied(string),
+    /// The provider of this workspace lacks the feature (§7.3).
+    unsupported,
+    not-found,
+    /// A quota, rate or size limit was hit; the payload names it.
+    limit(string),
+    /// An argument was rejected; the payload says why.
+    invalid(string),
+    offline,
+    cancelled,
+    failed(string),
+  }
+
+  type workspace-id = string;
+  type conversation-id = string;
+  type user-id = string;
+  type file-id = string;
+  type reminder-id = string;
+  type scheduled-id = string;
+  /// Assigned by the host to every view: panels, windows, rendered links and
+  /// slash-command notes.
+  type view-id = string;
+  type node-id = string;
+  /// A message's id inside its conversation.
+  type message-id = string;
+  /// Milliseconds since the Unix epoch, UTC.
+  type timestamp = s64;
+  /// Opaque paging cursor; `none` asks for the first page.
+  type cursor = option<string>;
+
+  record version { major: u16, minor: u16, patch: u16 }
+
+  /// One message: its conversation and its id there.
+  record message-ref { conversation: conversation-id, message: message-id }
+  /// A conversation together with its workspace.
+  record conversation-target { workspace: workspace-id, conversation: conversation-id }
+  /// A person together with their workspace.
+  record user-target { workspace: workspace-id, user: user-id }
+
+  record workspace { id: workspace-id, name: string }
+
+  enum presence { active, away, unknown }
+
+  record user {
+    id: user-id,
+    name: string,
+    display-name: string,
+    avatar-url: option<string>,
+    is-bot: bool,
+    timezone: option<string>,
+  }
+
+  enum conversation-kind { channel, private-channel, direct, group-direct }
+
+  record conversation {
+    id: conversation-id,
+    name: string,
+    kind: conversation-kind,
+    unread: u32,
+    mentions: u32,
+    archived: bool,
+  }
+
+  record conversation-filter {
+    /// Empty means every kind the grant covers.
+    kinds: list<conversation-kind>,
+    unread-only: bool,
+    query: option<string>,
+  }
+
+  record link { url: string, label: option<string> }
+
+  /// One piece of message text. Mentions and links are structured, never a
+  /// provider's own text encoding; the host converts both ways.
+  variant inline {
+    /// Plain text; `*bold*`, `_italic_` and `` `code` `` markers are kept.
+    text(string),
+    mention-user(user-id),
+    mention-conversation(conversation-id),
+    link(link),
+  }
+
+  record reaction { emoji: string, count: u32, mine: bool }
+
+  record file {
+    id: file-id,
+    name: string,
+    mime-type: string,
+    size: u64,
+    created: timestamp,
+  }
+
+  /// Neutral rich content (the `domain` model), never provider wire data.
+  record message {
+    ref: message-ref,
+    author: option<user-id>,
+    spans: list<inline>,
+    files: list<file>,
+    reactions: list<reaction>,
+    /// The thread root this message replies in, if any.
+    thread: option<message-id>,
+    reply-count: u32,
+    sent: timestamp,
+    edited: bool,
+  }
+
+  /// What a plugin sends: spans of at most 16 KB of text in total and at
+  /// most one https image link. The host encodes it for the provider (§9.3).
+  record content { spans: list<inline>, image-url: option<string> }
+
+  record reminder { id: reminder-id, text: string, at: timestamp, completed: bool }
+
+  record scheduled { id: scheduled-id, conversation: conversation-id, text: string, at: timestamp }
+
+  record status {
+    text: string,
+    emoji: option<string>,
+    expires: option<timestamp>,
+    /// Do not disturb until this time, if snoozed.
+    snoozed-until: option<timestamp>,
+  }
+
+  /// Where the plugin was invoked: ids only.
+  record context {
+    workspace: option<workspace-id>,
+    conversation: option<conversation-id>,
+    thread: option<message-id>,
+    message: option<message-ref>,
+  }
+
+  enum appearance { light, dark }
+  enum density { compact, cozy }
+
+  record app-info {
+    app-version: string,
+    platform: string,
+    locale: string,
+    appearance: appearance,
+    density: density,
+  }
+
+  /// `page<T>` written out per item type, since WIT has no generics. Every
+  /// paged call takes `cursor` and `limit` (1 to 200).
+  record message-page { items: list<message>, next: cursor }
+  record message-ref-page { items: list<message-ref>, next: cursor }
+  record conversation-page { items: list<conversation>, next: cursor }
+  record file-page { items: list<file>, next: cursor }
+  record reminder-page { items: list<reminder>, next: cursor }
+  record scheduled-page { items: list<scheduled>, next: cursor }
+  record key-page { items: list<string>, next: cursor }
+}

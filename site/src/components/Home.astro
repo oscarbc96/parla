@@ -1,0 +1,395 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Bell from "@lucide/astro/icons/bell";
+import Code from "@lucide/astro/icons/code";
+import Cpu from "@lucide/astro/icons/cpu";
+import Download from "@lucide/astro/icons/download";
+import Keyboard from "@lucide/astro/icons/keyboard";
+import KeyRound from "@lucide/astro/icons/key-round";
+import Layers from "@lucide/astro/icons/layers";
+import Paperclip from "@lucide/astro/icons/paperclip";
+import Phone from "@lucide/astro/icons/phone";
+import Plug from "@lucide/astro/icons/plug";
+import Server from "@lucide/astro/icons/server";
+import ShieldCheck from "@lucide/astro/icons/shield-check";
+import Star from "@lucide/astro/icons/star";
+import Terminal from "@lucide/astro/icons/terminal";
+import Zap from "@lucide/astro/icons/zap";
+import Layout from "@/layouts/Layout.astro";
+import Shot from "@/components/Shot.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import SiteHeader from "@/components/SiteHeader.astro";
+import { absoluteUrl, repoUrl, siteName } from "@/lib/seo";
+import { getStars } from "@/lib/github";
+import { latestRelease } from "@/lib/release";
+import { getUi, localePath } from "@/i18n";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const ui = getUi(locale);
+const stars = await getStars();
+const release = await latestRelease();
+const t = ui.home;
+const d = ui.downloads;
+const repo = repoUrl;
+const wrapping = "mx-auto w-full max-w-[1160px] px-5 sm:px-6";
+const section = "text-[clamp(26px,3vw,36px)] leading-[1.15] font-bold tracking-[-0.02em]";
+const cardHover = "transition-colors hover:border-parla-line-strong";
+
+/**
+ * Icon and destination of each feature card, in the same order as
+ * `home.features` in `src/i18n/*.ts`. A card without an `href` has no link
+ * (the check in `tests/build.test.ts` keeps the two lists in step).
+ */
+const cards: {
+  Icon: typeof Zap;
+  href?: string;
+  /** Link outside the site: no locale prefix. */
+  external?: boolean;
+}[] = [
+  { Icon: Zap, href: "/docs/install/" },
+  { Icon: Cpu, href: "/docs/offline/" },
+  { Icon: Layers, href: "/docs/messaging/" },
+  { Icon: Keyboard, href: "/docs/settings/" },
+  { Icon: Phone, href: "/docs/messaging/" },
+  { Icon: Paperclip, href: "/docs/files/" },
+  { Icon: Bell, href: "/docs/notifications/" },
+  { Icon: Terminal },
+  { Icon: Code, href: repo, external: true },
+];
+const features = t.features.map((feature, index) => ({
+  ...feature,
+  ...(cards[index] ?? { Icon: Zap }),
+}));
+
+/** The three extension cards of the dark band, with their chip row. */
+const extensions = [
+  { Icon: Plug, title: t.extPluginsTitle, text: t.extPluginsText, chips: ["reminders:read", "storage", "windows"], color: "text-parla-mark-amber" },
+  { Icon: Server, title: t.extMcpTitle, text: t.extMcpText, chips: ["stdio", "http", "confirm writes"], color: "text-parla-mark-orange" },
+  { Icon: KeyRound, title: t.extKeymapTitle, text: t.extKeymapText, chips: ["⌘K", "⌘⇧F", "alt-↑"], color: "text-parla-mark-coral" },
+];
+
+/** Accent presets, in the theme file's order (brand, ember, amber, coral, ink). */
+const presets = ["bg-parla-accent", "bg-parla-signal-text", "bg-parla-warning", "bg-parla-danger", "bg-parla-info"];
+---
+
+<Layout
+  title={t.title}
+  description={t.description}
+  locale={locale}
+  path="/"
+  ogKey="home"
+  jsonLd={[
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: siteName,
+      url: absoluteUrl(locale, "/"),
+      inLanguage: locale,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: siteName,
+      description: t.description,
+      url: absoluteUrl(locale, "/"),
+      inLanguage: locale,
+      applicationCategory: "CommunicationApplication",
+      operatingSystem: "macOS",
+      license: "https://www.mozilla.org/MPL/2.0/",
+      codeRepository: repoUrl,
+      isAccessibleForFree: true,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+  ]}
+>
+  <SiteHeader locale={locale} path="/" stars={stars} section="home" />
+  <main class="parla bg-parla-app text-parla-text">
+    <div class={wrapping}>
+      <section class="pt-16 pb-14 sm:pt-[88px]" aria-labelledby="hero-title">
+        <span class="chip">
+          <span class="size-[7px] rounded-full bg-parla-signal" aria-hidden="true"></span>
+          {t.kicker} · {t.status}
+        </span>
+        <h1
+          id="hero-title"
+          class="mt-6 max-w-4xl text-[clamp(34px,5.2vw,60px)] leading-[1.04] font-extrabold tracking-[-0.035em]"
+        >
+          {t.heading}<br />
+          <span class="text-parla-signal-text">{t.headingAccent}</span>
+        </h1>
+        <p class="mt-6 max-w-[680px] text-[clamp(16px,1.6vw,19px)] leading-[1.6] text-parla-muted">
+          {t.lede}
+        </p>
+        <div class="mt-7 flex flex-wrap items-center gap-3">
+          {
+            release ? (
+              <a class="btn btn-primary btn-lg" href="#download">
+                <Download size={17} aria-hidden="true" />
+                {d.downloadMac}
+                <span class="font-mono text-xs opacity-75">{release.version}</span>
+              </a>
+            ) : (
+              <a class="btn btn-primary btn-lg" href={localePath(locale, "/docs/install/")}>
+                <Download size={17} aria-hidden="true" />
+                {t.buildButton}
+              </a>
+            )
+          }
+          <a class="btn btn-lg" href={localePath(locale, "/docs/")}>{t.docsButton}</a>
+          <a class="btn btn-ghost btn-lg" href={repo}>
+            <Code size={17} aria-hidden="true" />
+            {t.sourceButton}
+            {
+              stars && (
+                <span class="inline-flex items-center gap-1 text-xs text-parla-muted">
+                  <Star size={13} fill="currentColor" aria-hidden="true" />{stars}
+                </span>
+              )
+            }
+          </a>
+        </div>
+        <p class="mt-5 text-xs text-parla-muted">{t.platform}</p>
+        <p class="mt-2 flex flex-wrap items-center gap-2 text-xs text-parla-muted">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="size-1.5 rounded-full bg-parla-signal" aria-hidden="true"></span>{t.statusText}
+          </span>
+          <a class="font-semibold text-parla-link underline-offset-4 hover:underline" href={localePath(locale, "/docs/install/")}>{t.statusLink}</a>
+        </p>
+      </section>
+
+      <section class="pb-16 sm:pb-24">
+        <div class="shot-frame">
+          <Shot name="thread" alt={t.heroAlt} width={1600} height={1000} eager />
+        </div>
+        <p class="mt-3.5 text-center text-xs text-parla-subtle">{t.heroCaption}</p>
+      </section>
+
+      <section class="pb-16 sm:pb-[104px]" aria-labelledby="features-title">
+        <p class="parla-caps text-parla-signal-text">{t.featuresLabel}</p>
+        <h2 id="features-title" class={`${section} mt-2.5 mb-8`}>{t.featuresHeading}</h2>
+        <ul class="grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            features.map((feature) => (
+              <li class={`flex flex-col rounded-[14px] border border-parla-line bg-parla-surface p-[22px] ${cardHover}`}>
+                <span class="mb-3 inline-flex size-[38px] items-center justify-center rounded-[10px] bg-parla-signal-soft text-parla-signal-text">
+                  <feature.Icon size={19} aria-hidden="true" />
+                </span>
+                <h3 class="text-base font-semibold">{feature.title}</h3>
+                <p class="mt-2 text-sm leading-[1.6] text-parla-muted">{feature.text}</p>
+                {feature.linkText && feature.href && (
+                  <a
+                    class="mt-auto inline-flex w-fit items-center gap-1 pt-4 text-[13px] font-semibold text-parla-link no-underline hover:underline"
+                    href={feature.external ? feature.href : localePath(locale, feature.href)}
+                  >
+                    {feature.linkText}
+                    <ArrowRight size={13} aria-hidden="true" />
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="pb-16 sm:pb-[104px]" aria-labelledby="themes-title">
+        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
+          <div>
+            <p class="parla-caps text-parla-signal-text">{t.themesLabel}</p>
+            <h2 id="themes-title" class={`${section} mt-2.5`}>{t.themesTitle}</h2>
+            <p class="mt-4 text-base leading-[1.65] text-parla-muted">
+              {t.themesTextBefore}<code class="code">themes/</code>{t.themesTextAfter}
+            </p>
+            <div class="mt-6 grid grid-cols-2 gap-3">
+              <div class="overflow-hidden rounded-xl border border-parla-line bg-parla-surface">
+                <div class="flex h-[92px]" aria-hidden="true">
+                  <span class="w-[32%] bg-[#211e4c]"></span>
+                  <span class="flex flex-1 flex-col gap-1.5 bg-[#f8f7f5] p-3.5">
+                    <span class="h-2 w-[70%] rounded bg-[#d3cfc8]"></span>
+                    <span class="h-2 w-1/2 rounded bg-[#e5e2dd]"></span>
+                    <span class="mt-auto h-4 w-[40%] rounded-[5px] bg-[#211e4c]"></span>
+                  </span>
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-1 px-3 py-2.5">
+                  <span class="text-sm font-semibold">{t.themesLight}</span>
+                  <span class="chip chip-soft h-[22px]">{t.themesDefault}</span>
+                </div>
+              </div>
+              <div class="overflow-hidden rounded-xl border border-parla-line bg-parla-surface">
+                <div class="flex h-[92px]" aria-hidden="true">
+                  <span class="w-[32%] bg-[#17162f]"></span>
+                  <span class="flex flex-1 flex-col gap-1.5 bg-[#121215] p-3.5">
+                    <span class="h-2 w-[70%] rounded bg-[#3d3d4a]"></span>
+                    <span class="h-2 w-1/2 rounded bg-[#2a2a33]"></span>
+                    <span class="mt-auto h-4 w-[40%] rounded-[5px] bg-[#fe6129]"></span>
+                  </span>
+                </div>
+                <div class="flex flex-wrap items-center justify-between gap-1 px-3 py-2.5">
+                  <span class="text-sm font-semibold">{t.themesDark}</span>
+                  <span class="chip chip-soft h-[22px]">{t.themesDefault}</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 flex flex-wrap items-center gap-2 text-sm text-parla-muted">
+              <span>{t.themesPresets}</span>
+              {
+                presets.map((color, index) => (
+                  <span
+                    class:list={[
+                      "size-5 rounded-full",
+                      color,
+                      index === 0 && "ring-2 ring-parla-app ring-offset-2 ring-offset-parla-signal",
+                    ]}
+                    aria-hidden="true"
+                  />
+                ))
+              }
+              <a class="ml-auto font-semibold text-parla-link no-underline hover:underline" href={localePath(locale, "/docs/settings/")}>{t.themesLink}</a>
+            </div>
+          </div>
+
+          <div class="card overflow-hidden shadow-parla-md">
+            <div class="flex h-10 items-center gap-2 border-b border-parla-line bg-parla-sunken px-3.5">
+              <Code size={15} class="text-parla-muted" aria-hidden="true" />
+              <span class="font-mono text-xs text-parla-muted">{t.themesFile}</span>
+            </div>
+            <pre
+              class="m-0 overflow-x-auto bg-parla-code-bg p-4 font-mono text-[13px] leading-[1.7] text-parla-text"><code>&#123;
+  <span class="text-parla-link">"name"</span>: <span class="text-parla-success">"Parla, Priya"</span>,
+  <span class="text-parla-link">"themes"</span>: [&#123;
+    <span class="text-parla-link">"name"</span>: <span class="text-parla-success">"Parla Light, Priya"</span>,
+    <span class="text-parla-link">"appearance"</span>: <span class="text-parla-success">"light"</span>,
+    <span class="text-parla-link">"style"</span>: &#123;
+      <span class="text-parla-link">"parla"</span>: &#123;
+        <span class="text-parla-link">"sidebar_background"</span>: <span class="text-parla-success">"#2e2a66ff"</span>,
+        <span class="text-parla-link">"presence_active"</span>: <span class="text-parla-success">"#1f9d6bff"</span>
+      &#125;
+    &#125;
+  &#125;]&#125;</code></pre>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="bg-parla-band text-parla-band-text" aria-labelledby="ext-title">
+      <div class="mx-auto w-full max-w-[1160px] px-5 py-16 sm:px-6 sm:py-24">
+        <p class="parla-caps mb-4 text-parla-band-text">{t.extLabel}</p>
+        <div class="signature mb-6 w-[72px]" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <h2 id="ext-title" class={`${section} max-w-[720px] text-white`}>{t.extTitle}</h2>
+        <p class="mt-4 max-w-[680px] text-base leading-[1.65] text-parla-band-text">{t.extText}</p>
+        <div class="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {
+            extensions.map((ext) => (
+              <div class="rounded-[14px] border border-white/10 bg-white/5 p-[22px]">
+                <ext.Icon size={22} class={ext.color} aria-hidden="true" />
+                <h3 class="mt-3.5 text-[15px] font-semibold text-white">{ext.title}</h3>
+                <p class="mt-1.5 text-sm leading-[1.6] text-parla-band-text">{ext.text}</p>
+                <div class="mt-3.5 flex flex-wrap gap-1.5">
+                  {ext.chips.map((chip) => (
+                    <span class="chip border-white/[0.12] bg-white/[0.06] text-parla-band-text">{chip}</span>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <div class={wrapping}>
+      <section class="py-16 sm:py-24" aria-labelledby="connect-title">
+        <div class="grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-12">
+          <div>
+            <p class="parla-caps text-parla-signal-text">{t.connectLabel}</p>
+            <h2 id="connect-title" class={`${section} mt-2.5`}>{t.connectHeading}</h2>
+          </div>
+          <div>
+            <p class="text-base leading-[1.65] text-parla-muted">{t.connectText}</p>
+            <ul class="mt-5 list-none space-y-2.5 p-0 text-sm">
+              <li class="flex items-center gap-2.5">
+                <ShieldCheck size={18} class="shrink-0 text-parla-success" aria-hidden="true" />{t.connectBullet1}
+              </li>
+              <li class="flex items-center gap-2.5">
+                <KeyRound size={18} class="shrink-0 text-parla-success" aria-hidden="true" />{t.connectBullet2}
+              </li>
+              <li class="flex items-center gap-2.5">
+                <Code size={18} class="shrink-0 text-parla-success" aria-hidden="true" />{t.connectBullet3}
+              </li>
+            </ul>
+            <p class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+              <a class="text-parla-link no-underline hover:underline" href={localePath(locale, "/docs/sign-in/")}>{t.connectSignIn}</a>
+              <a class="text-parla-link no-underline hover:underline" href={localePath(locale, "/docs/privacy/")}>{t.connectPrivacy}</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="pb-16 sm:pb-24" aria-label={t.galleryLabel}>
+        <p class="parla-caps text-parla-signal-text">{t.galleryLabel}</p>
+        <div class="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {
+            t.gallery.map((item) => (
+              <article>
+                <Shot
+                  name={item.shot}
+                  alt={item.alt}
+                  width={1600}
+                  height={item.shot === "switcher" ? 600 : 1000}
+                />
+                <h3 class="-mt-2 text-base font-semibold">{item.title}</h3>
+                <p class="mt-2 text-sm leading-[1.6] text-parla-muted">{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section id="download" class="pb-16 sm:pb-24" aria-labelledby="download-title">
+        <div class="card flex flex-wrap items-center gap-7 p-6 shadow-parla-sm sm:p-12">
+          <div class="flex flex-[999_1_420px] flex-col gap-2.5">
+            <h2 id="download-title" class={section}>{t.downloadHeading}</h2>
+            <p class="text-parla-muted">
+              {
+                release ? (
+                  <>{t.platform}</>
+                ) : (
+                  <>{d.noRelease}. {t.platform}</>
+                )
+              }
+            </p>
+            <p class="mt-1 text-sm text-parla-muted">
+              <a class="font-semibold text-parla-link no-underline hover:underline" href={localePath(locale, "/downloads/")}>{t.allDownloads}</a>
+            </p>
+          </div>
+          <div class="flex flex-[1_1_260px] flex-wrap gap-2.5">
+            {
+              release ? (
+                <>
+                  <a class="btn btn-primary btn-lg" href={release.dmgUrl}>
+                    <Download size={17} aria-hidden="true" />
+                    {d.downloadMac}
+                  </a>
+                  {release.sumsUrl && (
+                    <a class="btn btn-lg" href={release.sumsUrl}>{d.checksumLink}</a>
+                  )}
+                </>
+              ) : (
+                <>
+                  <a class="btn btn-primary btn-lg" href={localePath(locale, "/docs/install/")}>{t.buildButton}</a>
+                  <a class="btn btn-lg" href={`${repo}/releases`}>{d.releasesLink}</a>
+                </>
+              )
+            }
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <SiteFooter locale={locale} />
+  </main>
+</Layout>

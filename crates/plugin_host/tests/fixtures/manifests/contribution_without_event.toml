@@ -1,0 +1,14 @@
+id = "missing-event"
+name = "Missing event"
+version = "0.1.0"
+api = "0.1"
+activation = ["command:missing_event::open"]
+
+[[commands]]
+id = "open"
+title = "Open"
+
+[[panels]]
+id = "main"
+title = "Main"
+icon = "plugin"

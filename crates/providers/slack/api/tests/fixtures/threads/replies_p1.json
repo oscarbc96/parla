@@ -1,0 +1,193 @@
+{
+ "has_more": true,
+ "messages": [
+  {
+   "blocks": [
+    {
+     "block_id": "V54+Q",
+     "elements": [
+      {
+       "elements": [
+        {
+         "text": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit",
+         "type": "text"
+        }
+       ],
+       "type": "rich_text_section"
+      }
+     ],
+     "type": "rich_text"
+    }
+   ],
+   "client_msg_id": "c3ad0f19-8103-4d0f-a4ad-52bbaf3dfa18",
+   "is_locked": false,
+   "last_read": "1794508024.488979",
+   "latest_reply": "1794508024.488979",
+   "reply_count": 9,
+   "reply_users": [
+    "U0000001",
+    "U0000002"
+   ],
+   "reply_users_count": 2,
+   "subscribed": true,
+   "team": "T0000001",
+   "text": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit",
+   "thread_ts": "1794500969.628009",
+   "ts": "1794500969.628009",
+   "type": "message",
+   "user": "U0000002"
+  },
+  {
+   "blocks": [
+    {
+     "block_id": "Dd14u",
+     "elements": [
+      {
+       "elements": [
+        {
+         "text": "lorem ipsum dolor sit amet consectetur elit",
+         "type": "text"
+        }
+       ],
+       "type": "rich_text_section"
+      }
+     ],
+     "type": "rich_text"
+    }
+   ],
+   "client_msg_id": "3aeebcbb-2817-45be-8d47-648b89ca6f75",
+   "parent_user_id": "U0000002",
+   "team": "T0000001",
+   "text": "lorem ipsum dolor sit amet consectetur elit",
+   "thread_ts": "1794500969.628009",
+   "ts": "1794506750.365639",
+   "type": "message",
+   "user": "U0000002"
+  },
+  {
+   "blocks": [
+    {
+     "block_id": "WcoF/",
+     "elements": [
+      {
+       "elements": [
+        {
+         "text": "lorem",
+         "type": "text"
+        }
+       ],
+       "type": "rich_text_section"
+      }
+     ],
+     "type": "rich_text"
+    }
+   ],
+   "client_msg_id": "c5dd0367-fbf0-40a4-8794-9a15400eabfa",
+   "parent_user_id": "U0000002",
+   "team": "T0000001",
+   "text": "lorem",
+   "thread_ts": "1794500969.628009",
+   "ts": "1794507993.875359",
+   "type": "message",
+   "user": "U0000001"
+  },
+  {
+   "attachments": [
+    {
+     "fallback": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum",
+     "from_url": "https://example.com/23",
+     "id": 1,
+     "image_bytes": 24305,
+     "image_height": 630,
+     "image_url": "https://files.example.test/image/16",
+     "image_width": 1200,
+     "media_type": "external_link",
+     "original_url": "https://example.com/23",
+     "service_icon": "https://example.com/24",
+     "service_name": "lorem ipsum",
+     "text": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit",
+     "title": "lorem ipsum dolor sit amet consectetur elit sed",
+     "title_link": "https://example.com/23"
+    }
+   ],
+   "blocks": [
+    {
+     "block_id": "EQSri",
+     "elements": [
+      {
+       "elements": [
+        {
+         "text": "lorem",
+         "truncated": true,
+         "type": "link",
+         "url": "https://example.com/23"
+        }
+       ],
+       "type": "rich_text_section"
+      }
+     ],
+     "type": "rich_text"
+    }
+   ],
+   "client_msg_id": "7db3d879-4a2e-48c2-9f97-3df5eb0f1a94",
+   "parent_user_id": "U0000002",
+   "team": "T0000001",
+   "text": "lorem",
+   "thread_ts": "1794500969.628009",
+   "ts": "1794508014.298349",
+   "type": "message",
+   "user": "U0000001"
+  },
+  {
+   "attachments": [
+    {
+     "fallback": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum",
+     "from_url": "https://example.com/25",
+     "id": 1,
+     "image_bytes": 24305,
+     "image_height": 630,
+     "image_url": "https://files.example.test/image/16",
+     "image_width": 1200,
+     "media_type": "external_link",
+     "original_url": "https://example.com/25",
+     "service_icon": "https://example.com/24",
+     "service_name": "lorem ipsum",
+     "text": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit",
+     "title": "lorem ipsum dolor sit amet consectetur elit sed",
+     "title_link": "https://example.com/25"
+    }
+   ],
+   "blocks": [
+    {
+     "block_id": "btjEY",
+     "elements": [
+      {
+       "elements": [
+        {
+         "text": "lorem",
+         "truncated": true,
+         "type": "link",
+         "url": "https://example.com/25"
+        }
+       ],
+       "type": "rich_text_section"
+      }
+     ],
+     "type": "rich_text"
+    }
+   ],
+   "client_msg_id": "a8d58982-f215-4647-ab1a-abdac5493f5b",
+   "parent_user_id": "U0000002",
+   "team": "T0000001",
+   "text": "lorem",
+   "thread_ts": "1794500969.628009",
+   "ts": "1794508024.488979",
+   "type": "message",
+   "user": "U0000001"
+  }
+ ],
+ "ok": true,
+ "response_metadata": {
+  "next_cursor": "bmV4dF90czoxNzk0NTA2NzM0NDc0MTM5"
+ }
+}

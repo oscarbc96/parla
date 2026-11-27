@@ -1,0 +1,199 @@
+# Which visual scenarios a source file can change.
+#
+# `glob` matches a changed path (Bun glob syntax); `scenarios` lists scenario
+# names, where `*` matches any run of characters. Scenarios whose baseline PNG
+# changed are always included. A UI source file (components, themes, parla views)
+# that matches no entry here selects every scenario, so a missing entry costs
+# time, never coverage. `--scenarios a,b` overrides all of this.
+
+[[map]]
+glob = "crates/components/src/composer.rs"
+scenarios = ["composer_*", "empty_conversation"]
+
+[[map]]
+glob = "crates/domain/src/typing.rs"
+scenarios = ["composer_typing"]
+
+[[map]]
+glob = "crates/components/src/{format_toolbar,slash_menu,send_later,datetime_picker,completion,emoji_picker}.rs"
+scenarios = ["composer_*", "emoji_picker_open"]
+
+[[map]]
+glob = "crates/components/src/{timeline,message_row,rich_text,reactions,message_actions}.rs"
+scenarios = ["timeline_*", "reactions", "message_actions_menu", "long_names", "unresolved_names", "thread_open", "dm_header", "dm_intro", "people_directory*"]
+
+[[map]]
+glob = "crates/components/src/{thread_panel,thread_summary,threads_view}.rs"
+scenarios = ["thread_open", "thread_followed", "thread_load*", "threads_view", "popout_thread"]
+
+[[map]]
+glob = "crates/components/src/load_state.rs"
+scenarios = ["timeline_load*", "thread_load*"]
+
+[[map]]
+glob = "crates/components/src/search_panel.rs"
+scenarios = ["search_*"]
+
+[[map]]
+glob = "crates/components/src/toast_stack.rs"
+scenarios = ["toast_stack"]
+
+[[map]]
+glob = "crates/components/src/quick_switcher.rs"
+scenarios = ["quick_switcher_open"]
+
+[[map]]
+glob = "crates/components/src/command_palette.rs"
+scenarios = ["command_palette_open"]
+
+[[map]]
+glob = "crates/components/src/{huddle_bar,call_card,ring_banner,call_bar}.rs"
+scenarios = ["huddle_*", "banner_incoming_huddle", "call_bar_*"]
+
+[[map]]
+glob = "crates/components/src/{sidebar,sidebar_sections,rail,header,badge}.rs"
+scenarios = ["rail_*", "sidebar_busy", "dm_section_*", "presence_dots", "conversation_menu_open", "notify_menu_open", "sidebar_starred", "sidebar_timed_mute", "sidebar_sections_collapsed", "sidebar_custom_sections", "sidebar_organise", "sidebar_section_menu", "sidebar_settings_popover", "drafts_view", "huddle_awareness", "dm_header", "dm_intro", "people_directory*", "files_tab*"]
+
+[[map]]
+glob = "crates/components/src/people_directory.rs"
+scenarios = ["people_directory*"]
+
+[[map]]
+glob = "crates/components/src/{aggregate_views,saved_view,scheduled_view,reminders_view,drafts_view}.rs"
+scenarios = ["all_*", "later_view", "scheduled_*", "reminders_*", "reminder_*", "drafts_*"]
+
+[[map]]
+glob = "crates/components/src/files_tab.rs"
+scenarios = ["files_tab*"]
+
+[[map]]
+glob = "crates/components/src/{files,upload}.rs"
+scenarios = ["files*", "composer_attachments", "snippet_card*"]
+
+[[map]]
+glob = "crates/components/src/snippet.rs"
+scenarios = ["snippet_card*", "composer_snippet_offer", "composer_attachments"]
+
+[[map]]
+glob = "crates/components/src/{code_sign_in.rs,sign_in/code_view.rs}"
+scenarios = ["sign_in_email", "sign_in_email_invalid", "sign_in_email_sending", "sign_in_email_needs_browser", "sign_in_email_rate_limited", "sign_in_email_offline", "sign_in_email_en_xa", "sign_in_code", "sign_in_code_partial", "sign_in_code_verifying", "sign_in_code_wrong", "sign_in_code_expired", "sign_in_code_too_many", "sign_in_code_rate_limited", "sign_in_code_resend_wait", "sign_in_code_resent", "sign_in_code_wrong_en_xa"]
+
+[[map]]
+glob = "crates/components/src/{sign_in,workspace_picker}.rs"
+scenarios = ["sign_in*", "workspace_picker"]
+
+[[map]]
+glob = "crates/components/src/onboarding.rs"
+scenarios = ["onboarding_welcome", "onboarding_provider", "onboarding_language_open", "onboarding_first_sync", "onboarding_transition"]
+
+[[map]]
+glob = "crates/components/src/nav_stack.rs"
+scenarios = ["onboarding_transition"]
+
+[[map]]
+glob = "crates/components/src/tour.rs"
+scenarios = ["onboarding_tour"]
+
+[[map]]
+glob = "crates/components/src/{status_dialog,profile_panel,dnd_menu,notify_menu}.rs"
+scenarios = ["status_dialog", "status_dialog_custom", "status_presets", "profile_panel", "pause_menu_*", "notify_controls", "notify_menu_open", "notify_menu_extras", "sidebar_timed_mute", "conversation_menu_open"]
+
+[[map]]
+glob = "crates/components/src/channel_admin.rs"
+scenarios = ["channel_create*", "channel_browser*", "channel_edit", "channel_invite", "channel_*_confirm", "channel_details_about_admin"]
+
+[[map]]
+glob = "crates/components/src/{pins_popover,bookmarks_bar}.rs"
+scenarios = ["pins_popover", "bookmarks_bar"]
+
+[[map]]
+glob = "crates/components/src/audit_log.rs"
+scenarios = ["audit_log"]
+
+[[map]]
+glob = "crates/components/src/confirm_write.rs"
+scenarios = ["confirm_write", "confirm_write_plugin_send", "confirm_write_plugin_delete", "confirm_write_plugin_remember", "confirm_write_plugin_mark_read"]
+
+[[map]]
+glob = "crates/parla/src/write_confirm_window.rs"
+scenarios = ["confirm_write", "confirm_write_plugin_send", "confirm_write_plugin_delete", "confirm_write_plugin_remember", "confirm_write_plugin_mark_read"]
+
+[[map]]
+glob = "crates/write_confirm/src/**"
+scenarios = ["confirm_write", "confirm_write_plugin_send", "confirm_write_plugin_delete", "confirm_write_plugin_remember", "confirm_write_plugin_mark_read"]
+
+[[map]]
+glob = "crates/mcp/src/confirm.rs"
+scenarios = ["confirm_write"]
+
+[[map]]
+glob = "crates/parla/src/{expiry_banner,store_banner}.rs"
+scenarios = ["banner_*", "composer_session_expired"]
+
+[[map]]
+glob = "crates/parla/src/offline_banner.rs"
+scenarios = ["timeline_offline"]
+
+[[map]]
+glob = "crates/components/src/settings_controls.rs"
+scenarios = ["onboarding_welcome", "onboarding_provider", "onboarding_language_open", "settings_general*", "settings_appearance*", "settings_notifications", "settings_keymap*", "settings_mcp", "settings_calls*", "settings_accounts", "settings_advanced"]
+
+[[map]]
+glob = "crates/parla/src/settings_window.rs"
+scenarios = ["settings_general*", "settings_appearance*", "settings_notifications", "settings_keymap*", "settings_mcp", "settings_calls*", "settings_accounts", "settings_advanced"]
+
+[[map]]
+glob = "crates/parla/src/{settings_window/keymap_page,shortcuts}.rs"
+scenarios = ["settings_keymap*", "shortcuts_sheet"]
+
+[[map]]
+glob = "crates/components/src/shortcuts_sheet.rs"
+scenarios = ["shortcuts_sheet", "settings_keymap*"]
+
+[[map]]
+glob = "crates/components/src/icon.rs"
+scenarios = ["icons_gallery"]
+
+[[map]]
+glob = "crates/components/src/{channel_details,header}.rs"
+scenarios = ["channel_details_*", "profile_pictures", "presence_dots", "profile_panel", "timeline_*", "thread_open", "empty_conversation"]
+
+[[map]]
+glob = "crates/{parla/src/media_viewer,components/src/media_viewer,components/src/media/viewer}.rs"
+scenarios = ["media_viewer_*"]
+
+[[map]]
+glob = "crates/{parla/src/code_viewer,components/src/code_viewer,components/src/snippet_highlight}.rs"
+scenarios = ["code_viewer", "code_viewer_en_xa"]
+
+[[map]]
+glob = "crates/parla/src/settings_window/mcp_page.rs"
+scenarios = ["settings_mcp"]
+
+[[map]]
+glob = "crates/parla/src/settings_window/calls_page.rs"
+scenarios = ["settings_calls*"]
+
+[[map]]
+glob = "crates/parla/src/settings_window/accounts_page.rs"
+scenarios = ["settings_accounts"]
+
+[[map]]
+glob = "crates/parla/src/settings_window/advanced_page.rs"
+scenarios = ["settings_advanced"]
+
+[[map]]
+glob = "assets/themes/parla-high-contrast.json"
+scenarios = ["timeline_rich_high_contrast", "settings_appearance", "settings_appearance_high_contrast"]
+
+[[map]]
+glob = "crates/parla/src/idle_lock.rs"
+scenarios = ["lock_screen*"]
+
+[[map]]
+glob = "crates/components/src/{clip,vtt}.rs"
+scenarios = ["clip_controls"]
+
+[[map]]
+glob = "crates/parla/src/{update_banner,updates/mod,updates/flow}.rs"
+scenarios = ["update_*"]

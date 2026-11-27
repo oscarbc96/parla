@@ -1,0 +1,14 @@
+{
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.example.test/",
+  "data": {
+    "json": {
+      "type": "message",
+      "channel": "C0000001",
+      "user": "U0000001",
+      "text": "hello",
+      "ts": "1700000002.000100"
+    }
+  }
+}

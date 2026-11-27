@@ -1,0 +1,7 @@
+chime_signal vendors protocol/SignalingProtocol.proto from
+amazon-chime-sdk-js, https://github.com/aws/amazon-chime-sdk-js
+(commit eb93c7d902f8952edf1b2b2abb83cb23d8802ccf).
+
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+Licensed under the Apache License, Version 2.0 (see LICENSE in this
+directory). The file is included unmodified.

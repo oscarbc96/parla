@@ -1,0 +1,151 @@
+---
+title: Solución de problemas
+description: Soluciona problemas habituales de inicio de sesión, notificaciones, caché, búsqueda, huddles y actualizaciones.
+---
+
+## Parla no muestra notificaciones
+
+Las notificaciones de escritorio en macOS necesitan el paquete de la aplicación.
+Compila y ejecuta Parla con `mise run run` o `mise run bundle`, no con el binario
+directo. Consulta [Instalación](/parla/es/docs/install/).
+
+Comprueba también que las notificaciones de escritorio no estén en **Nada**, que
+la conversación no esté silenciada, que las horas de silencio no estén activas y
+que el espacio de trabajo no esté pausado. Un mensaje en la conversación que ya
+estás mirando no avisa.
+
+## No puedo iniciar sesión
+
+Si tu proveedor de identidad rechaza la ventana de inicio de sesión integrada, usa
+**Pegar token y cookie**. Consulta [Iniciar sesión](/parla/es/docs/sign-in/).
+
+Si Parla dice que no ha encontrado ningún espacio, inicia sesión en el espacio en
+la ventana hasta que se abra su página y vuelve a intentarlo. Si un espacio
+necesita SSO o doble factor, termina ese paso en la ventana y deja la fila
+marcada.
+
+## Un espacio de trabajo sigue vacío o dice que aún está conectando
+
+Parla muestra el motivo en un aviso en vez de dejar la barra lateral vacía. Espera
+a que termine la primera carga. Los espacios grandes cargan la lista de miembros
+por partes. Si el servidor no responde en 20 segundos, aparece una barra de error
+con **Reintentar**.
+
+Si el problema continúa, abre la carpeta de registros desde Ajustes, Avanzado y
+lee `parla.log`. Los tokens, las cookies y el texto de los mensajes se eliminan
+del archivo, así que es seguro adjuntarlo a un informe de error.
+
+## Mi sesión ha caducado
+
+Parla muestra un aviso que nombra el espacio y ofrece **Iniciar sesión de nuevo**.
+Los mensajes en caché siguen siendo legibles, pero no puedes enviar hasta que
+inicies sesión. En macOS también recibes una notificación por cada caducidad.
+
+Volver a iniciar sesión actualiza la sesión guardada. Si cerraste sesión en todos
+los espacios, Parla vuelve al flujo de primera configuración.
+
+## Los mensajes siguen en cola o dicen que no se enviaron
+
+Los mensajes en cola esperan en una bandeja de salida y salen en orden cuando
+vuelve la conexión. **Reintentar ahora** en el aviso sin conexión lo intenta al
+instante.
+
+Un mensaje que falló con **Puede que se haya enviado. Compruébalo antes de
+reintentar.** puede haber llegado a la conversación. Compruébalo primero y
+después elige **Reintentar**, **Borrar** o **Copiar texto**.
+
+## La caché no se puede abrir
+
+Parla muestra un aviso cuando la caché local de un espacio no se puede leer.
+Elige **Reconstruir caché**. Los mensajes se vuelven a cargar desde el servicio,
+pero los mensajes en cola y los borradores guardados en este dispositivo no se
+pueden recuperar. Parla nunca reconstruye una caché por su cuenta.
+
+## El disco está casi lleno
+
+Cuando quedan menos de 1 GiB libres, aparece un aviso **Disco casi lleno**. Elige
+**Gestionar almacenamiento** para abrir Ajustes, Privacidad y almacenamiento, y
+vacía la caché o reduce el límite de caché y la retención. El espacio que macOS
+puede liberar por su cuenta no cuenta.
+
+## La búsqueda no encuentra mensajes antiguos
+
+La búsqueda usa los mensajes guardados en este dispositivo. Los mensajes podados,
+o aquellos a los que no has vuelto a desplazarte para cargarlos, no están en el
+índice local. Desplázate hacia atrás en la conversación para cargar mensajes
+antiguos, o aumenta **Conservar mensajes durante** en Ajustes, Privacidad y
+almacenamiento. La búsqueda también usa el servidor cuando hay conexión y el
+servicio lo admite.
+
+## Un huddle no tiene sonido
+
+Abre **Dispositivos** en la barra de llamada y elige el micrófono y el altavoz
+correctos, o el valor predeterminado del sistema. Si el micrófono no está
+disponible, puedes seguir escuchando. Si el audio de Parla no puede conectar,
+Parla prueba la ventana de llamada en macOS, después el navegador y después la
+app del servicio.
+
+Parla todavía no transmite vídeo ni uso compartido de pantalla. Cuando alguien
+empieza a compartir, usa **Abrir en el navegador**.
+
+## Una actualización falla
+
+Parla deja intacta la aplicación instalada y dice qué paso ha fallado. Elige
+**Reintentar**, o **Descargar** para obtener la versión a mano. Parla nunca
+instala un paquete cuya firma no coincida. Consulta
+[Actualizaciones](/parla/es/docs/updates/).
+
+## ¿Dónde están los registros y los diagnósticos?
+
+Abre Ajustes, Avanzado y elige **Abrir carpeta de registros** o **Exportar...**.
+La exportación escribe un archivo de texto censurado con la versión, el sistema
+operativo, los ajustes, las líneas recientes del registro y los contadores de
+rendimiento. Nunca contiene texto de mensajes, tokens, cookies, direcciones de
+correo ni hosts de espacios de trabajo. Léelo antes de compartirlo.
+
+## Preguntas frecuentes
+
+### ¿Parla lo ha creado Slack?
+
+No. Parla es un proyecto independiente y de código abierto. No lo ha creado Slack
+Technologies, LLC, no está afiliado a ella ni cuenta con su soporte, y Slack no le
+da soporte.
+
+### ¿Parla envía mis mensajes al proyecto?
+
+No. Parla habla con el servicio de chat con tu sesión. El proyecto no ejecuta
+servidores para Parla y no recibe datos de mensajes. Consulta
+[Privacidad](/parla/es/docs/privacy/).
+
+### ¿Tengo que crear una app o pedir permiso a un administrador?
+
+No. Parla usa tu propia sesión web, así que no hay que crear una app ni hay un
+paso de aprobación del administrador. Aun así, puede aplicarse la política de tu
+empresa; pregunta antes de usar una cuenta de trabajo.
+
+### ¿Puedo usar varios espacios de trabajo?
+
+Sí. Cada espacio con sesión iniciada sigue conectado, con su propia insignia, y
+puedes cambiar con la barra, `cmd-1` a `cmd-9` o el selector rápido.
+
+### ¿Parla es compatible con Windows y Linux?
+
+El código tiene como objetivo macOS, Windows y Linux. CI compila macOS y Linux,
+y comprueba la compilación del código exclusivo de Windows. Las compilaciones de
+macOS están en GitHub Releases; no hay instaladores para Windows ni Linux, así
+que compílalos desde el código fuente. macOS es la plataforma con soporte por
+ahora, y algunas funciones dependen de macOS.
+
+### ¿Parla admite videollamadas?
+
+Parla transmite el audio de los huddles. El vídeo y el uso compartido de pantalla
+se abren en el navegador por ahora.
+
+### ¿Mis datos locales están cifrados?
+
+La base de datos local de cada espacio está cifrada y su clave está en el llavero
+del sistema operativo. Las imágenes en caché y otros archivos pueden guardarse sin
+cifrar, así que mantén activo el cifrado de disco completo. Consulta
+[Privacidad](/parla/es/docs/privacy/).
+
+Siguiente: [Privacidad](/parla/es/docs/privacy/).

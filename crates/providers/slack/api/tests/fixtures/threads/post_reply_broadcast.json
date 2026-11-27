@@ -1,0 +1,21 @@
+{
+ "ok": true,
+ "channel": "C0000001",
+ "ts": "1700000200.000300",
+ "message": {
+  "type": "message",
+  "subtype": "thread_broadcast",
+  "user": "U0000001",
+  "text": "also to channel",
+  "ts": "1700000200.000300",
+  "thread_ts": "1700000000.000100",
+  "root": {
+   "type": "message",
+   "user": "U0000002",
+   "text": "root",
+   "ts": "1700000000.000100",
+   "thread_ts": "1700000000.000100",
+   "reply_count": 1
+  }
+ }
+}

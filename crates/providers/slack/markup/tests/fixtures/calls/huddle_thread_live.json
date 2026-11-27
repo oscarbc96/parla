@@ -1,0 +1,85 @@
+{
+  "blocks": [
+    {
+      "block_id": "laOmS",
+      "elements": [
+        {
+          "elements": [
+            {
+              "text": "lorem ipsum dolor sit",
+              "type": "text"
+            }
+          ],
+          "type": "rich_text_section"
+        }
+      ],
+      "type": "rich_text"
+    }
+  ],
+  "channel": "C0000005",
+  "event_ts": "1794526178.065219",
+  "metadata": {
+    "event_type": "slack_system.huddle.started"
+  },
+  "no_notifications": true,
+  "permalink": "https://files.example.test/file/13",
+  "room": {
+    "app_id": "A00",
+    "attached_file_ids": [],
+    "background_id": "GARDEN_OFFICE",
+    "call_family": "huddle",
+    "canvas_background": "GARDEN_OFFICE",
+    "canvas_thread_ts": "0000000000.000000",
+    "channels": [
+      "C0000005"
+    ],
+    "created_by": "U0000001",
+    "date_end": 0,
+    "date_start": 1794526177,
+    "display_id": "",
+    "external_unique_id": "126b28be-4c0f-446c-bd8a-685306c32713",
+    "has_ended": false,
+    "huddle_link": "https://app.slack.com/huddle/T0000001/C0000005",
+    "id": "R0000010",
+    "is_dm_call": false,
+    "is_prewarmed": false,
+    "is_scheduled": false,
+    "knocks": {},
+    "last_invite_status_by_user": {},
+    "locale": "en-GB",
+    "media_backend_type": "free_willy",
+    "media_server": "",
+    "name": "",
+    "participant_history": [],
+    "participants": [],
+    "participants_camera_off": [],
+    "participants_camera_on": [],
+    "participants_events": {
+      "U0000001": {
+        "camera_off": false,
+        "camera_on": false,
+        "joined": false,
+        "screenshare_off": false,
+        "screenshare_on": false,
+        "user_team": {}
+      }
+    },
+    "participants_screenshare_off": [],
+    "participants_screenshare_on": [],
+    "pending_invitees": {},
+    "recording": {
+      "can_record_summary": "unavailable"
+    },
+    "thread_root_ts": "0000000000.000000",
+    "was_accepted": false,
+    "was_missed": false,
+    "was_rejected": false
+  },
+  "subtype": "huddle_thread",
+  "suppress_notification": true,
+  "team": "T0000001",
+  "text": "",
+  "ts": "1794526178.065219",
+  "type": "message",
+  "user": "USLACKBOT"
+}

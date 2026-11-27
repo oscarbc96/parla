@@ -1,0 +1,14 @@
+/// The composer the plugin was invoked from. Valid only while
+/// handling a command, slash command or message action invoked from a
+/// composer; otherwise `unsupported`. Sending still goes through
+/// `workspace.send` or the user pressing Send. Text at most 40 KB.
+interface composer {
+  use types.{error};
+
+  /// Capability: none.
+  draft: func() -> result<string, error>;
+  /// Capability: none.
+  replace-draft: func(text: string) -> result<_, error>;
+  /// Capability: none. Inserts at the cursor.
+  insert: func(text: string) -> result<_, error>;
+}

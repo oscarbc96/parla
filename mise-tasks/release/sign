@@ -1,0 +1,100 @@
+#!/bin/sh
+#MISE description="Codesign a Parla.app bundle with a self-signed identity or ad hoc"
+set -eu
+
+usage() {
+  echo "usage: mise run release:sign -- <app> (--adhoc | --identity-file <path>)" >&2
+  exit 2
+}
+
+app=""
+adhoc=0
+identity_file=""
+identity_pending=0
+for arg in "$@"; do
+  if [ "$identity_pending" -eq 1 ]; then
+    identity_file=$arg
+    identity_pending=0
+    continue
+  fi
+  case "$arg" in
+    --) ;;
+    --adhoc) adhoc=1 ;;
+    --identity-file) identity_pending=1 ;;
+    -*) echo "unknown option: $arg" >&2; usage ;;
+    *)
+      if [ -z "$app" ]; then
+        app=$arg
+      else
+        echo "unexpected argument: $arg" >&2
+        usage
+      fi
+      ;;
+  esac
+done
+
+if [ "$identity_pending" -eq 1 ] || [ -z "$app" ]; then
+  usage
+fi
+if [ "$adhoc" -eq 1 ] && [ -n "$identity_file" ]; then
+  echo "--adhoc and --identity-file are mutually exclusive" >&2
+  usage
+fi
+if [ "$adhoc" -eq 0 ] && [ -z "$identity_file" ]; then
+  echo "a signing mode is required: --adhoc or --identity-file <path>" >&2
+  usage
+fi
+if [ ! -d "$app" ]; then
+  echo "app bundle not found: $app" >&2
+  exit 1
+fi
+
+root=$(git rev-parse --show-toplevel)
+entitlements="$root/crates/parla/macos/Parla.entitlements"
+if [ ! -f "$entitlements" ]; then
+  echo "entitlements not found: $entitlements" >&2
+  exit 1
+fi
+
+if [ "$adhoc" -eq 1 ]; then
+  sign_identity="-"
+else
+  sign_identity=$(cat "$identity_file")
+  if [ -z "$sign_identity" ]; then
+    echo "signing identity file is empty: $identity_file" >&2
+    exit 1
+  fi
+fi
+
+do_codesign() {
+  target=$1
+  if [ "$adhoc" -eq 1 ]; then
+    codesign --force --options runtime --entitlements "$entitlements" --sign - "$target"
+  else
+    # Apple's timestamp server countersigns the untrusted self-signed signature.
+    codesign --force --options runtime --timestamp --entitlements "$entitlements" --sign "$sign_identity" "$target"
+  fi
+}
+
+is_macho() {
+  f=$1
+  [ -f "$f" ] || return 1
+  # file(1) reports "Mach-O ..." for binaries, dylibs, bundles executables.
+  if file -b "$f" 2>/dev/null | grep -q 'Mach-O'; then
+    return 0
+  fi
+  return 1
+}
+
+# Sign every Mach-O under Contents/ deepest first, then the app bundle.
+if [ -d "$app/Contents" ]; then
+  # List regular files under Contents, deepest first.
+  find "$app/Contents" -type f 2>/dev/null | awk -F/ '{print NF, $0}' | sort -rn -k1,1 | cut -d' ' -f2- | while IFS= read -r f; do
+    [ -n "$f" ] || continue
+    if is_macho "$f"; then
+      do_codesign "$f"
+    fi
+  done
+fi
+
+do_codesign "$app"

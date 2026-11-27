@@ -1,0 +1,117 @@
+{
+  "method": "POST",
+  "url": "https://slack.com/api/signin.findWorkspaces?_x_id=noversion-1700000000.000&_x_version_ts=noversion&_x_num_retries=0",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "email",
+          "user1@example.test"
+        ],
+        [
+          "commingled_response",
+          "false"
+        ],
+        [
+          "_x_reason",
+          "get_started_workspaces"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ]
+      ]
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "multipart/form-data; boundary=----WebKitFormBoundarySynthetic"
+      ],
+      [
+        "origin",
+        "https://slack.com"
+      ],
+      [
+        "referer",
+        "https://slack.com/get-started"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "noversion-1700000000.000"
+      ],
+      [
+        "_x_version_ts",
+        "noversion"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "ok": true,
+        "confirmed_email": "user1@example.test",
+        "current_orgs": [],
+        "invited_teams": [],
+        "domain_enabled_teams": [],
+        "has_valid_cookie": false,
+        "current_teams": [
+          {
+            "email": "user1@example.test",
+            "teams": [
+              {
+                "id": "T0000001",
+                "name": "Workspace 1",
+                "domain": "workspace1",
+                "url": "https://workspace1.slack.com/ssb/redirect",
+                "icon": {
+                  "image_132": "https://files.example.test/image/1",
+                  "image_default": true
+                },
+                "sso_required": false,
+                "two_factor_required": false,
+                "is_logged_out": true,
+                "magic_login_url": "REDACTED"
+              },
+              {
+                "id": "T0000002",
+                "name": "Workspace 2",
+                "domain": "workspace2",
+                "url": "https://workspace2.slack.com/ssb/redirect",
+                "icon": {
+                  "image_132": "https://files.example.test/image/2",
+                  "image_default": true
+                },
+                "sso_required": true,
+                "two_factor_required": false,
+                "is_logged_out": true,
+                "magic_login_url": "REDACTED"
+              },
+              {
+                "name": "No id",
+                "domain": "noid"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  }
+}

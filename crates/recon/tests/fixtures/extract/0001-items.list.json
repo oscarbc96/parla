@@ -1,0 +1,65 @@
+{
+  "method": "POST",
+  "url": "https://workspace-1.example.test/rpc/items.list",
+  "request": {
+    "headers": [
+      [
+        "content-type",
+        "application/x-www-form-urlencoded"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "REDACTED"
+      ]
+    ],
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "folder",
+          "B0000001"
+        ],
+        [
+          "limit",
+          "28"
+        ]
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "mime": "application/json",
+    "headers": [],
+    "body": {
+      "json": {
+        "ok": true,
+        "items": [
+          {
+            "type": "item_added",
+            "user": "A0000001",
+            "text": "hello",
+            "ts": "1700000000.000100",
+            "parent_ts": "1700000000.000100",
+            "child_count": 2
+          },
+          {
+            "type": "item_added",
+            "user": "A0000002",
+            "text": "hi",
+            "ts": "1700000001.000100",
+            "subtype": "joined"
+          }
+        ],
+        "more": true,
+        "response_meta": {
+          "next_cursor": "cursor-2"
+        }
+      }
+    }
+  }
+}

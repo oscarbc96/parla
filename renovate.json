@@ -1,0 +1,80 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
+  "enabledManagers": ["cargo", "bun", "github-actions", "mise"],
+  "timezone": "Europe/Madrid",
+  "schedule": ["before 7am on monday"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 0,
+  "labels": ["dependencies"],
+  "platformCommit": "enabled",
+  "minimumReleaseAge": "3 days",
+  "dependencyDashboard": { "enabled": true },
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "packageRules": [
+    {
+      "description": "Workflow action bumps are ci(deps).",
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "ci"
+    },
+    {
+      "description": "Minor and patch updates: one PR per ecosystem.",
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "cargo minor and patch"
+    },
+    {
+      "matchManagers": ["bun"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "bun minor and patch"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "actions minor and patch"
+    },
+    {
+      "matchManagers": ["mise"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "mise tools minor and patch"
+    },
+    {
+      "description": "gpui-fast snapshots are exact pins that move together, and resvg follows gpui-fast.",
+      "matchPackageNames": ["gpui-fast", "gpui-fast-*", "gpui-base", "resvg"],
+      "groupName": "gpui"
+    },
+    {
+      "description": "ui_testing's font stack shares types across these crates.",
+      "matchPackageNames": ["parley", "fontique", "swash", "skrifa"],
+      "groupName": "fonts"
+    },
+    {
+      "description": "Parla stays on the wasmtime 48 LTS line, and the wasm-tools crates must match its versions: patches only.",
+      "matchPackageNames": ["wasmtime", "wasmtime-*", "wasm-encoder", "wasmparser", "wit-parser"],
+      "groupName": "wasmtime"
+    },
+    {
+      "matchPackageNames": ["wasmtime", "wasmtime-*", "wasm-encoder", "wasmparser", "wit-parser"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    },
+    {
+      "description": "The plugin guest bindings move together.",
+      "matchPackageNames": ["wit-bindgen", "wit-component"],
+      "groupName": "wit"
+    },
+    {
+      "description": "astro check does not support TypeScript 7 yet; lift this when it does.",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7"
+    },
+    {
+      "description": "Bumped by hand: rust changes lints and output, bun matches site/bun.lock, hk matches hk.pkl.",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["rust", "bun", "aqua:jdx/hk"],
+      "enabled": false
+    }
+  ]
+}

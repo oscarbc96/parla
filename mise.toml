@@ -1,0 +1,317 @@
+[tools]
+rust = { version = "1.100", components = "rustfmt,clippy", targets = "aarch64-apple-darwin,x86_64-apple-darwin,wasm32-wasip2" }
+bun = "1.4.4"
+"aqua:jdx/hk" = "2.12.0"
+"aqua:apple/pkl" = "0.33.0"
+# Every tool installs a prebuilt release binary; nothing compiles from source.
+# `cargo:` tools go through cargo-binstall, which fetches the signed prebuilt
+# from cargo-quickinstall. Versions are exact so every worktree runs the same
+# tools; Renovate (`renovate.json`) proposes the bumps.
+"github:nextest-rs/nextest" = { version = "0.9.152", version_prefix = "cargo-nextest-" }
+"aqua:EmbarkStudios/cargo-deny" = "0.20.2"
+cargo-binstall = "1.28.0"
+"cargo:cargo-packager" = "0.11.8"
+"github:CycloneDX/cyclonedx-rust-cargo" = { version = "0.5.10", version_prefix = "cargo-cyclonedx-" }
+"github:EmbarkStudios/cargo-about" = "0.9.3"
+"aqua:rhysd/actionlint" = "1.7.12"
+# Security linter for the workflows (config: .github/zizmor.yml).
+"aqua:zizmorcore/zizmor" = "1.33.1"
+"aqua:koalaman/shellcheck" = "0.11.0"
+"aqua:tamasfe/taplo" = "0.10.0"
+"aqua:gitleaks/gitleaks" = "8.30.1"
+"aqua:BurntSushi/ripgrep" = "15.2.0"
+"aqua:jqlang/jq" = "1.8.1"
+# libopus (the `opus` crate) builds with cmake.
+"aqua:Kitware/CMake" = "4.5.1"
+# Signs every release .dmg for in-app update verification.
+"aqua:jedisct1/minisign" = "0.12"
+# Renovate's config validator (lint:renovate). An npm package installed with
+# Bun (settings below) and run with Bun: its launcher asks for Node.
+"npm:renovate" = "45.1.0"
+
+[settings]
+# `cargo:` tools install only as prebuilt binaries: cargo-binstall may use the
+# signed cargo-quickinstall builds, and a missing binary fails instead of
+# falling back to `cargo install`.
+cargo.binstall_quickinstall = true
+cargo.binstall_only = true
+# npm: tools install with Bun; the repo has no Node.
+npm.package_manager = "bun"
+
+[env]
+CARGO_INCREMENTAL = "0"
+TURBO_TELEMETRY_DISABLED = "1"
+# Opt-in compile cache: PARLA_SCCACHE=1 uses sccache when it is installed (scripts/sccache-env.sh).
+_.source = "scripts/sccache-env.sh"
+
+[tasks.build]
+description = "Build the workspace"
+run = "cargo build --workspace"
+
+[tasks.run]
+description = "Build, bundle and run the debug app with the dev signing identity"
+run = [
+  "cargo build -p parla",
+  "scripts/dev-bundle.sh target/debug/parla target/debug/Parla.app",
+  "scripts/dev-sign.sh target/debug/Parla.app",
+  "target/debug/Parla.app/Contents/MacOS/parla",
+]
+
+[tasks."dev:cert"]
+description = "Create the local \"Parla Dev (local)\" signing identity once (macOS)"
+run = "scripts/dev-cert.sh"
+
+[tasks.test]
+description = "Run all tests with nextest (builds the plugin guests first)"
+depends = ["test:repo", "plugins:build", "plugins:test"]
+run = "cargo nextest run --workspace --no-tests=pass"
+
+[tasks."test:affected"]
+description = "Test only the crates changed versus a base and their dependents: test:affected -- [--base <ref>] [--list]"
+run = "bun scripts/affected-crates.ts"
+
+# Suites are selected by binary name; add each visual suite to the filter (nextest rejects a regex that matches nothing).
+[tasks."test:visual"]
+description = "Run this platform's visual (golden image) tests and the view retention oracle"
+run = "cargo nextest run -p ui_testing --features visual -E 'binary(harness) | binary(visual_components) | binary(retention_oracle)' --no-tests=fail --no-fail-fast"
+
+[tasks."test:visual:update"]
+description = "Rewrite this platform's visual baselines; review the PNG diff"
+env = { PARLA_VISUAL_UPDATE = "1" }
+run = "cargo nextest run -p ui_testing --features visual -E 'binary(harness) | binary(visual_components)' --no-tests=fail"
+
+[tasks."test:visual:shots"]
+description = "Render every scenario to target/visual/<os>/shots for PR screenshots"
+env = { PARLA_VISUAL_SHOTS = "1" }
+run = "cargo nextest run -p ui_testing --features visual -E 'binary(harness) | binary(visual_components)' --no-tests=fail --no-fail-fast"
+
+[tasks."test:e2e"]
+description = "Run end-to-end UI scenarios on FakeProvider"
+run = "cargo nextest run -p ui_testing --features e2e --no-tests=pass"
+
+[tasks."test:perf"]
+description = "Run timing-sensitive tests (best on an idle machine)"
+run = "cargo nextest run --workspace --profile perf --run-ignored ignored-only"
+
+[tasks."perf:measure"]
+description = "Measure one perf scenario on the release build: perf:measure -- <scenario> [--seconds <n>] [--workspaces <1|3>]"
+run = "scripts/perf-measure.sh"
+
+[tasks."perf:call"]
+description = "Sample call process memory on the release bundle (macOS)"
+run = "scripts/perf-call.sh"
+
+[tasks."perf:call-native"]
+description = "Native huddle budget with real audio, opt-in via PARLA_PERF_NATIVE_CALL=1"
+run = "cargo run -q --release -p parla --features fixture --example perf_call_native"
+
+[tasks."perf:check"]
+description = "Compare perf reports with the `perf_budget.toml` budgets: perf:check -- [--baseline <dir>] [--regression <pct>]"
+run = "cargo run -q --release -p parla --features fixture --bin perf_check --"
+
+[tasks."perf:suite"]
+description = "Run idle, scroll and scroll-input three times each and compare with the budgets: perf:suite -- [--runs n] [--scenarios a,b]"
+run = "bun scripts/perf-suite.ts"
+
+[tasks."perf:ab"]
+description = "Compare the merge base with HEAD on the same perf scenarios: perf:ab -- [--runs n] [--base <ref>]"
+run = "bun scripts/perf-ab.ts"
+
+[tasks."perf:size"]
+description = "Report the stripped release binary size"
+run = "cargo build --release -p parla && scripts/perf-size.sh target/release/parla"
+
+[tasks."plugins:build"]
+description = "Build the guest plugin workspace for wasm32-wasip2 into target/plugins"
+run = """
+set -euo pipefail
+cargo build --manifest-path plugins/Cargo.toml --workspace --locked --release --target wasm32-wasip2 --target-dir plugins/target/build
+mkdir -p target/plugins
+cp plugins/target/build/wasm32-wasip2/release/*.wasm target/plugins/
+ls -l target/plugins/*.wasm
+"""
+
+[tasks."plugins:test"]
+description = "Test the guest plugin workspace with the SDK's fake host"
+depends = ["plugins:build"]
+# The engine test guests are wasm-only; plugin_host's tests run them.
+run = "cargo test --manifest-path plugins/Cargo.toml --workspace --locked --exclude 'test-guest-*' --features parla_plugin_sdk/testing --target-dir plugins/target/test"
+
+[tasks.clippy]
+description = "Clippy with warnings denied for the host and guest workspaces"
+run = [
+  "cargo clippy --workspace --all-targets --locked -- -D warnings",
+  "cargo clippy --manifest-path plugins/Cargo.toml --workspace --locked --exclude 'test-guest-*' --features parla_plugin_sdk/testing --all-targets --target-dir plugins/target/test -- -D warnings",
+  "cargo clippy --manifest-path plugins/Cargo.toml --workspace --locked --release --target wasm32-wasip2 --target-dir plugins/target/build -- -D warnings",
+]
+
+[tasks."perf:soak"]
+description = "Run a real-time soak on the perf fixture: perf:soak -- --hours <n>"
+run = "cargo run --release -p parla --features fixture -- --perf-scenario soak"
+
+[tasks."test:repo"]
+description = "Test the repo tooling and release scripts (scripts/*.test.ts)"
+run = "bun test ./scripts"
+
+[tasks."docs:keymap"]
+description = "Rewrite the keymap action reference from the actions snapshot: docs:keymap -- [--check]"
+run = "bun scripts/keymap-reference.ts"
+
+[tasks."check:windows"]
+description = "Compile-check and lint the Windows-only code (settings, mcp) from any host"
+run = [
+  "rustup target add x86_64-pc-windows-msvc",
+  "cargo check --target x86_64-pc-windows-msvc -p settings -p mcp --all-targets",
+  "cargo clippy --target x86_64-pc-windows-msvc -p settings -p mcp --all-targets -- -D warnings",
+]
+
+[tasks.gates]
+description = "Run every local gate and write target/gates/summary.md: gates -- [--quick] [--only a,b] [--skip a,b] [--continue]"
+run = "bun scripts/gates.ts"
+
+[tasks."app:shot"]
+description = "Screenshot the running Parla window (macOS): app:shot -- [--fixture] [--appearance both] [--wait-log <text>] [--attach]"
+run = "bun scripts/app-shot.ts"
+
+[tasks."lint:pr-body"]
+description = "Check a PR body against the template: lint:pr-body -- --body-file <file> --title <title> [--base <sha>]"
+run = "bun scripts/pr-body.ts"
+
+[tasks."lint:renovate"]
+description = "Validate renovate.json with Renovate's own validator (runs on Bun; re2 is a native module Bun cannot load)"
+env = { RENOVATE_X_IGNORE_RE2 = "true" }
+run = 'bun --bun "$(mise where npm:renovate)/node_modules/renovate/dist/config-validator.js" --strict'
+
+[tasks."lint:design"]
+description = "Fail colour literals and off-scale px values on added UI lines: lint:design -- [--base <ref>]"
+run = "bun scripts/design-check.ts"
+
+[tasks.lint]
+description = "Run every hk check on all files except clippy (mise run clippy)"
+run = [
+  "gitleaks git --redact --no-banner",
+  "hk check --all --skip-step cargo_clippy",
+]
+
+[tasks."site:install"]
+description = "Install the docs site dependencies"
+dir = "site"
+run = "bun install --frozen-lockfile"
+
+[tasks."site:shots"]
+description = "Render the site screenshots from the visual baselines in scripts/site-shots.config.json"
+depends = ["site:install"]
+run = "bun scripts/site-shots.ts"
+
+[tasks."site:check-shots"]
+description = "Fail when a baseline behind a site screenshot changed"
+run = "bun scripts/site-shots.ts --check"
+
+[tasks."site:dev"]
+description = "Run the docs site dev server"
+dir = "site"
+depends = ["site:install"]
+run = "bun run dev"
+
+[tasks."site:build"]
+description = "Build the docs site"
+dir = "site"
+depends = ["site:install"]
+run = "bun run t:build"
+
+[tasks."site:test"]
+description = "Test the docs site"
+dir = "site"
+depends = ["site:install"]
+run = "bun run t:test"
+
+[tasks."site:lint"]
+description = "Lint the docs site"
+dir = "site"
+depends = ["site:install"]
+run = "bun run t:lint"
+
+[tasks."site:format"]
+description = "Format the docs site"
+dir = "site"
+depends = ["site:install"]
+run = "bun run format"
+
+[tasks."site:verify"]
+description = "Lint, type-check and link-check the docs site"
+dir = "site"
+depends = ["site:install"]
+run = "bun run t:verify"
+
+[tasks."site:lighthouse"]
+description = "Lighthouse CI and byte budgets against the site"
+dir = "site"
+depends = ["site:install"]
+run = "bun run t:lighthouse"
+
+[tasks."site:check-translations"]
+description = "Check every site locale is in step with English: site:check-translations -- [--staged | --base <sha>]"
+dir = "site"
+run = "bun run check-translations"
+
+[tasks."site:docs-version"]
+description = "Snapshot the docs as a release line: site:docs-version -- <X.Y> [--ref <git-ref>]"
+dir = "site"
+run = "bun run docs-version"
+
+[tasks."i18n:check"]
+description = "Check the app and site catalogs: i18n:check -- [--staged | --base <sha>]"
+usage = 'arg "[args]..." help "passed to site:check-translations"'
+run = [
+  "cargo nextest run -p i18n --test catalogs",
+  "mise run site:check-translations -- $usage_args",
+]
+
+[tasks."recon:redact"]
+description = "Redact a HAR: recon:redact -- <raw.har> --out <dir>"
+run = "cargo run -q -p slack_recon -- redact"
+
+[tasks."recon:check"]
+description = "Fail on leftover secrets, IDs or PII: recon:check -- <dir>"
+run = "cargo run -q -p slack_recon -- check"
+
+[tasks."recon:summary"]
+description = "List methods, events and response keys: recon:summary -- <dir>"
+run = "cargo run -q -p slack_recon -- summary"
+
+[tasks."recon:diff"]
+description = "Compare a browser capture with a Parla recording: recon:diff -- <browser-dir> <parla-dir>"
+run = "cargo run -q -p slack_recon -- diff"
+
+[tasks."recon:verify"]
+description = "Read-only drift check (token and cookie on stdin): recon:verify -- --base-url <url> [--rate <per-min>]"
+run = "cargo run -q -p slack_recon -- verify"
+
+[tasks."recon:extract"]
+description = "Draft a provider web-client docs section: recon:extract -- <dir> --area <name> [--fixtures <dest>]"
+run = "cargo run -q -p slack_recon -- extract"
+
+[tasks."assets:icons"]
+description = "Regenerate the app icons from assets/brand/logo-dark.svg"
+run = "cargo run -q -p parla --example app_icons"
+
+[tasks."assets:tray"]
+description = "Regenerate the menu-bar template icons from their SVGs"
+run = "cargo run -q -p parla --example tray_icons"
+
+[tasks."assets:chime"]
+description = "Regenerate the CC0 ringtone from scripts/gen_chime.ts"
+run = "bun scripts/gen_chime.ts"
+
+[tasks.bundle]
+description = "Build target/release/Parla.app signed with the dev identity (ad hoc without it)"
+depends = ["release:notice"]
+run = [
+  "cargo build --release -p parla",
+  "cargo packager -p parla --release --formats app --out-dir target/release",
+  "scripts/dev-sign.sh --adhoc-fallback target/release/Parla.app",
+]
+
+[tasks."bundle:run"]
+description = "Run the release bundle with logs in the terminal"
+run = "target/release/Parla.app/Contents/MacOS/parla"

@@ -1,0 +1,107 @@
+# Design §6 complete reference. Two changes so it is a valid installed
+# manifest: `namespace = "reminders"` (the example's own
+# `command:reminders::open` needs it) and the full `activation` list the
+# packer writes (every contribution's event).
+id = "reminders-panel"
+name = "Reminders panel"
+namespace = "reminders"
+version = "0.1.0"
+api = "0.1"
+description = "Your reminders in a side panel."
+authors = ["Ada Lindqvist"]
+repository = "https://github.com/ada/reminders-panel"
+license = "MIT"
+categories = ["panels"]
+min_app = "0.4.0"
+activation = [
+  "command:reminders::open",
+  "slash:/later",
+  "message_action:remind",
+  "transform:spellcheck",
+  "render:tracker",
+  "media:klipy",
+  "panel:main",
+  "mcp:list_reminders",
+  "hook:message",
+  "hook:reaction",
+  "hook:channel_open",
+]
+
+[limits]
+memory_mb = 16
+
+[capabilities]
+workspace_read  = ["reminders:read", "messages:read"]
+workspace_write = ["reminders:write"]
+network  = ["api.example.com"]
+storage  = true
+windows  = true
+panel    = true
+notifications = false
+clipboard_write = false
+
+[[capabilities.exec]]
+program = "gh"
+allow = [
+  ["pr", "view", "*", "--json", "*"],
+  ["issue", "view", "*", "--json", "*"],
+  ["api", "repos/*"],
+]
+
+[[commands]]
+id = "open"
+title = "Open reminders"
+default_key = "cmd-shift-r"
+
+[[slash]]
+name = "/later"
+description = "Remind me about this conversation"
+usage = "/later [when]"
+
+[[message_actions]]
+id = "remind"
+title = "Remind me about this"
+
+[[composer_transforms]]
+id = "spellcheck"
+kind = "check"
+title = "Spelling"
+
+[[renderers]]
+id = "tracker"
+patterns = ["tracker.example.com/*"]
+
+[[media_providers]]
+id = "klipy"
+title = "Klipy"
+kinds = ["gif"]
+
+[[panels]]
+id = "main"
+title = "Reminders"
+icon = "bell"
+
+[[mcp_tools]]
+name = "list_reminders"
+description = "List the user's open reminders"
+kind = "read"
+input_schema = "schemas/list_reminders.json"
+
+[hooks]
+events = ["message", "reaction", "channel_open"]
+notification_filter = false
+
+[[settings]]
+key = "max_lines"
+type = "integer"
+default = 20
+min = 5
+max = 200
+title = "Max lines"
+
+[themes]
+files = ["themes/solarised.json"]
+
+[[icon_packs]]
+name = "Outline"
+dir = "icons/outline"

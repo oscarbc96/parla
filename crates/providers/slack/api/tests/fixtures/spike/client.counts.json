@@ -1,0 +1,309 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "thread_counts_by_channel",
+          "true"
+        ],
+        [
+          "org_wide_aware",
+          "true"
+        ],
+        [
+          "include_file_channels",
+          "true"
+        ],
+        [
+          "include_all_unreads",
+          "true"
+        ],
+        [
+          "dry_run_last_fetched",
+          "1794525555"
+        ],
+        [
+          "_x_reason",
+          "pollClientCountsAfterTimeout"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "activity_v2": {
+          "at_channel": 0,
+          "at_everyone": 0,
+          "at_user": 0,
+          "at_user_group": 0,
+          "bot_dm_bundle": 0,
+          "channel": 1,
+          "code_review_requested": 0,
+          "dm": 0,
+          "external_channel_invite": 0,
+          "external_dm_invite": 0,
+          "internal_channel_invite": 0,
+          "keyword": 0,
+          "list_approval_request": 0,
+          "list_approval_reviewed": 0,
+          "list_record_assigned": 0,
+          "list_record_edited": 0,
+          "list_todo_notification": 0,
+          "list_user_mentioned": 0,
+          "message_reaction": 0,
+          "prejoin_dm_welcome_party_alert": 0,
+          "quietly_added_to_channel": 0,
+          "saved_reminder": 0,
+          "shared_workspace_invite": 0,
+          "team_joiner_invite": 0,
+          "thread_v2": 0,
+          "unjoined_channel_mention": 0
+        },
+        "alerts": {
+          "calendar_upcoming_event": 0,
+          "code_review_requested": 0,
+          "external_channel_invite": 0,
+          "external_dm_invite": 0,
+          "generic_system_alert": 0,
+          "huddles_missed_huddle": 0,
+          "lists_approval_request": 0,
+          "lists_approval_reviewed": 0,
+          "lists_record_assigned": 0,
+          "lists_record_edited": 0,
+          "lists_todo_notification": 0,
+          "lists_user_mentioned": 0,
+          "prejoin_dm_welcome_party_alert": 0,
+          "quietly_added_to_channel": 0,
+          "sales_home_notification": 0,
+          "shared_workspace_invite": 0,
+          "unjoined_channel_mention": 0
+        },
+        "channel_badges": {
+          "app_dms": 0,
+          "channels": 0,
+          "dms": 0,
+          "thread_mentions": 0,
+          "thread_unreads": 0
+        },
+        "channels": [
+          {
+            "has_unreads": false,
+            "history_invalid": "1763532730.000200",
+            "id": "C0000002",
+            "last_read": "1775131052.973139",
+            "latest": "1771260573.295039",
+            "mention_count": 0,
+            "updated": "1771260167.000300"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "C0000003",
+            "last_read": "1771352276.843809",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": true,
+            "history_invalid": "1769975321.000100",
+            "id": "C0000001",
+            "last_read": "1794495171.034789",
+            "latest": "1794525536.639029",
+            "mention_count": 0,
+            "updated": "1794525439.279000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1787746255.000100",
+            "id": "C0000004",
+            "last_read": "1789652513.623819",
+            "latest": "1789652513.623819",
+            "mention_count": 0,
+            "updated": "1789637913.000500"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1793610294.009800",
+            "id": "C0000005",
+            "last_read": "1794166866.606639",
+            "latest": "1794166866.606639",
+            "mention_count": 0,
+            "updated": "1794166872.000600"
+          }
+        ],
+        "counts_last_fetched": 1794525624,
+        "file_channels": {
+          "list": {
+            "mention_count_by_channel": {}
+          },
+          "quip": {
+            "mention_count_by_channel": {}
+          }
+        },
+        "ims": [
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000001",
+            "last_read": "0000000000.000000",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000002",
+            "last_read": "0000000000.000000",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1782380255.000100",
+            "id": "D0000003",
+            "last_read": "0000000000.000000",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000004",
+            "last_read": "0000000000.000000",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000005",
+            "last_read": "0000000000.000000",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1790939300.000800",
+            "id": "D0000006",
+            "last_read": "1793272137.948419",
+            "latest": "1793272137.948419",
+            "mention_count": 0,
+            "updated": "1793029710.000100"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1794302978.007000",
+            "id": "D0000007",
+            "last_read": "1794508024.488979",
+            "latest": "1794502255.964439",
+            "mention_count": 0,
+            "updated": "1794508024.016700"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000008",
+            "last_read": "1775131059.450389",
+            "latest": "1775131059.450389",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000009",
+            "last_read": "1776698733.489609",
+            "latest": "1776698733.489609",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "D0000010",
+            "last_read": "1792159618.730789",
+            "latest": "1792159618.730789",
+            "mention_count": 0,
+            "updated": "1792159622.000500"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1782380255.000100",
+            "id": "D0000011",
+            "last_read": "1782380255.000000",
+            "latest": "0000000000.000000",
+            "mention_count": 0,
+            "updated": "0000000000.000000"
+          }
+        ],
+        "mpims": [
+          {
+            "has_unreads": false,
+            "history_invalid": "0000000000.000000",
+            "id": "C0000006",
+            "last_read": "1784533420.300289",
+            "latest": "1784533420.300289",
+            "mention_count": 0,
+            "updated": "1784284078.000200"
+          },
+          {
+            "has_unreads": false,
+            "history_invalid": "1785515674.000400",
+            "id": "C0000007",
+            "last_read": "1792771467.559859",
+            "latest": "1792771467.559859",
+            "mention_count": 0,
+            "updated": "1792771437.000100"
+          }
+        ],
+        "ok": true,
+        "saved": {
+          "archived_count": 0,
+          "completed_count": 1,
+          "saved_no_due_date_count": 0,
+          "todo_count": 1,
+          "todo_unfiltered_count": 1,
+          "total_count": 2,
+          "uncompleted_count": 1,
+          "uncompleted_overdue_count": 1
+        },
+        "threads": {
+          "has_unreads": false,
+          "mention_count": 0,
+          "mention_count_by_channel": {},
+          "unread_count_by_channel": {}
+        }
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/client.counts?_x_id=9aeb8a04-1794525624.398&_x_gantry=true&_x_desktop_ia=4&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=66&_x_num_retries=0"
+}

@@ -1,0 +1,1 @@
+{"ok":true,"members":[{"id":"U0000001","name":"alice","profile":{"display_name":"Alice","real_name":"Alice A"}},{"id":"U0000002","name":"bob","deleted":true,"is_bot":true,"profile":{}}],"response_metadata":{"next_cursor":""}}

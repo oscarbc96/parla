@@ -1,0 +1,12 @@
+{
+  "data": {
+    "json": {
+      "checksum": "e5c06da96eb8cf42ac13cd6e60f9e8a5e459de33eee616953fd20b2b24592d25",
+      "event_ts": "1794525641.314700",
+      "type": "visits_changed"
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?frt=REDACTED&token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794521867%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000001-1&batch_presence_aware=1"
+}

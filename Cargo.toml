@@ -1,0 +1,138 @@
+[workspace]
+resolver = "3"
+# `crates/providers/` holds no manifest itself and cargo rejects a glob match without
+# one, so it is excluded and each provider crate is listed (a literal member path
+# stays a member even under an excluded directory).
+members = [
+  "crates/*",
+  "crates/providers/slack/api",
+  "crates/providers/slack/auth",
+  "crates/providers/slack/markup",
+  "crates/providers/slack/provider",
+  "crates/providers/slack/realtime",
+  "crates/providers/slack/recon",
+  "crates/providers/slack/redact_rules",
+]
+exclude = ["crates/providers"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+license = "MPL-2.0"
+
+# GPUI comes from the crates.io GPUI Fast snapshots `gpui-fast` and `gpui-fast-platform`: exact
+# `=` pins, bumped together by hand (GPUI Fast and GPUI Base).
+# Package renames keep our code on the names `gpui` and `gpui_platform`.
+[workspace.dependencies]
+log = "0.4"
+gpui = { package = "gpui-fast", version = "=0.1.19", default-features = false, features = ["font-kit"] }
+gpui_platform = { package = "gpui-fast-platform", version = "=0.1.19", default-features = false, features = ["font-kit"] }
+# GPUI Base foundations (gpui-kit), exact pin like GPUI itself. `gpui-fast` makes its
+# primitives use our GPUI tree; its optional heavy parts (decimal, inspector,
+# test-support) stay off.
+gpui_base = { package = "gpui-base", version = "=0.11.0", default-features = false, features = [
+  "gpui-fast",
+] }
+serde_json_lenient = "0.2"
+anyhow = "1"
+image = { version = "0.25.10", default-features = false, features = ["png"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["raw_value"] }
+serde_path_to_error = "0.1.17"
+schemars = "1.0"
+zeroize = "1"
+tracing = "0.1"
+thiserror = "2"
+
+# Recon and redaction tooling (dev-only).
+regex = "1.13.1"
+clap = { version = "4", features = ["derive"] }
+semver = "1"
+url = "2"
+minisign-verify = "0.3"
+wry = "0.57.2"
+dirs = "7.0.0"
+notify = "9.0.0"
+tempfile = "3"
+toml = "1"
+
+# i18n (crates/i18n); ICU4X arrives with number and date formatting.
+fluent-bundle = "0.16.0"
+fluent-syntax = "0.12.0"
+fluent-langneg = "0.14.2"
+unic-langid = "0.9.6"
+intl-memoizer = "0.5.3"
+fluent-pseudo = "0.3.3"
+sys-locale = "0.3.2"
+rust-embed = "8.14.0"
+icu_locale = "2.4.0"
+icu_decimal = "2.4.0"
+icu_datetime = "2.4.0"
+fixed_decimal = { version = "0.7.3", features = ["ryu"] }
+icu_calendar = "2.4.0"
+syn = { version = "3", features = ["full", "visit"] }
+proc-macro2 = "1"
+jiff-icu = "1.0.0"
+
+# Call signalling frames (chime_signal): exact pins, compiled with protox so no protoc is needed.
+prost = "=0.14.6"
+prost-build = "=0.14.6"
+protox = "=0.10.0"
+
+# Session websocket (spike), pinned version.
+tokio-tungstenite = { version = "0.30.0", features = [
+  "rustls-tls-native-roots",
+] }
+
+# Native huddle media (M5b spike): WebRTC in Sans-IO style.
+str0m = { version = "0.26.0", default-features = false, features = ["openssl", "vendored"] }
+
+# Opus codec (M5b), libopus binding; builds libopus with cmake (mise).
+opus = "0.4.0"
+
+# Native huddle audio, pinned versions.
+cpal = "0.18.2"
+sonora = "0.3.0"
+
+# Provider-neutral domain (M1).
+futures = "0.3"
+jiff = "1"
+
+# Provider HTTP client (slack_api).
+reqwest = { version = "0.13", default-features = false, features = [
+  "rustls",
+  "multipart",
+  "form",
+  "json",
+  "http2",
+] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+wiremock = "0.6"
+
+# Session websocket reconnect backoff (slack_realtime).
+backon = "1"
+httpdate = "1"
+
+# Markup parsing and tests (slack_markup).
+winnow = "1.0.5"
+emojis = "0.9.1"
+insta = "1.49.0"
+proptest = "1"
+governor = { version = "0.10.4", default-features = false, features = [
+  "std",
+  "dashmap",
+] }
+
+# Keep debug builds small on disk: line tables keep backtraces readable,
+# dependencies carry no debug info.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+
+# Release builds: fat LTO, one codegen unit, strip debuginfo.
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = "debuginfo"

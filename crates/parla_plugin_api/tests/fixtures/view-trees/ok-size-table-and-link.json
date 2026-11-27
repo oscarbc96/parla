@@ -1,0 +1,38 @@
+{
+  "verdict": "ok",
+  "size": 100,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "card"
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "table": {
+          "columns": [
+            "a",
+            "bb"
+          ],
+          "rows": [
+            [
+              "c",
+              "dd"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "text": [
+          {
+            "text": "hé",
+            "link": "https://example.com"
+          }
+        ]
+      }
+    }
+  ]
+}

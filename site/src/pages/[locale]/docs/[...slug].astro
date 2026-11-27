@@ -1,0 +1,19 @@
+---
+import type { GetStaticPaths } from "astro";
+import DocsRoute from "@/components/DocsRoute.astro";
+import { nonDefaultLocales } from "@/i18n";
+import { docsEntries } from "@/lib/docs-routes";
+
+export const prerender = true;
+
+export const getStaticPaths = (() =>
+  docsEntries(nonDefaultLocales).map(({ locale, slug, page, version }) => ({
+    params: { locale, slug },
+    props: { page, version },
+  }))) satisfies GetStaticPaths;
+
+const { locale } = Astro.params;
+const { page, version } = Astro.props;
+---
+
+<DocsRoute locale={locale} page={page} version={version} />

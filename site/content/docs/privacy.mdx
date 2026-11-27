@@ -1,0 +1,72 @@
+---
+title: Privacy
+description: Parla keeps your data on your device, sends no telemetry and lets you turn off update checks.
+---
+
+**Not created by, affiliated with, or supported by Slack Technologies, LLC.**
+
+Parla is a desktop client. The project runs no servers for it and receives none
+of your data.
+
+## Network requests
+
+Parla makes network requests only for features you use:
+
+- **The chat service and its file hosts.** Parla uses your session to sign in,
+  load and send messages, files and related data. A call window loads on the
+  service's domains when you join a call or huddle.
+- **Update check.** Parla can check GitHub Releases for a newer version at most
+  once a day and when you choose **Check for updates**. Turn automatic checks off
+  with `updates.check = false`. The check is a request to the GitHub API with no
+  cookies and no account data.
+- **Update download.** Only when you choose **Update** on macOS does Parla
+  download the release from GitHub. The download is refused unless its signature
+  matches the key built into Parla.
+- **Features you enable.** Plugins or features that use the network, such as a
+  GIF provider, are off by default. When you enable one, data goes where that
+  feature says.
+
+## Local data
+
+- **On your device.** Messages, files, caches and settings live in a local
+  store. Your session token and cookie live only in the operating system
+  keychain. Debug builds keep them unencrypted in
+  `<data_dir>/development_credentials.json` instead.
+- **Logs.** Logs stay on your device. The diagnostic log holds no message text.
+  `log.include_content` adds message text to the MCP audit log only.
+- **Crash reports.** If Parla quits unexpectedly, it can save a redacted report
+  on your device. Crash reports are never sent. The `crash_reports` setting turns
+  them off, keeps them without asking, or asks at the next start whether to show
+  or delete them.
+- **Idle lock.** With `storage.lock_after_minutes` on, Parla closes its encrypted
+  store, drops the store keys from memory after that long without input, and
+  covers its windows until you unlock it.
+- **No telemetry.** Parla collects no analytics or usage data and sends none
+  anywhere.
+
+## Local MCP server
+
+The MCP server is off by default and local only. It never listens on the
+network. When you enable it, local AI tools can read the workspaces you share
+and write to them only with your permission. Its audit log stays on your device,
+encrypted with your other local data, and holds message text only if you turn on
+`log.include_content`. See [Settings](/parla/docs/settings/#ai-and-mcp).
+
+## Deletion
+
+Removing a workspace deletes its local database, keychain entries and caches.
+**Delete all data** removes the data and cache Parla stores on this device but
+keeps your settings. Nothing is held by the project.
+
+See [Uninstall](/parla/docs/uninstall/) for every folder and keychain item.
+
+## Age and support
+
+Parla is for users aged 16 and over. Support is best effort through GitHub
+issues.
+
+The full policy is in
+[PRIVACY.md](https://github.com/oscarbc96/parla/blob/main/PRIVACY.md) in the
+repository.
+
+Next: [Terms](/parla/docs/terms/).

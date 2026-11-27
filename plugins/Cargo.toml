@@ -1,0 +1,27 @@
+# Guest plugin workspace. Built only for wasm32-wasip2 by
+# `mise run plugins:build`; the host workspace at the repo root never
+# compiles these crates.
+[workspace]
+resolver = "3"
+members = ["sdk-rust", "examples/hello-command", "examples/test-guests/*"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+license = "MPL-2.0"
+
+[workspace.dependencies]
+wit-bindgen = { version = "=0.63.0", default-features = false, features = ["macros", "realloc"] }
+parla_plugin_sdk = { path = "sdk-rust" }
+# The SDK fake host reads a plugin.toml for its grants (feature `testing`).
+toml = { version = "1", default-features = false, features = ["parse", "std", "serde"] }
+# Dev-only: the SDK tests decode built components to check their exports
+# and read the shared view-tree vectors.
+serde_json = "1"
+wit-component = { version = "0.262", default-features = false }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

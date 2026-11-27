@@ -1,0 +1,127 @@
+---
+title: Instalación
+description: Instala una versión de Parla en macOS o compílalo desde el código fuente, y sabe qué esperar en el primer arranque.
+---
+
+Parla se distribuye como una compilación autofirmada para macOS en
+[GitHub Releases](https://github.com/oscarbc96/parla/releases), o puedes
+compilarlo desde el código fuente en macOS 14 o posterior, en Apple silicon o
+Intel.
+
+## Instalar una versión
+
+1. Descarga el `.dmg` más reciente de
+   [GitHub Releases](https://github.com/oscarbc96/parla/releases). Un único dmg
+   universal cubre Apple silicon e Intel.
+2. Abre el `.dmg` y arrastra Parla a Aplicaciones.
+3. Abre Parla una vez y permítelo.
+
+El paquete está autofirmado, así que macOS bloquea el primer arranque. En macOS
+15 o posterior, abre Parla una vez (macOS lo bloquea), ve a Ajustes del Sistema >
+Privacidad y seguridad, desplázate hasta Seguridad, haz clic en **Abrir de todos
+modos** junto al mensaje de Parla, confirma e introduce tu contraseña. En macOS
+14, haz Control-clic (clic derecho) en Parla en Aplicaciones y elige **Abrir**, y
+luego **Abrir**. Solo hace falta la primera vez.
+
+## Compilar desde el código fuente
+
+Compílalo en macOS 14 o posterior, en Apple silicon o Intel.
+
+### Requisitos
+
+- macOS 14 o posterior.
+- [mise](https://mise.jdx.dev) para la cadena de herramientas de Rust y las
+  tareas del proyecto.
+- Xcode completo con la cadena de herramientas Metal
+  (`xcodebuild -downloadComponent MetalToolchain`). Las Command Line Tools por
+  sí solas no bastan.
+- Git.
+
+### Compilar y ejecutar
+
+1. Instala mise si no lo tienes.
+
+   ```sh
+   curl https://mise.run | sh
+   ```
+
+2. Clona el repositorio.
+
+   ```sh
+   git clone https://github.com/oscarbc96/parla.git
+   cd parla
+   ```
+
+3. Instala las herramientas fijadas.
+
+   ```sh
+   mise install
+   ```
+
+4. Opcional: crea una identidad de firma local una vez, para que macOS deje de
+   pedirte la contraseña después de cada recompilación.
+
+   ```sh
+   mise run dev:cert
+   ```
+
+   macOS te pide la contraseña de inicio de sesión una vez. Esto añade un
+   certificado autofirmado "Parla Dev (local)" y lo confía solo para firmar
+   código.
+
+5. Compila y ejecuta.
+
+   ```sh
+   mise run run
+   ```
+
+La primera compilación compila GPUI y el resto del espacio de trabajo de Rust,
+así que tarda un rato. Las siguientes reutilizan la caché.
+
+Para crear un paquete de aplicación de tipo release, ejecuta `mise run bundle` y
+abre `target/release/Parla.app`. `mise run bundle:run` inicia ese paquete con sus
+registros en la terminal. Las notificaciones de escritorio necesitan el paquete
+de la aplicación.
+
+El paquete está autofirmado, así que macOS bloquea el primer arranque. En macOS
+15 o posterior, abre Parla una vez (macOS lo bloquea), ve a Ajustes del Sistema >
+Privacidad y seguridad, desplázate hasta Seguridad, haz clic en **Abrir de todos
+modos** junto al mensaje de Parla, confirma e introduce tu contraseña. En macOS
+14, haz Control-clic (clic derecho) en Parla en Aplicaciones y elige **Abrir**, y
+luego **Abrir**. Solo hace falta la primera vez.
+
+## Credenciales en una compilación de desarrollo
+
+Las compilaciones de depuración guardan los inicios de sesión y las claves del
+almacén en `development_credentials.json`, en la carpeta de datos de Parla, no en
+el llavero de macOS. El archivo solo lo puede leer tu usuario (modo 0600) y no
+está cifrado. Se borra entrada a entrada cuando cierras sesión. Las
+compilaciones release siempre usan el llavero.
+
+Para usar el llavero en una compilación de depuración, define
+`PARLA_DEV_USE_KEYCHAIN=1` y ejecuta `mise run dev:cert` una vez. Inicia sesión
+otra vez; una sesión que ya esté en el llavero no se copia a la compilación de
+desarrollo.
+
+La primera vez que Parla lee un elemento del llavero, macOS puede pedirte la
+contraseña. Elige **Permitir siempre** para que no vuelva a preguntar por ese
+elemento.
+
+## Primer arranque
+
+Sin ningún espacio de trabajo, Parla abre un breve proceso de configuración:
+bienvenida, elección del servicio, inicio de sesión, primera sincronización y un
+recorrido. La primera sincronización abre el almacén local cifrado y carga
+canales, personas y mensajes recientes. **Abrir Parla** se activa cuando el
+espacio de trabajo está listo.
+
+Siguiente: [Iniciar sesión](/parla/es/docs/sign-in/).
+
+## Windows y Linux
+
+Parla tiene como objetivo macOS, Windows y Linux en el código y en CI. Las
+compilaciones de macOS están en GitHub Releases; todavía no hay instaladores para
+Windows ni Linux, así que compílalos desde el código fuente. Por ahora, macOS es
+la plataforma con soporte. Las compilaciones para Windows y Linux pueden
+funcionar, pero algunas funciones dependen de macOS y las notificaciones y la
+reproducción multimedia pueden ser distintas.

@@ -1,0 +1,18 @@
+[{"type":"rich_text","elements":[
+ {"type":"rich_text_section","elements":[
+  {"type":"text","text":"hi ","style":{"bold":true}},
+  {"type":"text","text":"there","style":{"italic":true,"strike":true}},
+  {"type":"text","text":"x","style":{"code":true}},
+  {"type":"link","url":"https://example.test","text":"site"},
+  {"type":"user","user_id":"U0000001"},
+  {"type":"channel","channel_id":"C0000001"},
+  {"type":"usergroup","usergroup_id":"S0000001"},
+  {"type":"broadcast","range":"here"},
+  {"type":"date","timestamp":1700000000,"fallback":"Nov 14"}]},
+ {"type":"rich_text_list","style":"ordered","indent":1,"offset":2,"elements":[
+  {"type":"rich_text_section","elements":[{"type":"text","text":"one"}]},
+  {"type":"rich_text_section","elements":[{"type":"text","text":"two"}]}]},
+ {"type":"rich_text_list","style":"bullet","indent":0,"elements":[
+  {"type":"rich_text_section","elements":[{"type":"text","text":"b"}]}]},
+ {"type":"rich_text_preformatted","elements":[{"type":"text","text":"let a = 1;"}]},
+ {"type":"rich_text_quote","elements":[{"type":"text","text":"quoted"}]}]}]

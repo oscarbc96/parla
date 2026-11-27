@@ -1,0 +1,276 @@
+---
+title: Settings
+description: The Settings window, themes, keymap files, notifications, privacy, storage, MCP and advanced options.
+---
+
+Parla keeps its configuration in plain JSONC files. There is no hidden settings
+database and no account sync. Edit a file, save it, and the running app applies
+the change.
+
+## The Settings window
+
+Press `cmd-,` (`ctrl-,` on Linux and Windows), choose Settings from the app menu,
+or click the Settings button at the bottom of the workspace rail. Parla has one
+Settings window; the shortcut brings it to the front if it is already open.
+
+The pages are General, Appearance, Notifications, Keymap, Workspaces, Privacy and
+storage, Calls, AI, Plugins, MCP and Advanced. AI and Plugins do not have controls
+yet; they point you to `settings.json`. Workspaces and Privacy and storage show
+the same page.
+
+Every control writes its key into `settings.json` with a comment-preserving edit,
+so the running app applies it like a hand edit. If the file is rejected, for
+example because a value has the wrong type, the page says why and keeps the last
+good settings until you fix the file.
+
+## General
+
+| Control                           | What it does                                                               |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| Interface language                | System default, English, Spanish or Catalan. Applies at once               |
+| Open Parla at login               | Starts Parla when you sign in. With the menu-bar icon on, it starts hidden |
+| Restore windows from last session | Reopens the main and pop-out windows at their last size and position       |
+| Dock and menu bar                 | macOS: both, Dock only while a window is open, or menu bar only            |
+| Clock                             | 24-hour or 12-hour in messages                                             |
+| Inline images                     | Always, On click or Never                                                  |
+| Check for updates automatically   | Checks GitHub Releases at most once a day                                  |
+
+**Check now** runs an update check immediately.
+
+## Appearance
+
+| Control              | What it does                                         |
+| -------------------- | ---------------------------------------------------- |
+| Theme mode           | System, Light or Dark                                |
+| Theme cards          | Choose the light theme and the dark theme separately |
+| Accent               | Brand, Ember, Amber, Coral or Ink                    |
+| Density              | Compact or Cozy                                      |
+| Send key             | Enter sends, or Command-Enter sends                  |
+| Show Unreads section | Adds the Unreads section to the sidebar              |
+| Sort conversations   | A to Z or Recent                                     |
+
+Theme, accent, density, send key and sidebar changes apply at once. The accent
+changes buttons, focus and selection in both themes. High contrast themes ignore
+the accent.
+
+Parla ships **Parla Light**, **Parla Dark**, **Parla High Contrast Light** and
+**Parla High Contrast Dark**. On macOS, Parla uses the high contrast themes
+while **Increase contrast** is on, unless you have chosen a theme yourself. On
+Linux and Windows you can pick them by name.
+
+### Custom themes
+
+A theme is a JSON file in the `themes` folder inside Parla's configuration
+folder. It follows the same general shape as a Zed theme family: a `themes` array
+where each entry has a `name`, an `appearance` (`light` or `dark`) and a `style`
+object with colour keys. Comments and trailing commas are allowed.
+
+To make one, copy a theme from the built-in `parla.json`, change its name and
+colours, and save it in `themes/`. User themes load at startup and reload when
+you save. Choose them in Settings, Appearance, or set `theme.light` and
+`theme.dark` in `settings.json` to the theme's `name`.
+
+Fonts and message avatars are not in the Settings window yet. Set
+`ui_font_family`, `ui_font_size`, `buffer_font_family` and `messages.show_avatars`
+in `settings.json`.
+
+## Notifications
+
+| Control                        | What it does                                               |
+| ------------------------------ | ---------------------------------------------------------- |
+| Desktop notifications          | All messages, Mentions and DMs, or Nothing                 |
+| Show message previews          | Off shows only who wrote and where                         |
+| Keywords                       | Words that notify like a mention. Type one and press Enter |
+| Play a sound for notifications | Uses Parla's own subtle sound                              |
+| Quiet hours                    | From and to times, plus the days a quiet window starts on  |
+| Ring for incoming DM huddles   | Plays the ringtone and shows Join and Decline              |
+
+See [Notifications](/parla/docs/notifications/) for when Parla notifies and how
+per-conversation levels work.
+
+## Calls
+
+| Control                      | What it does                                                |
+| ---------------------------- | ----------------------------------------------------------- |
+| Ring for incoming DM huddles | Ring when someone starts a huddle with you                  |
+| Ringtone                     | Parla chime, or silent with a banner only                   |
+| Join with                    | Parla audio, Parla window, Browser or the service's own app |
+| Mute microphone when joining | Joins muted                                                 |
+| Microphone and Speaker       | Audio devices for Parla audio, or the system default        |
+
+Parla audio joins without an extra window. If it cannot connect, Parla tries the
+call window on macOS, then the browser, then the service's own app. Device
+changes apply to a running call at once. Parla does not carry video or screen
+sharing yet.
+
+## Workspaces and privacy
+
+The top of the page lists every signed-in workspace with its state: connected,
+session expired or not connected. **Sign in again** opens the sign-in flow, and
+**Sign out** asks first.
+
+| Control              | What it does                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Cache limit          | Memory the local database may use                                                                                 |
+| Keep messages for    | Days of cached messages to keep                                                                                   |
+| Clear cache          | Deletes cached messages and drafts in every workspace; they load again from the service                           |
+| Lock store when idle | After 5, 15, 30 or 60 minutes without input, closes the encrypted store and covers the windows with a lock screen |
+| Crash reports        | Off, Ask every time, or Keep locally. Reports never leave your device                                             |
+
+**Delete...** in the danger zone signs you out everywhere and removes the
+encrypted store and saved sign-ins. Your settings stay.
+
+Cache limit and retention apply the next time Parla starts. The other privacy
+controls apply at once.
+
+## AI and MCP
+
+Parla includes a local MCP server so AI tools on your computer can read the
+workspaces you choose and, if you allow it, write to them. It is off by default,
+and so is every workspace. It never listens on the network.
+
+### Turn it on
+
+1. Open Settings, MCP and turn on **Run the MCP server**.
+2. Under **Workspaces**, turn on **Share with MCP clients** for each workspace
+   you want to share.
+3. Turn on **Allow write actions** if the client may send messages, schedule
+   messages, add reactions or set your status. Leave it off for read-only access.
+4. Keep **Ask before each write** on unless you want writes to go through
+   without confirmation.
+
+The page lists every signed-in workspace and any other workspace that already
+has a policy in `settings.json`. There, each workspace is keyed
+`<provider>/<id>`; `list_workspaces` shows the exact keys.
+
+### Connect a client
+
+**Copy client config** copies an `mcpServers` entry that launches this copy of
+Parla with `mcp` on the clipboard. Use that entry in your MCP client.
+
+The relay is `parla mcp`. It talks to the running app over a local socket that
+only your user can open. If Parla is not running, the relay starts it without a
+window. For example, with Parla installed in Applications:
+
+```sh
+claude mcp add parla -- /Applications/Parla.app/Contents/MacOS/parla mcp
+```
+
+For Zed, add a context server under `context_servers` with the same command and
+`["mcp"]` as its arguments. The path must point at your copy of Parla; **Copy
+client config** fills in the right one.
+
+### Tools
+
+| Tool               | Kind  |
+| ------------------ | ----- |
+| `list_workspaces`  | Read  |
+| `list_channels`    | Read  |
+| `get_unreads`      | Read  |
+| `read_channel`     | Read  |
+| `read_thread`      | Read  |
+| `search_messages`  | Read  |
+| `get_user`         | Read  |
+| `search_users`     | Read  |
+| `list_scheduled`   | Read  |
+| `send_message`     | Write |
+| `schedule_message` | Write |
+| `add_reaction`     | Write |
+| `set_status`       | Write |
+
+MCP clients can also attach a conversation or thread by URI:
+`parla://<provider>/<workspace>/conversation/<conversation>` and
+`parla://<provider>/<workspace>/thread/<conversation>/<ts>`.
+
+### Confirmation and safety
+
+- A workspace is invisible to MCP clients until you share it. Direct messages
+  stay hidden unless you set `include_dms`.
+- With **Ask before each write** on (`confirm_writes`), Parla shows a window
+  that names the client, the tool, where it will post and who it posts as, with
+  the exact text.
+  **Details** shows the request arguments. Choose **Deny**, **Always for this
+  session** or **Allow once**. Deny has the focus, so Enter and Escape deny. An
+  unanswered prompt is denied after two minutes.
+- **Always for this session** skips the prompt for later writes of that tool to
+  that conversation until the client disconnects or Parla quits. It is kept in
+  memory only.
+- Message text from other people may contain instructions aimed at the agent.
+  Treat anything an agent reads as untrusted.
+
+### Audit log
+
+Every call is recorded locally with the tool, client, workspace, target,
+outcome, decision and duration. The log is encrypted with your other local data
+and never leaves your device. Message text is recorded only if you turn on
+`log.include_content`.
+
+Open **Agent activity** from the MCP page, the command palette or the MCP status
+line at the bottom of the window. You can filter it by workspace, tool or writes
+only, and clear it there. Entries older than `audit_retention_days` (90 by
+default) are removed at the next start.
+
+### Limits
+
+Each client may make 120 reads and 10 writes per minute. Each workspace may make
+20 provider reads per minute. A client that exceeds a limit is told to retry
+later, and Parla stays responsive.
+
+## Advanced
+
+| Control                                  | What it does                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------- |
+| Image cache                              | Memory for images. Applies at the next start                        |
+| Messages kept in memory per conversation | Applies to the next conversation you load                           |
+| Go lean after the window is hidden for   | How long a hidden window keeps every workspace's messages in memory |
+| Log level                                | Error, Info or Debug. Applies at once                               |
+
+Going lean follows whether the window is on screen, not whether it has keyboard
+focus. A window behind another app or on a second monitor stays awake; workspaces
+go lean only while it is minimized, hidden, completely covered or the display is
+asleep.
+
+**Logs and diagnostics** can open the logs folder or export one redacted text
+file with the version, operating system, settings, recent log lines and
+performance counters. Tokens, cookies, message text, addresses and workspace
+hosts are removed first. Read it before you attach it to a bug report.
+
+**Reset settings** writes the commented defaults back to `settings.json`. Your
+themes and `keymap.json` stay.
+
+## Files and layering
+
+Parla's configuration folder is:
+
+| Platform | Directory                                      |
+| -------- | ---------------------------------------------- |
+| macOS    | `~/.config/parla`                              |
+| Linux    | `$XDG_CONFIG_HOME/parla`, or `~/.config/parla` |
+| Windows  | `%APPDATA%\parla`                              |
+
+The main files are:
+
+```text
+~/.config/parla/
+  settings.json                     JSONC user settings
+  settings.schema.json              editor completion and validation
+  keymap.json                       JSONC key bindings
+  themes/*.json                     user themes
+  workspaces/<provider>/<id>.json   optional per-workspace overrides
+```
+
+Settings layer in this order:
+
+1. Built-in defaults.
+2. `settings.json`.
+3. `workspaces/<provider>/<id>.json` for that workspace.
+
+Objects merge and arrays replace. Every settings file is JSONC, so comments and
+trailing commas are allowed. Parla watches the folder and reloads after a short
+pause. A valid change applies immediately; an invalid file does not replace the
+last good settings, and Parla shows the file, line and column so you can fix it.
+
+Never put tokens or cookies in these files. Parla keeps them in the operating
+system keychain.
+
+Next: [Keyboard shortcuts](/parla/docs/keymap/).

@@ -1,0 +1,20 @@
+{
+  "verdict": "invalid",
+  "rule": 5,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": {
+        "text": [
+          {
+            "text": "leaf"
+          }
+        ]
+      }
+    },
+    {
+      "parent": 0,
+      "kind": "divider"
+    }
+  ]
+}

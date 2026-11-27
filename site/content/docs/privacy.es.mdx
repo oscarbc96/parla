@@ -1,0 +1,79 @@
+---
+title: Privacidad
+description: Parla guarda tus datos en tu dispositivo, no envía telemetría y te deja desactivar las comprobaciones de actualizaciones.
+---
+
+**No lo ha creado Slack Technologies, LLC, no está afiliado a ella ni cuenta con
+su soporte.**
+
+Parla es un cliente de escritorio. El proyecto no ejecuta servidores para Parla y
+no recibe ninguno de tus datos.
+
+## Peticiones de red
+
+Parla hace peticiones de red solo para las funciones que usas:
+
+- **El servicio de chat y sus hosts de archivos.** Parla usa tu sesión para
+  iniciar sesión, cargar y enviar mensajes, archivos y datos relacionados. Una
+  ventana de llamada se carga en los dominios del servicio cuando te unes a una
+  llamada o un huddle.
+- **Comprobación de actualizaciones.** Parla puede consultar GitHub Releases para
+  ver si hay una versión nueva, como mucho una vez al día y cuando eliges
+  **Buscar actualizaciones**. Desactiva las comprobaciones automáticas con
+  `updates.check = false`. La comprobación es una petición a la API de GitHub sin
+  cookies ni datos de cuenta.
+- **Descarga de actualizaciones.** Solo cuando eliges **Actualizar** en macOS,
+  Parla descarga la versión desde GitHub. La descarga se rechaza si su firma no
+  coincide con la clave incluida en Parla.
+- **Funciones que activas.** Los complementos o funciones que usan la red, como
+  un proveedor de GIF, están desactivados por defecto. Cuando activas uno, los datos
+  van donde indique esa función.
+
+## Datos locales
+
+- **En tu dispositivo.** Los mensajes, archivos, cachés y ajustes viven en un
+  almacén local. El token y la cookie de tu sesión solo están en el llavero del
+  sistema operativo. Las compilaciones de depuración los guardan sin cifrar en
+  `<data_dir>/development_credentials.json`.
+- **Registros.** Los registros se quedan en tu dispositivo. El registro de
+  diagnóstico no contiene texto de mensajes. `log.include_content` añade texto de
+  mensajes solo al registro de auditoría de MCP.
+- **Informes de fallos.** Si Parla se cierra inesperadamente, puede guardar un
+  informe censurado en tu dispositivo. Los informes de fallos nunca se envían. El
+  ajuste `crash_reports` los desactiva, los guarda sin preguntar, o pregunta en el
+  siguiente inicio si mostrarlos o borrarlos.
+- **Bloqueo por inactividad.** Con `storage.lock_after_minutes` activo, Parla
+  cierra su almacén cifrado, quita de la memoria las claves del almacén tras ese
+  tiempo sin entrada y cubre sus ventanas hasta que lo desbloqueas.
+- **Sin telemetría.** Parla no recoge análisis ni datos de uso, y no los envía a
+  ninguna parte.
+
+## Servidor MCP local
+
+El servidor MCP está desactivado por defecto y es solo local. Nunca escucha en la
+red. Cuando lo activas, las herramientas de IA locales pueden leer los espacios
+que compartes y escribir en ellos solo con tu permiso. Su registro de auditoría
+se queda en tu dispositivo, cifrado con tus otros datos locales, y solo contiene
+texto de mensajes si activas `log.include_content`. Consulta
+[Ajustes](/parla/es/docs/settings/#ia-y-mcp).
+
+## Eliminación
+
+Quitar un espacio de trabajo borra su base de datos local, sus entradas del
+llavero y sus cachés. **Borrar todos los datos** elimina los datos y la caché que
+Parla guarda en este dispositivo, pero conserva tus ajustes. El proyecto no
+guarda nada.
+
+Consulta [Desinstalar](/parla/es/docs/uninstall/) para ver todas las carpetas y
+elementos del llavero.
+
+## Edad y soporte
+
+Parla es para usuarios de 16 años o más. El soporte es de mejor esfuerzo a través
+de las incidencias de GitHub.
+
+La política completa está en
+[PRIVACY.md](https://github.com/oscarbc96/parla/blob/main/PRIVACY.md) en el
+repositorio.
+
+Siguiente: [Condiciones](/parla/es/docs/terms/).

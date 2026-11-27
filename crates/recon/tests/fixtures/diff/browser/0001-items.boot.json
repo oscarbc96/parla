@@ -1,0 +1,10 @@
+{
+  "method": "POST",
+  "url": "https://workspace-1.example.test/rpc/items.boot",
+  "request": {
+    "headers": [["content-type","application/x-www-form-urlencoded"],["origin","https://app.example.test"],["accept-language","xx"],["sec-ch-ua","q"]],
+    "query": [["_x_id", "REDACTED"]],
+    "body": {"form": [["token","REDACTED"],["limit","28"]]}
+  },
+  "response": {"status": 200, "mime": "application/json", "headers": [], "body": {"json": {"ok": true}}}
+}

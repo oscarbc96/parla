@@ -1,0 +1,8 @@
+id = "area-plugin"
+name = "Areas"
+version = "0.1.0"
+api = "0.1"
+
+[capabilities]
+workspace_read = ["messages:read", "everything:read", "messages:write"]
+workspace_write = ["reactions:write", "messages:read"]

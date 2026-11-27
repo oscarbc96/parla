@@ -1,0 +1,9 @@
+id = "many-patterns"
+name = "Patterns"
+version = "0.1.0"
+api = "0.1"
+activation = ["render:links"]
+
+[[renderers]]
+id = "links"
+patterns = ["t0.example.com/*", "t1.example.com/*", "t2.example.com/*", "t3.example.com/*", "t4.example.com/*", "t5.example.com/*", "t6.example.com/*", "t7.example.com/*", "t8.example.com/*", "t9.example.com/*", "t10.example.com/*", "t11.example.com/*", "t12.example.com/*", "t13.example.com/*", "t14.example.com/*", "t15.example.com/*", "t16.example.com/*"]

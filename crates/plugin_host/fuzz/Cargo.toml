@@ -1,0 +1,28 @@
+# cargo-fuzz targets for `plugin_host`. Not a workspace
+# member, so `mise run build` and `mise run test` never build it. Run with a
+# nightly toolchain and cargo-fuzz installed:
+#   cd crates/plugin_host/fuzz && cargo +nightly fuzz run unpack
+[package]
+name = "plugin_host_fuzz"
+version = "0.0.0"
+edition = "2024"
+license = "MPL-2.0"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+plugin_host = { path = ".." }
+tempfile = "3"
+
+# Keeps this crate out of the root workspace.
+[workspace]
+
+[[bin]]
+name = "unpack"
+path = "fuzz_targets/unpack.rs"
+test = false
+doc = false
+bench = false

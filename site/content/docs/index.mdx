@@ -1,0 +1,65 @@
+---
+title: What is Parla?
+description: A free, open-source desktop chat client that is fast, light on memory and made for the keyboard.
+---
+
+Parla is a free, open-source desktop chat client. It is written in Rust and
+draws its own windows with
+[GPUI Fast](https://github.com/longbridge/gpui-fast). It keeps a small encrypted
+cache on your computer and does not run a web browser inside the app.
+
+Slack is the first chat service Parla supports. Parla is not made by Slack, and
+Slack does not support it.
+
+**Status: early.** macOS builds (14 or later, Apple silicon and Intel,
+self-signed) are on
+[GitHub Releases](https://github.com/oscarbc96/parla/releases). Windows and Linux
+build from source; macOS is the supported platform for now.
+
+## Who it is for
+
+- People who use chat all day and want a fast, native window.
+- People who keep several workspaces open and switch between them often.
+- People who prefer the keyboard, but still want menus and the mouse.
+- People who want their messages cached on their own computer.
+
+## What it does
+
+- **Stays fast.** Parla renders on the GPU. There is no resident webview and no
+  JavaScript runtime.
+- **Uses little memory.** One process, one interface thread and a bounded local
+  cache. A workspace you are not looking at releases its messages after a while.
+- **Keeps many workspaces open.** Every signed-in workspace stays connected,
+  with its own badge and a combined list of unreads.
+- **Works from the keyboard.** A quick switcher, a command palette, a shortcuts
+  sheet and a JSON keymap with stable action names.
+- **Works offline.** Messages are cached locally, drafts are kept and messages
+  you send while offline wait in an outbox.
+- **Handles the everyday work.** Threads, reactions, files, search, reminders,
+  scheduled messages, huddles and notifications.
+- **Can connect to local AI tools.** Parla includes an MCP server that is off by
+  default and only listens on your computer.
+- **Stays open source.** The code is MPL-2.0, the plugin API and SDK are
+  Apache-2.0 OR MIT, and the docs are CC-BY-4.0.
+
+## How it connects
+
+Parla signs in with your own chat session. For Slack, that means the token and
+cookie your browser uses. There is no app to create, no OAuth consent screen and
+no server run by the project. One sign-in can cover every workspace already
+signed in to that session.
+
+This is an unofficial approach with real risks. Read [Sign in](/parla/docs/sign-in/)
+before you use Parla with a work account.
+
+## Start here
+
+1. [Install Parla](/parla/docs/install/) from a release, or build it from source
+   on macOS.
+2. [Sign in](/parla/docs/sign-in/) with your own session.
+3. Learn [daily use](/parla/docs/messaging/), [files](/parla/docs/files/),
+   [notifications](/parla/docs/notifications/) and
+   [offline mode](/parla/docs/offline/).
+4. [Configure Parla](/parla/docs/settings/) and learn the
+   [keyboard shortcuts](/parla/docs/keymap/).
+5. Read [Privacy](/parla/docs/privacy/) and [Terms](/parla/docs/terms/).

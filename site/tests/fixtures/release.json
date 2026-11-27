@@ -1,0 +1,18 @@
+{
+  "tag_name": "v0.1.0",
+  "name": "v0.1.0",
+  "draft": false,
+  "prerelease": false,
+  "published_at": "2031-06-01T12:00:00Z",
+  "html_url": "https://github.com/oscarbc96/parla/releases/tag/v0.1.0",
+  "assets": [
+    {
+      "name": "Parla-0.1.0-macos-universal.dmg",
+      "browser_download_url": "https://github.com/oscarbc96/parla/releases/download/v0.1.0/Parla-0.1.0-macos-universal.dmg"
+    },
+    {
+      "name": "SHA256SUMS",
+      "browser_download_url": "https://github.com/oscarbc96/parla/releases/download/v0.1.0/SHA256SUMS"
+    }
+  ]
+}

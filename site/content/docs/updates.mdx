@@ -1,0 +1,62 @@
+---
+title: Updates
+description: How Parla checks for new releases, installs an update on macOS, and lets you skip a version.
+---
+
+Parla checks GitHub Releases for a new version. In-app updates verify a signed
+update and need Parla in Applications; otherwise, download the new dmg from the
+release page.
+
+## Automatic check
+
+When update checks are on, Parla checks GitHub Releases at most once every 24
+hours. Draft and pre-release versions are ignored.
+
+If a newer version is available, Parla shows a notice with **Download**, which
+opens the release page in your browser, and **Skip this version**. Skipping
+hides that version; a newer one is still offered later.
+
+## Update and restart on macOS
+
+On macOS, when Parla runs from a `Parla.app` that it can replace, the notice also
+offers **Update**. Parla never downloads or installs anything until you click
+it.
+
+**Update** downloads the release, verifies its signature against the key built
+into Parla, and replaces the installed app. The installed app is never edited in
+place, so a failed download or install leaves it untouched. The notice then says
+the new version is ready, and Parla restarts only when you choose **Restart to
+update**.
+
+If a step fails, the notice says which one and offers **Try again** and
+**Download**. Parla never installs a package whose signature does not match.
+
+Windows and Linux builds, and macOS builds that cannot replace themselves, show
+the **Download** link only.
+
+## Check now
+
+Choose **Check for updates** from the app menu or the command palette, or use
+**Check now** in Settings, General. This works even when automatic checks are
+off. If there is nothing new, or Parla cannot reach GitHub, the notice says so.
+
+## Turn checks off
+
+Automatic checks are on by default. Turn off **Check for updates automatically**
+in Settings, General, or set `updates.check` to `false` in `settings.json`:
+
+```jsonc
+{
+  "updates": {
+    "check": false,
+  },
+}
+```
+
+Skipping a version stores its tag in `updates.skip`. Set that key to `null` or
+remove it to stop skipping.
+
+Parla sends no account data with an update check. See
+[Privacy](/parla/docs/privacy/).
+
+Next: [Uninstall](/parla/docs/uninstall/).

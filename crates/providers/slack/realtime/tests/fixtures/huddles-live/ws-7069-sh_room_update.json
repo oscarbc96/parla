@@ -1,0 +1,79 @@
+{
+  "data": {
+    "json": {
+      "event_ts": "1794996138.001700",
+      "huddle": {
+        "channel_id": "C0000010"
+      },
+      "room": {
+        "app_id": "A00",
+        "attached_file_ids": [],
+        "background_id": "GRADIENT_01",
+        "call_family": "huddle",
+        "canvas_background": "GRADIENT_01",
+        "canvas_thread_ts": "1794995685.362499",
+        "channels": [
+          "C0000010"
+        ],
+        "created_by": "U0000013",
+        "date_end": 1794996137,
+        "date_start": 1794995685,
+        "display_id": "",
+        "external_unique_id": "10d127cc-3a7f-4e9f-a3c4-383dbc2d2713",
+        "has_ended": true,
+        "huddle_link": "https://app.slack.com/huddle/T0000002/C0000010",
+        "id": "R0000014",
+        "is_dm_call": false,
+        "is_prewarmed": true,
+        "is_scheduled": false,
+        "knocks": {},
+        "last_invite_status_by_user": {},
+        "locale": "es-ES",
+        "media_backend_type": "free_willy",
+        "media_server": "",
+        "name": "",
+        "participant_history": [
+          "U0000013",
+          "U0000014"
+        ],
+        "participants": [],
+        "participants_camera_off": [],
+        "participants_camera_on": [],
+        "participants_events": {
+          "U0000013": {
+            "camera_off": false,
+            "camera_on": false,
+            "joined": true,
+            "screenshare_off": false,
+            "screenshare_on": false,
+            "user_team": {}
+          },
+          "U0000014": {
+            "camera_off": false,
+            "camera_on": false,
+            "joined": true,
+            "screenshare_off": false,
+            "screenshare_on": false,
+            "user_team": {}
+          }
+        },
+        "participants_screenshare_off": [],
+        "participants_screenshare_on": [],
+        "pending_invitees": {},
+        "recording": {
+          "can_record_summary": "available"
+        },
+        "thread_root_ts": "1794995685.362499",
+        "was_accepted": false,
+        "was_missed": false,
+        "was_rejected": false
+      },
+      "ts": "1794996138.001700",
+      "type": "sh_room_update",
+      "user": "U0000013"
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794990456%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000002-2&batch_presence_aware=1"
+}

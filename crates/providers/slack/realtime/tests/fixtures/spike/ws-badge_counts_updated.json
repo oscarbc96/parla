@@ -1,0 +1,39 @@
+{
+  "data": {
+    "json": {
+      "activity_v2": {
+        "at_channel": 0,
+        "at_everyone": 0,
+        "at_user": 0,
+        "at_user_group": 0,
+        "bot_dm_bundle": 0,
+        "channel": 1,
+        "code_review_requested": 0,
+        "dm": 0,
+        "external_channel_invite": 0,
+        "external_dm_invite": 0,
+        "internal_channel_invite": 0,
+        "keyword": 0,
+        "list_approval_request": 0,
+        "list_approval_reviewed": 0,
+        "list_record_assigned": 0,
+        "list_record_edited": 0,
+        "list_todo_notification": 0,
+        "list_user_mentioned": 0,
+        "message_reaction": 0,
+        "prejoin_dm_welcome_party_alert": 0,
+        "quietly_added_to_channel": 0,
+        "saved_reminder": 0,
+        "shared_workspace_invite": 0,
+        "team_joiner_invite": 0,
+        "thread_v2": 0,
+        "unjoined_channel_mention": 0
+      },
+      "event_ts": "1794525689.314900",
+      "type": "badge_counts_updated"
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?frt=REDACTED&token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794521867%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000001-1&batch_presence_aware=1"
+}

@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "subscriptions": [
+    {
+      "channel_id": "C0000001",
+      "date_created": 1700000001,
+      "last_read": "1700000005.000000",
+      "latest": "1700000007.000000",
+      "priority": false,
+      "timestamp": "1700000000.000100"
+    }
+  ]
+}

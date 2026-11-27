@@ -1,0 +1,170 @@
+#!/bin/sh
+#MISE description="Verify signing, entitlements, runtime, and dependencies"
+set -eu
+
+usage() {
+  echo "usage: mise run release:verify -- <app> <dmg> (--adhoc | --self-signed <sha1>)" >&2
+  exit 2
+}
+
+app=""
+dmg=""
+adhoc=0
+self_signed=""
+self_signed_pending=0
+for arg in "$@"; do
+  if [ "$self_signed_pending" -eq 1 ]; then
+    self_signed=$arg
+    self_signed_pending=0
+    continue
+  fi
+  case "$arg" in
+    --) ;;
+    --adhoc) adhoc=1 ;;
+    --self-signed) self_signed_pending=1 ;;
+    -*) echo "unknown option: $arg" >&2; usage ;;
+    *)
+      if [ -z "$app" ]; then
+        app=$arg
+      elif [ -z "$dmg" ]; then
+        dmg=$arg
+      else
+        echo "unexpected argument: $arg" >&2
+        usage
+      fi
+      ;;
+  esac
+done
+
+if [ "$self_signed_pending" -eq 1 ] || [ -z "$app" ] || [ -z "$dmg" ]; then
+  usage
+fi
+if [ "$adhoc" -eq 1 ] && [ -n "$self_signed" ]; then
+  echo "--adhoc and --self-signed are mutually exclusive" >&2
+  usage
+fi
+if [ "$adhoc" -eq 0 ] && [ -z "$self_signed" ]; then
+  echo "a signing mode is required: --adhoc or --self-signed <sha1>" >&2
+  usage
+fi
+if [ -n "$self_signed" ]; then
+  self_signed=$(printf '%s' "$self_signed" | tr '[:lower:]' '[:upper:]')
+fi
+
+root=$(git rev-parse --show-toplevel)
+entitlements="$root/crates/parla/macos/Parla.entitlements"
+
+if [ ! -d "$app" ]; then
+  echo "app bundle not found: $app" >&2
+  exit 1
+fi
+if [ ! -e "$dmg" ]; then
+  echo "dmg not found: $dmg" >&2
+  exit 1
+fi
+if [ ! -f "$entitlements" ]; then
+  echo "entitlements file not found: $entitlements" >&2
+  exit 1
+fi
+
+fail=0
+
+echo "== codesign verify =="
+if ! codesign --verify --strict --deep "$app"; then
+  echo "codesign verify failed for app: $app" >&2
+  fail=1
+fi
+if ! codesign --verify --strict --deep "$dmg"; then
+  echo "codesign verify failed for dmg: $dmg" >&2
+  fail=1
+fi
+
+echo "== entitlements =="
+app_ent=$(mktemp "${TMPDIR:-/tmp}/parla-ent.XXXXXX")
+want_ent=$(mktemp "${TMPDIR:-/tmp}/parla-ent-want.XXXXXX")
+otool_list=$(mktemp "${TMPDIR:-/tmp}/parla-otool.XXXXXX")
+trap 'rm -f "$app_ent" "$want_ent" "$otool_list"' EXIT INT TERM
+
+# Extract app entitlements as XML plist.
+codesign -d --entitlements :- "$app" 2>/dev/null > "$app_ent" || true
+if [ ! -s "$app_ent" ]; then
+  # Some codesign versions need different flags; try writing to file.
+  codesign -d --entitlements "$app_ent" "$app" 2>/dev/null || true
+fi
+
+# Normalize expected entitlements to XML plist for comparison.
+if command -v plutil >/dev/null 2>&1; then
+  plutil -convert xml1 -o "$want_ent" "$entitlements" 2>/dev/null || cp "$entitlements" "$want_ent"
+  if [ -s "$app_ent" ]; then
+    plutil -convert xml1 -o "$app_ent" "$app_ent" 2>/dev/null || true
+  fi
+else
+  cp "$entitlements" "$want_ent"
+fi
+
+# No get-task-allow in app entitlements.
+if grep -q 'com.apple.security.get-task-allow' "$app_ent" 2>/dev/null; then
+  echo "rejected: com.apple.security.get-task-allow is present in app entitlements" >&2
+  fail=1
+fi
+
+# App entitlements must equal the expected file.
+if ! diff -q "$want_ent" "$app_ent" >/dev/null 2>&1; then
+  echo "entitlements of the app do not match $entitlements" >&2
+  fail=1
+fi
+
+echo "== hardened runtime =="
+# Hardened runtime flag must be set on the app.
+app_flags=$(codesign -dv "$app" 2>&1 || true)
+if ! printf '%s' "$app_flags" | grep -Eq 'flags=0x[0-9a-f]*\([^)]*runtime'; then
+  echo "hardened runtime flag is not set on app: $app" >&2
+  fail=1
+fi
+
+if [ -n "$self_signed" ]; then
+  echo "== self-signed designated requirement =="
+  requirements=$(codesign -d -r- "$app" 2>&1 || true)
+  requirement="CERTIFICATE LEAF = H\"$self_signed\""
+  if ! printf '%s' "$requirements" | tr '[:lower:]' '[:upper:]' | grep -F "$requirement" >/dev/null; then
+    printf 'designated requirement does not contain certificate leaf = H"%s"\n' "$self_signed" >&2
+    fail=1
+  fi
+
+  echo "== self-signed library dependencies =="
+  seen_executable=0
+  for executable in "$app"/Contents/MacOS/*; do
+    [ -f "$executable" ] || continue
+    seen_executable=1
+    if ! otool -L "$executable" > "$otool_list"; then
+      echo "otool -L failed for main executable: $executable" >&2
+      fail=1
+      continue
+    fi
+    while IFS= read -r dependency; do
+      [ -n "$dependency" ] || continue
+      case "$dependency" in
+        /System/*|/usr/lib/*|@rpath/*|@executable_path/*) ;;
+        *)
+          echo "rejected: dependency is not a system library or bundle-relative path: $dependency" >&2
+          fail=1
+          ;;
+      esac
+    done <<EOF
+$(sed -n 's/^[[:space:]]*\([^[:space:]]*\) (compatibility version.*/\1/p' "$otool_list")
+EOF
+  done
+  if [ "$seen_executable" -eq 0 ]; then
+    echo "no main executable found under $app/Contents/MacOS" >&2
+    fail=1
+  fi
+fi
+
+rm -f "$app_ent" "$want_ent" "$otool_list"
+trap - EXIT INT TERM
+
+if [ "$fail" -ne 0 ]; then
+  exit 1
+fi
+
+echo "verify: ok"

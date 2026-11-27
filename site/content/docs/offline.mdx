@@ -1,0 +1,109 @@
+---
+title: Offline and cache
+description: How Parla caches messages, queues what you send offline, keeps drafts and recovers from a bad cache.
+---
+
+Parla keeps a local copy of each workspace so it opens quickly and keeps working
+when the network does not.
+
+## The encrypted local store
+
+Each workspace has its own encrypted SQLite database. Its key is kept in the
+operating system keychain, one item per workspace. Nothing in the store is sent
+to the project.
+
+On macOS, Parla also checks whether full-disk encryption is on. Keep it on: the
+store protects the database file, not the rest of your disk.
+
+## Catch-up
+
+When Parla reconnects, it asks the service for what you missed and fills gaps in
+conversation history. Catching up and loading history never raise
+notifications. Only live messages can.
+
+## Outbox
+
+If you send a message while offline, Parla queues it in an ordered outbox and
+shows it in the timeline as **Queued**. Queued messages go out in order when the
+connection returns, and each is sent at most once.
+
+Pending and failed messages stay at the bottom of the conversation, in the order
+you sent them, below every message already delivered.
+
+If Parla quits while a message is being sent, it cannot tell whether the message
+went through. The message is marked failed with the note **May have been sent.
+Check before retrying.** A failed message stays in the timeline, also after a
+restart, with **Not sent.** and three actions: **Retry** queues it again,
+**Delete** discards it, and **Copy text** puts its text on the clipboard.
+
+## Drafts
+
+Parla saves the text in a composer as a draft for each conversation, and for
+each thread. The draft is saved when you switch conversation, close a thread or
+quit, not on a timer. Clearing the composer deletes the draft.
+
+Drafts stay on this computer in the encrypted cache and are not shared with the
+service.
+
+## Offline banner
+
+When the connection to a workspace drops, **You are offline.** appears above the
+conversation. Parla keeps retrying by itself with a growing pause, so there is no
+countdown. **Retry now** tries at once. The banner goes away when the connection
+returns.
+
+## Rebuild a cache
+
+If the local cache of a workspace cannot be opened, Parla shows a banner.
+Messages will load again from the service, but queued messages and drafts saved
+on this device cannot be recovered. Choose **Rebuild cache** to delete the
+unreadable file, create a new key and start over from the service. Parla never
+does this on its own.
+
+If your session has expired, a separate banner names the workspace and offers to
+sign in again. You can still read cached messages, but the composer is read-only
+and says **Sign in again to send messages** until you do.
+
+## Retention and disk space
+
+Two settings control the cache:
+
+```jsonc
+{
+  "storage": { "cache_mb": 8, "retention_days": 90 },
+}
+```
+
+- `retention_days` (default `90`) removes messages older than that from
+  conversations you have not opened in the last 30 days. Conversations you
+  opened recently are never pruned. The outbox and drafts are never pruned.
+- `cache_mb` (default `8`) is the memory the database may use, shared across
+  open workspaces.
+
+Both apply the next time Parla starts. You can change them in Settings, Privacy
+and storage.
+
+When the disk that holds the local store has less than 1 GiB free, a **Disk
+nearly full** banner appears with **Manage storage**, which opens Settings,
+Privacy and storage. It goes away over 1.5 GiB. You can clear the cache there;
+every workspace deletes its cached messages and drafts and loads again from the
+service.
+
+Older messages load again when you scroll back.
+
+## Search without a connection
+
+The store keeps a full-text index of message text. Search uses it, so search
+works without a connection. It finds only messages already stored on this
+device; messages that were pruned or never loaded are not searched. When the
+service also searches on its server, that happens only while connected, and the
+panel says when it is showing the device only.
+
+## Slow first loads
+
+While the first load is running, the window shows **Still connecting...**. Big
+workspaces load the first part of the member list before the window fills in;
+the rest arrives afterwards. If the server does not answer within 20 seconds,
+an error bar appears with a **Retry** button.
+
+Next: [Settings](/parla/docs/settings/).

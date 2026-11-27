@@ -1,0 +1,23 @@
+[package]
+name = "parla_plugin_api"
+# The crate follows the workspace version (release:version-check); the API
+# version is the WIT package version, `parla:plugin@0.1.0`.
+version.workspace = true
+edition.workspace = true
+# The plugin API is permissive so plugin authors pick their own licence;
+# the rest of the workspace stays MPL-2.0.
+license = "Apache-2.0 OR MIT"
+description = "WIT package parla:plugin, the interface between Parla and its WebAssembly plugins."
+repository = "https://github.com/oscarbc96/parla"
+readme = "README.md"
+# Publishable, but not published in M8.
+publish = true
+include = ["src/**", "wit/**", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
+
+[lib]
+path = "src/lib.rs"
+
+[dev-dependencies]
+# Same wit-parser line as wasmtime 48's component bindgen, so the test parses the
+# package the way the host will.
+wit-parser = { version = "0.254", default-features = false, features = ["std"] }

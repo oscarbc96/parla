@@ -1,0 +1,15 @@
+# The one list of locales. The app (crates/i18n) embeds it; the docs site
+# mirrors it in site/src/i18n/config.json and its check keeps them equal.
+source = "en"
+
+[[locales]]
+code = "en"
+name = "English"
+
+[[locales]]
+code = "es"
+name = "Español"
+
+[[locales]]
+code = "ca"
+name = "Català"

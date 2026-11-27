@@ -1,0 +1,13 @@
+[package]
+name = "test-guest-socket-import"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "plugin_host engine test guest (socket-import); see crates/plugin_host/tests/engine.rs."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wit-bindgen.workspace = true

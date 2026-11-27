@@ -1,0 +1,284 @@
+---
+title: Ajustes
+description: La ventana de ajustes, los temas, el mapa de teclas, las notificaciones, la privacidad, el almacenamiento, MCP y las opciones avanzadas.
+---
+
+Parla guarda su configuración en archivos JSONC normales. No hay una base de
+datos oculta de ajustes ni sincronización con una cuenta. Edita un archivo,
+guárdalo y la aplicación en marcha aplica el cambio.
+
+## La ventana de ajustes
+
+Pulsa `cmd-,` (`ctrl-,` en Linux y Windows), elige Ajustes en el menú de la
+aplicación, o haz clic en el botón Ajustes al final de la barra de espacios de
+trabajo. Parla tiene una sola ventana de ajustes; el atajo la trae al frente si ya
+está abierta.
+
+Las páginas son General, Apariencia, Notificaciones, Teclas, Espacios de trabajo,
+Privacidad y almacenamiento, Llamadas, IA, Complementos, MCP y Avanzado. IA y
+Complementos todavía no tienen controles; te remiten a `settings.json`. Espacios de trabajo y
+Privacidad y almacenamiento muestran la misma página.
+
+Cada control escribe su clave en `settings.json` con una edición que conserva los
+comentarios, así que la aplicación en marcha lo aplica como una edición manual. Si
+el archivo se rechaza, por ejemplo porque un valor tiene el tipo equivocado, la
+página dice por qué y mantiene los últimos ajustes válidos hasta que lo arregles.
+
+## General
+
+| Control                                | Qué hace                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------- |
+| Idioma de la interfaz                  | Predeterminado del sistema, inglés, español o catalán. Se aplica al instante          |
+| Abrir Parla al iniciar sesión          | Inicia Parla al entrar. Con el icono de la barra de menús activo, se inicia oculto    |
+| Restaurar ventanas de la última sesión | Reabre la ventana principal y las ventanas emergentes con su último tamaño y posición |
+| Dock y barra de menús                  | macOS: ambos, Dock solo con una ventana abierta, o solo barra de menús                |
+| Reloj                                  | 24 o 12 horas en los mensajes                                                         |
+| Imágenes en línea                      | Siempre, Al hacer clic o Nunca                                                        |
+| Buscar actualizaciones automáticamente | Comprueba GitHub Releases como mucho una vez al día                                   |
+
+**Comprobar ahora** ejecuta una comprobación de actualizaciones al instante.
+
+## Apariencia
+
+| Control                      | Qué hace                                      |
+| ---------------------------- | --------------------------------------------- |
+| Modo de tema                 | Sistema, Claro u Oscuro                       |
+| Tarjetas de tema             | Elige el tema claro y el oscuro por separado  |
+| Acento                       | Brand, Ember, Amber, Coral o Ink              |
+| Densidad                     | Compacta o Cómoda                             |
+| Tecla de envío               | Intro envía, o Comando-Intro envía            |
+| Mostrar la sección No leídos | Añade la sección No leídos a la barra lateral |
+| Ordenar conversaciones       | De la A a la Z o Recientes                    |
+
+El tema, el acento, la densidad, la tecla de envío y los cambios de la barra
+lateral se aplican al instante. El acento cambia botones, foco y selección en los
+dos temas. Los temas de alto contraste ignoran el acento.
+
+Parla incluye **Parla Light**, **Parla Dark**, **Parla High Contrast Light** y
+**Parla High Contrast Dark**. En macOS, Parla usa los temas de alto contraste
+mientras **Aumentar contraste** está activo, a menos que hayas elegido un tema tú
+mismo. En Linux y Windows puedes elegirlos por su nombre.
+
+### Temas personalizados
+
+Un tema es un archivo JSON en la carpeta `themes` dentro de la carpeta de
+configuración de Parla. Sigue la misma forma general que una familia de temas de
+Zed: un array `themes` donde cada entrada tiene un `name`, un `appearance`
+(`light` o `dark`) y un objeto `style` con claves de color. Se permiten
+comentarios y comas finales.
+
+Para crear uno, copia un tema del `parla.json` incluido, cambia su nombre y sus
+colores, y guárdalo en `themes/`. Los temas de usuario se cargan al iniciar y se
+recargan cuando guardas. Elígelos en Ajustes, Apariencia, o define `theme.light`
+y `theme.dark` en `settings.json` con el `name` del tema.
+
+Las fuentes y los avatares de los mensajes todavía no están en la ventana de
+ajustes. Define `ui_font_family`, `ui_font_size`, `buffer_font_family` y
+`messages.show_avatars` en `settings.json`.
+
+## Notificaciones
+
+| Control                                      | Qué hace                                                                 |
+| -------------------------------------------- | ------------------------------------------------------------------------ |
+| Notificaciones de escritorio                 | Todos los mensajes, Menciones y mensajes directos, o Nada                |
+| Mostrar vistas previas de mensajes           | Desactivado muestra solo quién escribió y dónde                          |
+| Palabras clave                               | Palabras que avisan como una mención. Escribe una y pulsa Intro          |
+| Reproducir un sonido para las notificaciones | Usa el sonido sutil propio de Parla                                      |
+| Horas de silencio                            | Horas de inicio y fin, y los días en que empieza una ventana de silencio |
+| Tono para huddles de mensaje directo         | Reproduce el tono y muestra Unirse y Rechazar                            |
+
+Consulta [Notificaciones](/parla/es/docs/notifications/) para saber cuándo avisa
+Parla y cómo funcionan los niveles por conversación.
+
+## Llamadas
+
+| Control                              | Qué hace                                                                            |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| Tono para huddles de mensaje directo | Suena cuando alguien inicia un huddle contigo                                       |
+| Tono de llamada                      | El tono de Parla, o silencio con solo un aviso                                      |
+| Unirse con                           | Audio de Parla, ventana de Parla, navegador o la app del servicio                   |
+| Silenciar el micrófono al unirse     | Se une silenciado                                                                   |
+| Micrófono y Altavoz                  | Dispositivos de audio para el audio de Parla, o el valor predeterminado del sistema |
+
+El audio de Parla se une sin una ventana extra. Si no puede conectar, Parla prueba
+la ventana de llamada en macOS, después el navegador y después la app del
+servicio. Los cambios de dispositivo se aplican a la llamada en curso al
+instante. Parla todavía no transmite vídeo ni uso compartido de pantalla.
+
+## Espacios de trabajo y privacidad
+
+La parte superior de la página enumera cada espacio con sesión iniciada y su
+estado: conectado, sesión caducada o no conectado. **Iniciar sesión de nuevo**
+abre el flujo de inicio de sesión, y **Cerrar sesión** pregunta primero.
+
+| Control                            | Qué hace                                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Límite de caché                    | Memoria que puede usar la base de datos local                                                                       |
+| Conservar mensajes durante         | Días de mensajes en caché que se conservan                                                                          |
+| Vaciar caché                       | Borra los mensajes y borradores en caché de todos los espacios; se vuelven a cargar desde el servicio               |
+| Bloquear el almacén en inactividad | Tras 5, 15, 30 o 60 minutos sin entrada, cierra el almacén cifrado y cubre las ventanas con una pantalla de bloqueo |
+| Informes de fallos                 | Desactivados, Preguntar siempre o Guardar en local. Nunca salen de tu dispositivo                                   |
+
+**Borrar...** en la zona de peligro cierra la sesión en todas partes y elimina el
+almacén cifrado y los inicios de sesión guardados. Tus ajustes se conservan.
+
+El límite de caché y la retención se aplican la próxima vez que Parla se inicie.
+Los demás controles de privacidad se aplican al instante.
+
+## IA y MCP
+
+Parla incluye un servidor MCP local para que las herramientas de IA de tu
+ordenador puedan leer los espacios que elijas y, si lo permites, escribir en
+ellos. Está desactivado por defecto, y también cada espacio. Nunca escucha en la
+red.
+
+### Activarlo
+
+1. Abre Ajustes, MCP y activa **Ejecutar el servidor MCP**.
+2. En **Espacios de trabajo**, activa **Compartir con clientes MCP** para cada
+   espacio que quieras compartir.
+3. Activa **Permitir acciones de escritura** si el cliente puede enviar mensajes,
+   programar mensajes, añadir reacciones o establecer tu estado. Déjalo
+   desactivado para acceso de solo lectura.
+4. Mantén **Preguntar antes de cada escritura** activado a menos que quieras que
+   las escrituras pasen sin confirmación.
+
+La página enumera cada espacio con sesión iniciada y cualquier otro espacio que ya
+tenga una política en `settings.json`. Ahí, cada espacio se identifica con
+`<provider>/<id>`; `list_workspaces` muestra las claves exactas.
+
+### Conectar un cliente
+
+**Copiar configuración del cliente** copia al portapapeles una entrada
+`mcpServers` que inicia esta copia de Parla con `mcp`. Usa esa entrada en tu
+cliente MCP.
+
+El relay es `parla mcp`. Habla con la aplicación en marcha por un socket local que
+solo tu usuario puede abrir. Si Parla no está abierto, el relay lo inicia sin
+ventana. Por ejemplo, con Parla instalado en Aplicaciones:
+
+```sh
+claude mcp add parla -- /Applications/Parla.app/Contents/MacOS/parla mcp
+```
+
+Para Zed, añade un servidor de contexto en `context_servers` con el mismo comando
+y `["mcp"]` como argumentos. La ruta debe apuntar a tu copia de Parla; **Copiar configuración
+del cliente** rellena la correcta.
+
+### Herramientas
+
+| Herramienta        | Tipo      |
+| ------------------ | --------- |
+| `list_workspaces`  | Lectura   |
+| `list_channels`    | Lectura   |
+| `get_unreads`      | Lectura   |
+| `read_channel`     | Lectura   |
+| `read_thread`      | Lectura   |
+| `search_messages`  | Lectura   |
+| `get_user`         | Lectura   |
+| `search_users`     | Lectura   |
+| `list_scheduled`   | Lectura   |
+| `send_message`     | Escritura |
+| `schedule_message` | Escritura |
+| `add_reaction`     | Escritura |
+| `set_status`       | Escritura |
+
+Los clientes MCP también pueden adjuntar una conversación o un hilo por URI:
+`parla://<provider>/<workspace>/conversation/<conversation>` y
+`parla://<provider>/<workspace>/thread/<conversation>/<ts>`.
+
+### Confirmación y seguridad
+
+- Un espacio es invisible para los clientes MCP hasta que lo compartes. Los
+  mensajes directos siguen ocultos a menos que definas `include_dms`.
+- Con **Preguntar antes de cada escritura** activado (`confirm_writes`), Parla
+  muestra una ventana que nombra el cliente, la herramienta, dónde va a publicar
+  y como quién, con el texto exacto. **Detalles** muestra los argumentos de la
+  petición. Elige **Denegar**, **Siempre para esta sesión** o **Permitir una
+  vez**. Denegar tiene
+  el foco, así que Intro y Escape deniegan. Una petición sin responder se deniega
+  a los dos minutos.
+- **Siempre para esta sesión** omite la pregunta para escrituras posteriores de
+  esa herramienta en esa conversación hasta que el cliente se desconecta o Parla
+  se cierra. Solo se guarda en memoria.
+- El texto de los mensajes de otras personas puede contener instrucciones
+  dirigidas al agente. Trata todo lo que lea un agente como no fiable.
+
+### Registro de auditoría
+
+Cada llamada se registra en local con la herramienta, el cliente, el espacio, el
+destino, el resultado, la decisión y la duración. El registro está cifrado con
+tus otros datos locales y nunca sale de tu dispositivo. El texto de los mensajes
+solo se registra si activas `log.include_content`.
+
+Abre **Actividad del agente** desde la página MCP, la paleta de comandos o la
+línea de estado de MCP al final de la ventana. Puedes filtrarlo por espacio,
+herramienta o solo escrituras, y vaciarlo ahí. Las entradas anteriores a
+`audit_retention_days` (90 por defecto) se eliminan en el siguiente inicio.
+
+### Límites
+
+Cada cliente puede hacer 120 lecturas y 10 escrituras por minuto. Cada espacio
+puede hacer 20 lecturas al proveedor por minuto. A un cliente que supera un
+límite se le pide que lo intente más tarde, y Parla sigue respondiendo.
+
+## Avanzado
+
+| Control                                     | Qué hace                                                                                |
+| ------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Caché de imágenes                           | Memoria para imágenes. Se aplica en el siguiente inicio                                 |
+| Mensajes en memoria por conversación        | Se aplica a la siguiente conversación que cargues                                       |
+| Pasar a modo ligero tras ocultar la ventana | Cuánto tiempo mantiene una ventana oculta los mensajes de todos los espacios en memoria |
+| Nivel de registro                           | Error, Info o Depuración. Se aplica al instante                                         |
+
+Pasar a modo ligero depende de si la ventana se ve en pantalla, no de si tiene el
+foco de teclado. Una ventana detrás de otra aplicación o en un segundo monitor
+sigue despierta; los espacios solo pasan a modo ligero mientras está minimizada,
+oculta, completamente cubierta o la pantalla está dormida.
+
+**Registros y diagnósticos** puede abrir la carpeta de registros o exportar un
+archivo de texto censurado con la versión, el sistema operativo, los ajustes, las
+líneas recientes del registro y los contadores de rendimiento. Antes se eliminan
+tokens, cookies, texto de mensajes, direcciones y hosts de espacios de trabajo.
+Léelo antes de adjuntarlo a un informe de error.
+
+**Restablecer ajustes** vuelve a escribir los valores predeterminados comentados
+en `settings.json`. Tus temas y `keymap.json` se conservan.
+
+## Archivos y capas
+
+La carpeta de configuración de Parla es:
+
+| Plataforma | Directorio                                    |
+| ---------- | --------------------------------------------- |
+| macOS      | `~/.config/parla`                             |
+| Linux      | `$XDG_CONFIG_HOME/parla`, o `~/.config/parla` |
+| Windows    | `%APPDATA%\parla`                             |
+
+Los archivos principales son:
+
+```text
+~/.config/parla/
+  settings.json                     ajustes de usuario JSONC
+  settings.schema.json              autocompletado y validación en el editor
+  keymap.json                       atajos de teclado JSONC
+  themes/*.json                     temas de usuario
+  workspaces/<provider>/<id>.json   anulaciones opcionales por espacio
+```
+
+Los ajustes se aplican en este orden:
+
+1. Valores predeterminados incluidos.
+2. `settings.json`.
+3. `workspaces/<provider>/<id>.json` para ese espacio de trabajo.
+
+Los objetos se combinan y los arrays se sustituyen. Todos los archivos de ajustes
+son JSONC, así que se permiten comentarios y comas finales. Parla vigila la
+carpeta y recarga tras una breve pausa. Un cambio válido se aplica al instante; un
+archivo inválido no sustituye los últimos ajustes válidos, y Parla muestra el
+archivo, la línea y la columna para que lo arregles.
+
+Nunca pongas tokens ni cookies en estos archivos. Parla los guarda en el llavero
+del sistema operativo.
+
+Siguiente: [Atajos de teclado](/parla/es/docs/keymap/).

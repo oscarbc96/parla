@@ -1,0 +1,124 @@
+---
+title: Instal·lació
+description: Instal·la una versió de Parla a macOS o compila'l des del codi font, i saps què esperar en el primer arrencament.
+---
+
+Parla es distribueix com una compilació autosignada per a macOS a
+[GitHub Releases](https://github.com/oscarbc96/parla/releases), o el pots
+compilar des del codi font a macOS 14 o posterior, en Apple silicon o Intel.
+
+## Instal·lar una versió
+
+1. Baixa el `.dmg` més recent de
+   [GitHub Releases](https://github.com/oscarbc96/parla/releases). Un únic dmg
+   universal cobreix Apple silicon i Intel.
+2. Obre el `.dmg` i arrossega Parla a Aplicacions.
+3. Obre Parla una vegada i permet-ho.
+
+El paquet és autosignat, així que macOS bloqueja el primer arrencament. A macOS
+15 o posterior, obre Parla una vegada (macOS ho bloqueja), ves a Configuració del
+Sistema > Privadesa i seguretat, desplaça't fins a Seguretat, fes clic a **Obre-ho
+igualment** al costat del missatge de Parla, confirma i introdueix la contrasenya.
+A macOS 14, fes Control-clic (clic dret) a Parla a Aplicacions i tria **Obre**, i
+després **Obre**. Només cal el primer cop.
+
+## Compilar des del codi font
+
+Compila'l a macOS 14 o posterior, en Apple silicon o Intel.
+
+### Requisits
+
+- macOS 14 o posterior.
+- [mise](https://mise.jdx.dev) per a la cadena d'eines de Rust i les tasques del
+  projecte.
+- Xcode complet amb la cadena d'eines Metal
+  (`xcodebuild -downloadComponent MetalToolchain`). Les Command Line Tools totes
+  soles no són suficients.
+- Git.
+
+### Compilar i executar
+
+1. Instal·la mise si no el tens.
+
+   ```sh
+   curl https://mise.run | sh
+   ```
+
+2. Clona el repositori.
+
+   ```sh
+   git clone https://github.com/oscarbc96/parla.git
+   cd parla
+   ```
+
+3. Instal·la les eines fixades.
+
+   ```sh
+   mise install
+   ```
+
+4. Opcional: crea una identitat de signatura local una vegada, perquè macOS deixi
+   de demanar-te la contrasenya després de cada recompilació.
+
+   ```sh
+   mise run dev:cert
+   ```
+
+   macOS et demana la contrasenya d'inici de sessió una vegada. Això afegeix un
+   certificat autofirmat "Parla Dev (local)" i el confia només per signar codi.
+
+5. Compila i executa.
+
+   ```sh
+   mise run run
+   ```
+
+La primera compilació compila GPUI i la resta de l'espai de treball de Rust, així
+que triga una estona. Les següents reutilitzen la memòria cau.
+
+Per crear un paquet d'aplicació de tipus release, executa `mise run bundle` i obre
+`target/release/Parla.app`. `mise run bundle:run` inicia aquell paquet amb els
+registres a la terminal. Les notificacions d'escriptori necessiten el paquet de
+l'aplicació.
+
+El paquet és autosignat, així que macOS bloqueja el primer arrencament. A macOS
+15 o posterior, obre Parla una vegada (macOS ho bloqueja), ves a Configuració del
+Sistema > Privadesa i seguretat, desplaça't fins a Seguretat, fes clic a **Obre-ho
+igualment** al costat del missatge de Parla, confirma i introdueix la contrasenya.
+A macOS 14, fes Control-clic (clic dret) a Parla a Aplicacions i tria **Obre**, i
+després **Obre**. Només cal el primer cop.
+
+## Credencials en una compilació de desenvolupament
+
+Les compilacions de depuració desen els inicis de sessió i les claus del magatzem
+a `development_credentials.json`, a la carpeta de dades de Parla, no al clauer de
+macOS. El fitxer només el pot llegir el teu usuari (mode 0600) i no està xifrat.
+S'esborra entrada a entrada quan tanques la sessió. Les compilacions release
+sempre fan servir el clauer.
+
+Per usar el clauer en una compilació de depuració, defineix
+`PARLA_DEV_USE_KEYCHAIN=1` i executa `mise run dev:cert` una vegada. Inicia la
+sessió de nou; una sessió que ja és al clauer no es copia a la compilació de
+desenvolupament.
+
+El primer cop que Parla llegeix un element del clauer, macOS et pot demanar la
+contrasenya. Tria **Permetre sempre** perquè no torni a preguntar per aquell
+element.
+
+## Primer arrencament
+
+Sense cap espai de treball, Parla obre un breu procés de configuració: benvinguda,
+elecció del servei, inici de sessió, primera sincronització i un recorregut. La
+primera sincronització obre el magatzem local xifrat i carrega canals, persones i
+missatges recents. **Obre Parla** s'activa quan l'espai de treball està llest.
+
+Següent: [Inicia la sessió](/parla/ca/docs/sign-in/).
+
+## Windows i Linux
+
+Parla té com a objectiu macOS, Windows i Linux en el codi i a CI. Les
+compilacions de macOS són a GitHub Releases; encara no hi ha instal·ladors per a
+Windows ni Linux, així que compila'ls des del codi font. Per ara, macOS és la
+plataforma amb suport. Les compilacions per a Windows i Linux poden funcionar,
+però algunes funcions depenen de macOS i les notificacions i la reproducció
+multimèdia poden ser diferents.

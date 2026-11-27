@@ -1,0 +1,36 @@
+id = "settings-bad"
+name = "Settings"
+version = "0.1.0"
+api = "0.1"
+
+[[settings]]
+key = "enabled"
+type = "boolean"
+default = 3
+title = "Enabled"
+
+[[settings]]
+key = "count"
+type = "integer"
+default = 500
+min = 5
+max = 200
+title = "Count"
+
+[[settings]]
+key = "size"
+type = "enum"
+options = ["small", "large"]
+default = "medium"
+title = "Size"
+
+[[settings]]
+key = "token"
+type = "secret"
+default = "abc"
+title = "Token"
+
+[[settings]]
+key = "mode"
+type = "colour"
+title = "Mode"

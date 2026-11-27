@@ -1,0 +1,95 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    # Only what the site build or its tests read: the site, the settings
+    # schema and actions snapshot it copies, the logo it inlines, the app and
+    # site catalogs the translation drafts are counted from, the files its tests
+    # read from the repo root, the Bun pin in mise.toml, and this workflow.
+    # Visual baselines reach the site through the committed site/public/shots.
+    # The changelog's "Unreleased" section refreshes on the next of these
+    # pushes, a release or a manual run.
+    paths:
+      - "site/**"
+      - "assets/brand/**"
+      - "crates/settings/tests/snapshots/settings.schema.json"
+      - "crates/parla/tests/snapshots/actions.json"
+      - "i18n/**"
+      - "crates/**/i18n/**"
+      - "CONTRIBUTING.md"
+      - "mise.toml"
+      - ".github/workflows/pages.yml"
+      - ".github/actions/setup/**"
+  release:
+    types: [published, edited, deleted]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          tools: bun
+          bun-install: site
+      - name: Write release data
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$(gh api "repos/$REPO" --jq .private 2>/dev/null || true)" = "false" ]; then
+            if gh api "repos/$REPO/releases/latest" > site/.release.json; then
+              :
+            else
+              rm -f site/.release.json
+            fi
+            if gh api --paginate --slurp "repos/$REPO/releases?per_page=100" > site/.releases.json; then
+              :
+            else
+              rm -f site/.releases.json
+            fi
+          else
+            rm -f site/.release.json site/.releases.json
+          fi
+      # --force: the build reads releases and stars with the token, so a cached
+      # build would be stale. Only the local turbo cache is skipped.
+      - name: Build and test
+        working-directory: site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PARLA_RELEASE_FILE: .release.json
+          TURBO_TELEMETRY_DISABLED: "1"
+        run: bun run t:pages
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

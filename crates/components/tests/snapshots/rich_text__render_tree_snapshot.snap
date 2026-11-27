@@ -1,0 +1,82 @@
+---
+source: crates/components/tests/rich_text.rs
+expression: "build_nodes(&rt, &rcx(&s))"
+---
+[
+    Text(
+        TextNode {
+            text: "bold \u{2009}x\u{2009} site Nov 14, 2023, 22:13",
+            spans: [
+                Span {
+                    range: 0..4,
+                    style: Style {
+                        bold: true,
+                        italic: false,
+                        strike: false,
+                    },
+                    role: None,
+                },
+                Span {
+                    range: 5..12,
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                    role: Some(
+                        Code,
+                    ),
+                },
+                Span {
+                    range: 13..17,
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                    role: Some(
+                        Link(
+                            "https://a.test",
+                        ),
+                    ),
+                },
+            ],
+        },
+    ),
+    Quote(
+        [
+            Text(
+                TextNode {
+                    text: "q",
+                    spans: [],
+                },
+            ),
+        ],
+    ),
+    Code(
+        "let a = 1;",
+    ),
+    List {
+        indent: 0,
+        items: [
+            (
+                "3.",
+                TextNode {
+                    text: "a",
+                    spans: [],
+                },
+            ),
+            (
+                "4.",
+                TextNode {
+                    text: "b",
+                    spans: [],
+                },
+            ),
+        ],
+    },
+    Divider,
+    Fallback(
+        "nope",
+    ),
+]

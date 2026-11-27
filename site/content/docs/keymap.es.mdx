@@ -1,0 +1,280 @@
+---
+title: Atajos de teclado
+description: Los atajos predeterminados, la hoja de atajos y cómo cambiar cualquier acción en el mapa de teclas.
+---
+
+Cada acción de Parla tiene un nombre estable. La paleta de comandos y el mapa de
+teclas usan esos nombres.
+
+Las teclas de abajo son los valores predeterminados en macOS. En Linux y Windows,
+usa `ctrl` en lugar de `cmd` excepto donde la tabla diga otra cosa. Un guion
+significa que la acción no tiene tecla predeterminada.
+
+Pulsa `cmd-/` (`ctrl-/` en Linux y Windows), o elige Ayuda, Atajos de teclado,
+para abrir la hoja de atajos. Muestra cada acción que tiene tecla, agrupada por
+área, y muestra las teclas que has cambiado. Escribe en su campo de búsqueda para
+filtrar por nombre o teclas. **Editar mapa de teclas** abre Ajustes, Teclas.
+
+## Navegación
+
+| Acción                          | macOS             | Linux y Windows     |
+| ------------------------------- | ----------------- | ------------------- |
+| Selector rápido                 | `cmd-k`           | `ctrl-k`            |
+| Buscar mensajes                 | `cmd-shift-f`     | `ctrl-shift-f`      |
+| Paleta de comandos              | `cmd-shift-p`     | `ctrl-shift-p`      |
+| Ajustes                         | `cmd-,`           | `ctrl-,`            |
+| Hoja de atajos                  | `cmd-/`           | `ctrl-/`            |
+| Todos los no leídos             | `cmd-shift-a`     | `ctrl-shift-a`      |
+| Siguiente conversación no leída | `alt-shift-down`  | `alt-shift-down`    |
+| Atrás                           | `cmd-[`           | `ctrl-[`            |
+| Adelante                        | `cmd-]`           | `ctrl-]`            |
+| Siguiente espacio de trabajo    | `cmd-shift-]`     | `ctrl-shift-]`      |
+| Espacio de trabajo anterior     | `cmd-shift-[`     | `ctrl-shift-[`      |
+| Cambiar al espacio 1 a 9        | `cmd-1` a `cmd-9` | `ctrl-1` a `ctrl-9` |
+| Enfocar el panel siguiente      | `cmd-f6`          | `ctrl-f6`           |
+| Enfocar el panel anterior       | `cmd-shift-f6`    | `ctrl-shift-f6`     |
+| Alternar modo claro y oscuro    | `cmd-shift-l`     | `ctrl-shift-l`      |
+| Pausar notificaciones           | `cmd-shift-d`     | `ctrl-shift-d`      |
+| Silenciar o activar una llamada | `cmd-shift-m`     | `ctrl-shift-m`      |
+
+Con la barra lateral enfocada, Arriba y Abajo mueven la selección e Intro abre la
+conversación.
+
+## Mensajes
+
+| Acción                     | macOS            | Linux y Windows   |
+| -------------------------- | ---------------- | ----------------- |
+| Editar tu mensaje          | `e`              | `e`               |
+| Borrar tu mensaje          | `cmd-backspace`  | `delete`          |
+| Abrir el hilo              | `cmd-shift-t`    | `ctrl-shift-t`    |
+| Marcar como no leído       | `cmd-shift-u`    | `ctrl-shift-u`    |
+| Añadir una reacción        | `cmd-shift-\`    | `ctrl-shift-\`    |
+| Ir al mensaje más reciente | `cmd-shift-down` | `ctrl-shift-down` |
+| Abrir en una ventana nueva | `cmd-shift-o`    | `ctrl-shift-o`    |
+
+## Compositor
+
+| Acción                                                | macOS         | Linux y Windows |
+| ----------------------------------------------------- | ------------- | --------------- |
+| Enviar                                                | `enter`       | `enter`         |
+| Línea nueva                                           | `shift-enter` | `shift-enter`   |
+| Editar tu último mensaje                              | `up`          | `up`            |
+| Cancelar una edición o respuesta                      | `escape`      | `escape`        |
+| Insertar la mención, el canal o el emoji seleccionado | `tab`         | `tab`           |
+| Pegar                                                 | `cmd-v`       | `ctrl-v`        |
+
+Con **Tecla de envío** en Comando-Intro en Ajustes, Apariencia, Intro hace una
+línea nueva y `cmd-enter` (`ctrl-enter`) envía.
+
+### Formato
+
+| Atajo             | Formato           | Escribe                       |
+| ----------------- | ----------------- | ----------------------------- |
+| `cmd-b`           | Negrita           | `*texto*`                     |
+| `cmd-i`           | Cursiva           | `_texto_`                     |
+| `cmd-shift-x`     | Tachado           | `~texto~`                     |
+| `cmd-e`           | Código            | `` `texto` ``                 |
+| `cmd-alt-shift-c` | Bloque de código  | tres acentos graves           |
+| `cmd-shift-9`     | Cita              | `> ` antes de una línea       |
+| `cmd-shift-8`     | Lista con viñetas | `• ` antes de una línea       |
+| `cmd-shift-7`     | Lista numerada    | `1. ` antes de una línea      |
+| `cmd-shift-u`     | Enlace            | una dirección web o de correo |
+
+En Linux y Windows, usa `ctrl` en lugar de `cmd`.
+
+## Aplicación y ventanas
+
+| Acción                            | macOS         | Linux y Windows |
+| --------------------------------- | ------------- | --------------- |
+| Cerrar la ventana en primer plano | `cmd-w`       | `ctrl-w`        |
+| Salir de Parla                    | `cmd-q`       | `ctrl-q`        |
+| Ocultar Parla                     | `cmd-h`       | -               |
+| Ocultar otras apps                | `cmd-alt-h`   | -               |
+| Minimizar                         | `cmd-m`       | -               |
+| Recargar ajustes y mapa de teclas | `cmd-shift-r` | `ctrl-shift-r`  |
+| Abrir `keymap.json`               | `cmd-alt-,`   | `ctrl-alt-,`    |
+
+En Windows y Linux, `ctrl-w` cierra la ventana principal como su botón de cerrar.
+Con el icono de la barra de menús desactivado, eso cierra Parla.
+
+## Cambiar un atajo
+
+Abre Ajustes, Teclas. La página enumera cada acción con su atajo, su contexto y su
+origen: **Predeterminado**, o **Tú** cuando el enlace viene de tu `keymap.json`.
+
+1. Encuentra la acción desplazándote o buscando por nombre o teclas.
+2. Haz clic en su atajo, o enfócalo y pulsa Intro o Espacio.
+3. Pulsa las teclas nuevas y pulsa Intro, o elige **Guardar**.
+4. Elige **Restablecer** para quitar tu enlace y recuperar el predeterminado.
+
+**Cambiados** enumera solo tus enlaces. **Conflictos** enumera las teclas que
+comparten dos acciones donde se cruzan una tecla global y una de contexto; la de
+contexto gana mientras tiene el foco.
+
+Una segunda tecla crea una secuencia, como `cmd-k cmd-s`. Una tercera empieza de
+nuevo. Escape cancela, y Tab se mueve a los botones Guardar y Cancelar, así que
+ninguna de las dos se puede grabar. Una tecla que escribe texto necesita un
+modificador para una acción global o en el compositor, los campos de texto y los
+selectores.
+
+Tus enlaces viven en `keymap.json`, un array de objetos de contexto y enlaces:
+
+```json
+[
+  {
+    "bindings": {
+      "cmd-q": null,
+      "cmd-shift-q": "app::Quit"
+    }
+  }
+]
+```
+
+`null` quita un enlace predeterminado. Los comentarios se conservan cuando Parla
+escribe el archivo. Los cambios se aplican al instante.
+
+La paleta de comandos (`cmd-shift-p`) enumera las acciones que puedes ejecutar,
+con sus teclas. Es la forma más rápida de encontrar una acción sin recordar su
+nombre.
+
+{/* keymap-actions:start */}
+
+## Referencia de acciones
+
+Cada acción tiene un nombre estable, y la paleta de comandos y `keymap.json`
+lo usan. Esta tabla enumera cada acción con sus teclas predeterminadas,
+generada a partir de la lista de acciones de la app. El contexto entre
+paréntesis es el contexto del mapa de teclas en el que se aplica el enlace, y
+un guion significa que la acción no tiene tecla predeterminada.
+
+| Acción                          | macOS                                                                | Linux                                                                 | Windows                                                               |
+| ------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `app::About`                    | -                                                                    | -                                                                     | -                                                                     |
+| `app::BringAllToFront`          | -                                                                    | -                                                                     | -                                                                     |
+| `app::CheckForUpdates`          | -                                                                    | -                                                                     | -                                                                     |
+| `app::CloseWindow`              | `cmd-w`                                                              | `ctrl-w`                                                              | `ctrl-w`                                                              |
+| `app::CommandPalette`           | `cmd-shift-p`                                                        | `ctrl-shift-p`                                                        | `ctrl-shift-p`                                                        |
+| `app::DeleteAllData`            | -                                                                    | -                                                                     | -                                                                     |
+| `app::Hide`                     | `cmd-h`                                                              | -                                                                     | -                                                                     |
+| `app::HideOthers`               | `cmd-alt-h`                                                          | -                                                                     | -                                                                     |
+| `app::Minimize`                 | `cmd-m`                                                              | -                                                                     | -                                                                     |
+| `app::OpenDocs`                 | -                                                                    | -                                                                     | -                                                                     |
+| `app::OpenKeyboardShortcuts`    | `cmd-/`                                                              | `ctrl-/`                                                              | `ctrl-/`                                                              |
+| `app::OpenKeymap`               | `cmd-alt-,`                                                          | `ctrl-alt-,`                                                          | `ctrl-alt-,`                                                          |
+| `app::OpenSettings`             | `cmd-,`                                                              | `ctrl-,`                                                              | `ctrl-,`                                                              |
+| `app::OpenSettingsFile`         | -                                                                    | -                                                                     | -                                                                     |
+| `app::Quit`                     | `cmd-q`                                                              | `ctrl-q`                                                              | `ctrl-q`                                                              |
+| `app::ReloadConfig`             | `cmd-shift-r`                                                        | `ctrl-shift-r`                                                        | `ctrl-shift-r`                                                        |
+| `app::ReportIssue`              | -                                                                    | -                                                                     | -                                                                     |
+| `app::ShowAll`                  | -                                                                    | -                                                                     | -                                                                     |
+| `app::ShowCrashReports`         | -                                                                    | -                                                                     | -                                                                     |
+| `app::Zoom`                     | -                                                                    | -                                                                     | -                                                                     |
+| `auth::SignInAgain`             | -                                                                    | -                                                                     | -                                                                     |
+| `auth::SignOut`                 | -                                                                    | -                                                                     | -                                                                     |
+| `call::Leave`                   | -                                                                    | -                                                                     | -                                                                     |
+| `call::ShowWindow`              | -                                                                    | -                                                                     | -                                                                     |
+| `call::ToggleMute`              | `cmd-shift-m`                                                        | `ctrl-shift-m`                                                        | `ctrl-shift-m`                                                        |
+| `composer::AcceptCompletion`    | `tab` (`Composer`)                                                   | `tab` (`Composer`)                                                    | `tab` (`Composer`)                                                    |
+| `composer::Bold`                | `cmd-b` (`Composer`)                                                 | `ctrl-b` (`Composer`)                                                 | `ctrl-b` (`Composer`)                                                 |
+| `composer::BulletList`          | `cmd-shift-8` (`Composer`)                                           | `ctrl-shift-8` (`Composer`)                                           | `ctrl-shift-8` (`Composer`)                                           |
+| `composer::Cancel`              | `escape` (`Composer`)                                                | `escape` (`Composer`)                                                 | `escape` (`Composer`)                                                 |
+| `composer::Code`                | `cmd-e` (`Composer`)                                                 | `ctrl-e` (`Composer`)                                                 | `ctrl-e` (`Composer`)                                                 |
+| `composer::CodeBlock`           | `cmd-alt-shift-c` (`Composer`)                                       | `ctrl-alt-shift-c` (`Composer`)                                       | `ctrl-alt-shift-c` (`Composer`)                                       |
+| `composer::EditLast`            | `up` (`Composer`)                                                    | `up` (`Composer`)                                                     | `up` (`Composer`)                                                     |
+| `composer::Italic`              | `cmd-i` (`Composer`)                                                 | `ctrl-i` (`Composer`)                                                 | `ctrl-i` (`Composer`)                                                 |
+| `composer::Link`                | `cmd-shift-u` (`Composer`)                                           | `ctrl-shift-u` (`Composer`)                                           | `ctrl-shift-u` (`Composer`)                                           |
+| `composer::Newline`             | `shift-enter` (`Composer`)                                           | `shift-enter` (`Composer`)                                            | `shift-enter` (`Composer`)                                            |
+| `composer::NumberedList`        | `cmd-shift-7` (`Composer`)                                           | `ctrl-shift-7` (`Composer`)                                           | `ctrl-shift-7` (`Composer`)                                           |
+| `composer::Paste`               | `cmd-v` (`Composer`)                                                 | `ctrl-v` (`Composer`)                                                 | `ctrl-v` (`Composer`)                                                 |
+| `composer::PlainEnter`          | `enter` (`Composer && send_cmd_enter`)                               | `enter` (`Composer && send_cmd_enter`)                                | `enter` (`Composer && send_cmd_enter`)                                |
+| `composer::Quote`               | `cmd-shift-9` (`Composer`)                                           | `ctrl-shift-9` (`Composer`)                                           | `ctrl-shift-9` (`Composer`)                                           |
+| `composer::Send`                | `enter` (`Composer`)<br />`cmd-enter` (`Composer && send_cmd_enter`) | `enter` (`Composer`)<br />`ctrl-enter` (`Composer && send_cmd_enter`) | `enter` (`Composer`)<br />`ctrl-enter` (`Composer && send_cmd_enter`) |
+| `composer::SendLater`           | `cmd-shift-enter` (`Composer`)                                       | `ctrl-shift-enter` (`Composer`)                                       | `ctrl-shift-enter` (`Composer`)                                       |
+| `composer::Strike`              | `cmd-shift-x` (`Composer`)                                           | `ctrl-shift-x` (`Composer`)                                           | `ctrl-shift-x` (`Composer`)                                           |
+| `composer::ToggleBroadcast`     | -                                                                    | -                                                                     | -                                                                     |
+| `mcp::ApproveWrite`             | -                                                                    | -                                                                     | -                                                                     |
+| `mcp::ApproveWriteForSession`   | -                                                                    | -                                                                     | -                                                                     |
+| `mcp::ClearAuditLog`            | -                                                                    | -                                                                     | -                                                                     |
+| `mcp::DeclineWrite`             | `escape` (`ConfirmWrite`)                                            | `escape` (`ConfirmWrite`)                                             | `escape` (`ConfirmWrite`)                                             |
+| `mcp::OpenAuditLog`             | -                                                                    | -                                                                     | -                                                                     |
+| `mcp::RebuildAuditLog`          | -                                                                    | -                                                                     | -                                                                     |
+| `picker::Confirm`               | `enter` (`Picker`)                                                   | `enter` (`Picker`)                                                    | `enter` (`Picker`)                                                    |
+| `picker::Dismiss`               | `escape` (`Picker`)                                                  | `escape` (`Picker`)                                                   | `escape` (`Picker`)                                                   |
+| `picker::SelectLeft`            | `left` (`Picker`)                                                    | `left` (`Picker`)                                                     | `left` (`Picker`)                                                     |
+| `picker::SelectNext`            | `down` (`Picker`)                                                    | `down` (`Picker`)                                                     | `down` (`Picker`)                                                     |
+| `picker::SelectPrev`            | `up` (`Picker`)                                                      | `up` (`Picker`)                                                       | `up` (`Picker`)                                                       |
+| `picker::SelectRight`           | `right` (`Picker`)                                                   | `right` (`Picker`)                                                    | `right` (`Picker`)                                                    |
+| `sidebar::NextUnread`           | `alt-shift-down`                                                     | `alt-shift-down`                                                      | `alt-shift-down`                                                      |
+| `sidebar::Open`                 | `enter` (`Sidebar`)                                                  | `enter` (`Sidebar`)                                                   | `enter` (`Sidebar`)                                                   |
+| `sidebar::SelectNext`           | `down` (`Sidebar`)                                                   | `down` (`Sidebar`)                                                    | `down` (`Sidebar`)                                                    |
+| `sidebar::SelectPrev`           | `up` (`Sidebar`)                                                     | `up` (`Sidebar`)                                                      | `up` (`Sidebar`)                                                      |
+| `store::RebuildCache`           | -                                                                    | -                                                                     | -                                                                     |
+| `text_input::Backspace`         | `backspace` (`TextInput`)                                            | `backspace` (`TextInput`)                                             | `backspace` (`TextInput`)                                             |
+| `text_input::Copy`              | `cmd-c` (`TextInput`)                                                | `ctrl-c` (`TextInput`)                                                | `ctrl-c` (`TextInput`)                                                |
+| `text_input::Cut`               | `cmd-x` (`TextInput`)                                                | `ctrl-x` (`TextInput`)                                                | `ctrl-x` (`TextInput`)                                                |
+| `text_input::Delete`            | `delete` (`TextInput`)                                               | `delete` (`TextInput`)                                                | `delete` (`TextInput`)                                                |
+| `text_input::DeleteWordLeft`    | `alt-backspace` (`TextInput`)                                        | `ctrl-backspace` (`TextInput`)                                        | `ctrl-backspace` (`TextInput`)                                        |
+| `text_input::DocEnd`            | `cmd-down` (`TextInput`)                                             | `ctrl-end` (`TextInput`)                                              | `ctrl-end` (`TextInput`)                                              |
+| `text_input::DocStart`          | `cmd-up` (`TextInput`)                                               | `ctrl-home` (`TextInput`)                                             | `ctrl-home` (`TextInput`)                                             |
+| `text_input::Down`              | `down` (`TextInput`)                                                 | `down` (`TextInput`)                                                  | `down` (`TextInput`)                                                  |
+| `text_input::Left`              | `left` (`TextInput`)                                                 | `left` (`TextInput`)                                                  | `left` (`TextInput`)                                                  |
+| `text_input::LineEnd`           | `cmd-right` (`TextInput`)                                            | `end` (`TextInput`)                                                   | `end` (`TextInput`)                                                   |
+| `text_input::LineStart`         | `cmd-left` (`TextInput`)                                             | `home` (`TextInput`)                                                  | `home` (`TextInput`)                                                  |
+| `text_input::Paste`             | -                                                                    | -                                                                     | -                                                                     |
+| `text_input::Redo`              | `cmd-shift-z` (`TextInput`)                                          | `ctrl-shift-z` (`TextInput`)<br />`ctrl-y` (`TextInput`)              | `ctrl-shift-z` (`TextInput`)<br />`ctrl-y` (`TextInput`)              |
+| `text_input::Right`             | `right` (`TextInput`)                                                | `right` (`TextInput`)                                                 | `right` (`TextInput`)                                                 |
+| `text_input::SelectAll`         | `cmd-a` (`TextInput`)                                                | `ctrl-a` (`TextInput`)                                                | `ctrl-a` (`TextInput`)                                                |
+| `text_input::SelectDocEnd`      | `cmd-shift-down` (`TextInput`)                                       | `ctrl-shift-end` (`TextInput`)                                        | `ctrl-shift-end` (`TextInput`)                                        |
+| `text_input::SelectDocStart`    | `cmd-shift-up` (`TextInput`)                                         | `ctrl-shift-home` (`TextInput`)                                       | `ctrl-shift-home` (`TextInput`)                                       |
+| `text_input::SelectDown`        | `shift-down` (`TextInput`)                                           | `shift-down` (`TextInput`)                                            | `shift-down` (`TextInput`)                                            |
+| `text_input::SelectLeft`        | `shift-left` (`TextInput`)                                           | `shift-left` (`TextInput`)                                            | `shift-left` (`TextInput`)                                            |
+| `text_input::SelectLineEnd`     | `cmd-shift-right` (`TextInput`)                                      | `shift-end` (`TextInput`)                                             | `shift-end` (`TextInput`)                                             |
+| `text_input::SelectLineStart`   | `cmd-shift-left` (`TextInput`)                                       | `shift-home` (`TextInput`)                                            | `shift-home` (`TextInput`)                                            |
+| `text_input::SelectRight`       | `shift-right` (`TextInput`)                                          | `shift-right` (`TextInput`)                                           | `shift-right` (`TextInput`)                                           |
+| `text_input::SelectUp`          | `shift-up` (`TextInput`)                                             | `shift-up` (`TextInput`)                                              | `shift-up` (`TextInput`)                                              |
+| `text_input::SelectWordLeft`    | `alt-shift-left` (`TextInput`)                                       | `ctrl-shift-left` (`TextInput`)                                       | `ctrl-shift-left` (`TextInput`)                                       |
+| `text_input::SelectWordRight`   | `alt-shift-right` (`TextInput`)                                      | `ctrl-shift-right` (`TextInput`)                                      | `ctrl-shift-right` (`TextInput`)                                      |
+| `text_input::Undo`              | `cmd-z` (`TextInput`)                                                | `ctrl-z` (`TextInput`)                                                | `ctrl-z` (`TextInput`)                                                |
+| `text_input::Up`                | -                                                                    | -                                                                     | -                                                                     |
+| `text_input::WordLeft`          | `alt-left` (`TextInput`)                                             | `ctrl-left` (`TextInput`)                                             | `ctrl-left` (`TextInput`)                                             |
+| `text_input::WordRight`         | `alt-right` (`TextInput`)                                            | `ctrl-right` (`TextInput`)                                            | `ctrl-right` (`TextInput`)                                            |
+| `theme::ToggleMode`             | `cmd-shift-l`                                                        | `ctrl-shift-l`                                                        | `ctrl-shift-l`                                                        |
+| `timeline::AddReaction`         | `cmd-shift-\` (`Timeline`)                                           | `ctrl-shift-\` (`Timeline`)                                           | `ctrl-shift-\` (`Timeline`)                                           |
+| `timeline::CopyLink`            | -                                                                    | -                                                                     | -                                                                     |
+| `timeline::DeleteMessage`       | `cmd-backspace` (`Timeline`)                                         | `delete` (`Timeline`)                                                 | `delete` (`Timeline`)                                                 |
+| `timeline::EditMessage`         | `e` (`Timeline`)                                                     | `e` (`Timeline`)                                                      | `e` (`Timeline`)                                                      |
+| `timeline::JumpToLatest`        | `cmd-shift-down` (`Timeline`)                                        | `ctrl-shift-down` (`Timeline`)                                        | `ctrl-shift-down` (`Timeline`)                                        |
+| `timeline::MarkUnread`          | `cmd-shift-u` (`Timeline`)                                           | `ctrl-shift-u` (`Timeline`)                                           | `ctrl-shift-u` (`Timeline`)                                           |
+| `timeline::OpenThread`          | `cmd-shift-t` (`Timeline`)                                           | `ctrl-shift-t` (`Timeline`)                                           | `ctrl-shift-t` (`Timeline`)                                           |
+| `timeline::TogglePin`           | -                                                                    | -                                                                     | -                                                                     |
+| `timeline::ToggleSaved`         | -                                                                    | -                                                                     | -                                                                     |
+| `workspace::ActivateWorkspace1` | `cmd-1`                                                              | `ctrl-1`                                                              | `ctrl-1`                                                              |
+| `workspace::ActivateWorkspace2` | `cmd-2`                                                              | `ctrl-2`                                                              | `ctrl-2`                                                              |
+| `workspace::ActivateWorkspace3` | `cmd-3`                                                              | `ctrl-3`                                                              | `ctrl-3`                                                              |
+| `workspace::ActivateWorkspace4` | `cmd-4`                                                              | `ctrl-4`                                                              | `ctrl-4`                                                              |
+| `workspace::ActivateWorkspace5` | `cmd-5`                                                              | `ctrl-5`                                                              | `ctrl-5`                                                              |
+| `workspace::ActivateWorkspace6` | `cmd-6`                                                              | `ctrl-6`                                                              | `ctrl-6`                                                              |
+| `workspace::ActivateWorkspace7` | `cmd-7`                                                              | `ctrl-7`                                                              | `ctrl-7`                                                              |
+| `workspace::ActivateWorkspace8` | `cmd-8`                                                              | `ctrl-8`                                                              | `ctrl-8`                                                              |
+| `workspace::ActivateWorkspace9` | `cmd-9`                                                              | `ctrl-9`                                                              | `ctrl-9`                                                              |
+| `workspace::AllMentions`        | -                                                                    | -                                                                     | -                                                                     |
+| `workspace::AllScheduled`       | -                                                                    | -                                                                     | -                                                                     |
+| `workspace::AllUnreads`         | `cmd-shift-a`                                                        | `ctrl-shift-a`                                                        | `ctrl-shift-a`                                                        |
+| `workspace::ClosePanel`         | `escape` (`Workspace`)                                               | `escape` (`Workspace`)                                                | `escape` (`Workspace`)                                                |
+| `workspace::FocusNextPane`      | `cmd-f6`                                                             | `ctrl-f6`                                                             | `ctrl-f6`                                                             |
+| `workspace::FocusPreviousPane`  | `cmd-shift-f6`                                                       | `ctrl-shift-f6`                                                       | `ctrl-shift-f6`                                                       |
+| `workspace::GoBack`             | `cmd-[`                                                              | `ctrl-[`                                                              | `ctrl-[`                                                              |
+| `workspace::GoForward`          | `cmd-]`                                                              | `ctrl-]`                                                              | `ctrl-]`                                                              |
+| `workspace::NextWorkspace`      | `cmd-shift-]`                                                        | `ctrl-shift-]`                                                        | `ctrl-shift-]`                                                        |
+| `workspace::PauseNotifications` | `cmd-shift-d`                                                        | `ctrl-shift-d`                                                        | `ctrl-shift-d`                                                        |
+| `workspace::PopOutConversation` | `cmd-shift-o` (`Timeline`)                                           | `ctrl-shift-o` (`Timeline`)                                           | `ctrl-shift-o` (`Timeline`)                                           |
+| `workspace::PopOutThread`       | `cmd-shift-o` (`Workspace`)                                          | `ctrl-shift-o` (`Workspace`)                                          | `ctrl-shift-o` (`Workspace`)                                          |
+| `workspace::PreviousWorkspace`  | `cmd-shift-[`                                                        | `ctrl-shift-[`                                                        | `ctrl-shift-[`                                                        |
+| `workspace::QuickSwitch`        | `cmd-k`                                                              | `ctrl-k`                                                              | `ctrl-k`                                                              |
+| `workspace::RemoveWorkspace`    | -                                                                    | -                                                                     | -                                                                     |
+| `workspace::Search`             | `cmd-shift-f`                                                        | `ctrl-shift-f`                                                        | `ctrl-shift-f`                                                        |
+| `workspace::SetStatus`          | -                                                                    | -                                                                     | -                                                                     |
+
+{/* keymap-actions:end */}
+
+Siguiente: [Actualizaciones](/parla/es/docs/updates/).

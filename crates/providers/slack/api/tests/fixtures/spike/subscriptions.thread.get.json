@@ -1,0 +1,51 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "channel",
+          "C0000001"
+        ],
+        [
+          "thread_ts",
+          "1794525536.639029"
+        ],
+        [
+          "_x_reason",
+          "fetch-thread-subscriptions"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "ok": true,
+        "subscriptions": []
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/subscriptions.thread.get?_x_id=9aeb8a04-1794525689.101&_x_gantry=true&_x_desktop_ia=4&_x_csid=FT7MR33vSRg&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=66&_x_num_retries=0"
+}

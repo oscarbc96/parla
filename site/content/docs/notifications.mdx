@@ -1,0 +1,116 @@
+---
+title: Notifications
+description: What makes Parla notify you, how to pause it, and what the Dock badge and menu-bar icon show.
+---
+
+## Desktop notifications need the app bundle
+
+On macOS, system notifications work only when Parla runs from an app bundle.
+`mise run run` and `mise run bundle` create one. If you run the plain binary,
+Parla stays silent. See [Install](/parla/docs/install/).
+
+## When Parla notifies
+
+Only live messages notify. Catching up after a disconnection and loading old
+history never do.
+
+Parla does not notify when:
+
+- Desktop notifications are set to **Nothing**.
+- The message is yours.
+- The window is active and that conversation is open.
+- The current time is inside your quiet hours.
+
+Otherwise **Desktop notifications** in Settings, Notifications decides:
+
+| Setting                        | Notifies for                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| **All messages**               | Every message in conversations you are a member of, except thread replies that do not mention you |
+| **Mentions and DMs** (default) | Direct messages, mentions of you, and messages containing one of your keywords                    |
+| **Nothing**                    | Nothing; badges still update                                                                      |
+
+Keywords match whole words and ignore case. A muted conversation notifies only
+when someone mentions you directly.
+
+**Show message previews** can be turned off. A notification then shows only who
+wrote and where, with no message text and no file count.
+
+Quiet hours use local `HH:MM` times and may cross midnight. You can choose the
+days a quiet window starts on. Mentions still update badges during quiet hours.
+
+## Pause notifications for a workspace
+
+Right-click a workspace on the rail and choose **Pause notifications**, or press
+`cmd-shift-d` (`ctrl-shift-d` on Linux and Windows) for the workspace you are
+in. Choose 30 minutes, 1 hour, 2 hours, until tomorrow at 09:00, or a custom
+length.
+
+While paused, nothing notifies in that workspace, the rail shows a pause mark
+and the sidebar says when the pause ends with **Resume notifications**. The
+pause is the service's own do-not-disturb, so it follows you to other devices
+when the service supports it.
+
+On macOS, the bell in the titlebar opens the same menu.
+
+## Per-conversation levels
+
+Right-click a conversation and choose **Notifications**, or use the
+notifications button in its header, to set that conversation to **Default**,
+**All messages**, **Mentions** or **Nothing**. You can also mute it.
+
+The header menu also has:
+
+- **Replies to threads I follow**, on by default. A reply in a thread you started
+  or took part in notifies, whatever the level except **Nothing**.
+- **Sound**, on by default. Turn it off to make this conversation's
+  notifications silent.
+- **Mute for 1 hour**, which ends by itself, also after a restart.
+- **All notification settings...**, which opens Settings, Notifications.
+
+Parla keeps these levels on this computer when the service cannot store them for
+you.
+
+## What a notification shows
+
+A direct message shows the sender as the title. A channel message shows "name in
+#channel". The body is the message text, cut at 200 characters, or the number of
+files for a message with only files.
+
+There is at most one notification per conversation: a newer one replaces the
+older one.
+
+Click a notification to bring Parla forward and open its workspace,
+conversation and, for a thread reply, that thread. Notifications disappear once
+you have read the conversation.
+
+A message notification has two buttons:
+
+- **Reply** opens the conversation or thread so you can answer there.
+- **Mark as read** marks it read without opening Parla.
+
+Reminders and missed huddles have no buttons.
+
+## Dock badge and menu-bar icon
+
+The Dock badge shows the total number of mentions across all signed-in
+workspaces and is hidden at zero.
+
+Parla puts its own icon in the menu bar. It follows the light or dark menu bar
+and shows a dot and the number of mentions when something needs you. Its menu
+shows unread and mention counts, lists every signed-in workspace, and offers to
+pause notifications, set your status, open Settings, open Parla and quit.
+
+While the menu-bar icon is on, closing the window hides Parla and keeps it
+running, so notifications and counts keep arriving. Choose **Open Parla** from
+the icon to show the window again. Set `"tray": false` in `settings.json` to
+remove the icon and quit when the last window closes.
+
+On macOS, **Dock and menu bar** in Settings, General chooses whether the Dock
+icon is always shown, shown only while a window is open, or never shown. The
+last two need the menu-bar icon.
+
+With **Open Parla at login** on, Parla starts at login. With the menu-bar icon
+on, it starts hidden and you open it from the icon; with the icon off, it opens
+its window.
+
+Next: [Offline and cache](/parla/docs/offline/).

@@ -1,0 +1,19 @@
+{
+  "verdict": "invalid",
+  "rule": 10,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "column"
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "image": {
+          "src": "assets/../secret.png",
+          "alt": "A"
+        }
+      }
+    }
+  ]
+}

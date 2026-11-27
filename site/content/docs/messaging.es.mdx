@@ -1,0 +1,277 @@
+---
+title: Uso diario
+description: Lee, envía y busca mensajes, sigue hilos, comparte archivos, inicia huddles y muévete por Parla.
+---
+
+La ventana principal de Parla tiene cuatro partes: la barra de espacios de
+trabajo a la izquierda, la barra lateral con tus conversaciones, la cronología en
+el centro y un panel derecho para hilos, búsqueda, perfiles y detalles.
+
+Las teclas de abajo son los valores predeterminados en macOS. En Linux y Windows,
+usa `ctrl` en lugar de `cmd`. Todos los atajos se pueden cambiar en
+[Ajustes](/parla/es/docs/settings/) o en `keymap.json`; consulta
+[Atajos de teclado](/parla/es/docs/keymap/).
+
+## La barra lateral
+
+La barra lateral enumera tus conversaciones en estas secciones:
+
+- **No leídos**, cuando lo activas. Enumera todas las conversaciones no leídas.
+- **Destacados**, cuando tienes alguno. Los destacados son una lista propia de
+  Parla para este ordenador.
+- **Tus propias secciones**, encima de Canales, en el orden que elijas.
+- **Canales** en los que participas, por nombre.
+- **Mensajes directos**, con la actividad más reciente primero.
+- **Hilos**, **Más tarde**, **Programados** y **Recordatorios**, cuando el
+  servicio los admite.
+- **Borradores**, mientras tengas texto sin enviar.
+- **Personas**, para abrir el directorio del espacio de trabajo.
+
+Una conversación no leída aparece en negrita. Haz clic en el título de una
+sección, o pulsa Intro o Espacio sobre él, para plegarla. Parla recuerda las
+secciones plegadas de cada espacio.
+
+Haz clic derecho en una conversación para abrir su menú: ver detalles,
+destacarla, cambiar su nivel de notificaciones, silenciarla, marcarla como leída,
+moverla a una de tus secciones o abrirla en una ventana nueva. Los
+administradores de canales también pueden editarlo, añadir personas, salir o
+archivarlo desde ahí.
+
+La lista de miembros de un canal y su número de miembros se actualizan al
+momento cuando alguien se une o sale, y un canal creado o al que te unes desde
+otro cliente aparece sin recargar.
+
+El **+** junto a Canales abre **Explorar canales**, donde puedes buscar, unirte o
+crear un canal. El **+** junto a Mensajes directos enumera personas.
+
+Para mover conversaciones a tus propias secciones, elige **Organizar la barra
+lateral** en el menú del espacio de trabajo. Arrastra conversaciones a una
+sección, o arrastra secciones para reordenarlas, y elige **Hecho**. Estas
+secciones se quedan en este ordenador y no se envían al servicio.
+
+El menú del espacio de trabajo, en la parte superior de la barra lateral, abre
+Ajustes, cambia tu estado o presencia, pausa las notificaciones, cambia de
+espacio, cierra la sesión o quita el espacio.
+
+## Leer y ponerse al día
+
+Abrir una conversación avanza su marcador de leído. Los días se separan con un
+divisor, y un divisor **Nuevo** marca el primer mensaje no leído cuando abres una
+conversación con mensajes pendientes.
+
+Para marcar un mensaje como no leído, selecciónalo y pulsa `cmd-shift-u`, haz
+clic derecho y elige **Marcar como no leído**, o haz clic con Alt. El marcador de
+leído vuelve a ese mensaje.
+
+Tres vistas en la parte superior de la barra de espacios cubren todos los
+espacios:
+
+- **Todos los no leídos** (`cmd-shift-a`).
+- **Todas las menciones** (sin tecla predeterminada; asigna
+  `workspace::AllMentions`).
+- **Todos los programados** (sin tecla predeterminada; asigna
+  `workspace::AllScheduled`).
+
+Todos los no leídos enumera las conversaciones no leídas, primero las
+menciones. Puedes marcar como leída una conversación o todas desde ahí. Mirar la
+vista no marca nada como leído.
+
+## Escribir y enviar
+
+Haz clic en el compositor y escribe. De forma predeterminada, Intro envía y
+Mayús-Intro hace una línea nueva. Con **Tecla de envío** en Comando-Intro en
+Ajustes, Apariencia, Intro hace una línea nueva y `cmd-enter` envía.
+
+| Tecla         | Acción                                                |
+| ------------- | ----------------------------------------------------- |
+| `enter`       | Enviar                                                |
+| `shift-enter` | Línea nueva                                           |
+| `up`          | Editar tu último mensaje                              |
+| `escape`      | Cancelar una edición o una respuesta                  |
+| `tab`         | Insertar la mención, el canal o el emoji seleccionado |
+
+Para editar un mensaje tuyo, selecciónalo y pulsa `e`. Para borrarlo, pulsa
+`cmd-backspace`. Parla pregunta antes de borrar. Editar y borrar solo funcionan
+en mensajes que puedes cambiar.
+
+Parla guarda el texto del compositor como borrador de cada conversación e hilo.
+El borrador se guarda al cambiar de conversación, cerrar un hilo o salir, no con
+un temporizador. Vaciar el compositor borra el borrador. **Borradores** en la
+barra lateral enumera todos los borradores, del más reciente al más antiguo.
+
+Cuando otra persona está escribiendo, una línea sobre el compositor dice quién
+es. Tu propia escritura nunca se muestra.
+
+## Menciones, emoji y formato
+
+Escribe `@` para elegir a una persona o a un grupo de usuarios, o `@here`,
+`@channel` o `@everyone` fuera de los mensajes directos. Escribe `#` para elegir
+un canal, o `:` y dos letras para elegir un emoji. Usa las flechas para moverte,
+Intro o Tab para insertar, y Escape para cerrar la lista.
+
+Una mención o un canal elegido es una sola unidad: Retroceso lo borra entero y se
+envía como una mención real. Un nombre que solo escribes, como `@ana` sin
+elegirlo, se envía como texto normal.
+
+La fila sobre el compositor da formato a la selección, o inserta un par vacío
+cuando no hay selección. Pulsa el mismo atajo otra vez para quitar las marcas.
+
+| Atajo             | Formato           | Escribe                       |
+| ----------------- | ----------------- | ----------------------------- |
+| `cmd-b`           | Negrita           | `*texto*`                     |
+| `cmd-i`           | Cursiva           | `_texto_`                     |
+| `cmd-shift-x`     | Tachado           | `~texto~`                     |
+| `cmd-e`           | Código            | `` `texto` ``                 |
+| `cmd-alt-shift-c` | Bloque de código  | tres acentos graves           |
+| `cmd-shift-9`     | Cita              | `> ` antes de una línea       |
+| `cmd-shift-8`     | Lista con viñetas | `• ` antes de una línea       |
+| `cmd-shift-7`     | Lista numerada    | `1. ` antes de una línea      |
+| `cmd-shift-u`     | Enlace            | una dirección web o de correo |
+
+El botón de la cara sonriente abre el selector de emoji. Tiene búsqueda difusa,
+una cuadrícula navegable con el teclado, tonos de piel y una fila **Recientes**.
+Los emoji personalizados del espacio de trabajo aparecen junto a los estándar.
+
+Escribe `/` al principio de un compositor vacío para enumerar comandos. Parla
+admite `/remind`, `/dnd`, `/status`, `/away` y `/active` cuando el servicio lo
+hace, además de `/shrug`. Un comando que Parla no puede ejecutar muestra "/nombre
+no es compatible con Parla" con un enlace para abrir la conversación en el
+cliente del servicio.
+
+## Reacciones e hilos
+
+Las reacciones aparecen como pastillas bajo un mensaje. Haz clic en una pastilla
+para añadir o quitar tu reacción, y pasa el ratón por encima para ver quién
+reaccionó. Pulsa `cmd-shift-\` en un mensaje seleccionado para abrir el selector
+de emoji y añadir una reacción.
+
+Un mensaje con respuestas muestra una línea de resumen debajo. Haz clic en ella, o
+pulsa `cmd-shift-t` en el mensaje, para abrir el hilo en el panel derecho. Pulsa
+Escape para cerrar el panel.
+
+El compositor del hilo envía respuestas al hilo. La cabecera del hilo tiene una
+campana: una campana resaltada significa que sigues el hilo y recibes sus nuevas
+respuestas. Sigues un hilo en el que has respondido. Una respuesta también se
+puede enviar a la conversación principal; asigna `composer::ToggleBroadcast` si
+quieres una tecla para eso.
+
+## Búsqueda
+
+Pulsa `cmd-shift-f` para abrir la búsqueda en el panel derecho. Desde una
+conversación, el campo empieza con `in:#nombre`, así que la búsqueda se queda
+ahí; bórralo para buscar en todas partes.
+
+Escribe para buscar. Los mensajes guardados en este dispositivo aparecen
+primero. Cuando el servicio puede buscar en su servidor, sus resultados aparecen
+después bajo una etiqueta **De**. Sin conexión, Parla busca solo en el
+dispositivo y lo indica.
+
+Los filtros funcionan como palabras en el campo:
+
+- `in:#canal` y `from:@nombre`.
+- `before:` y `after:` con una fecha como `2026-11-01`.
+- `has:file`, `has:link`, `has:reaction` o `has:pin`.
+
+Usa las flechas para moverte por los resultados e Intro para abrir uno. Un
+mensaje abre su conversación desplazada hasta él. Una persona abre su perfil.
+Escape cierra el panel.
+
+## Enviar más tarde, mensajes programados y recordatorios
+
+Elige **Enviar más tarde** bajo el compositor, o pulsa `cmd-shift-enter`, para
+enviar el texto más adelante. El menú enumera tus preajustes, por defecto mañana
+a las 09:00 y el lunes a las 09:00, con su fecha y hora. **Personalizado...**
+acepta una fecha (`AAAA-MM-DD`) y una hora de 24 horas (`HH:MM`). Las horas usan
+la zona horaria de tu perfil, o `send_later.timezone` cuando la defines. No se
+puede elegir una hora pasada ni a más de 120 días.
+
+Si el servicio puede programar mensajes, los envía aunque Parla esté cerrado. Si
+no, el mensaje se guarda en este dispositivo y Parla debe estar abierto.
+**Programados** en la barra lateral enumera todos los mensajes programados del
+espacio. Los elementos del servidor se pueden editar, enviar ahora o borrar. Los
+locales llevan la etiqueta "local, requiere la app abierta". Los que fallan
+muestran el motivo, con Reintentar y Descartar.
+
+**Recordatorios** en la barra lateral enumera los recordatorios vencidos,
+próximos, recurrentes y completados. Escribe qué recordar y cuándo, y pulsa Intro
+o **Añadir recordatorio**. Las horas usan expresiones como `in 20 minutes`,
+`at 15:30`, `tomorrow at 09:00`, `on monday at 09:00`, `on 2026-12-01` o
+`every monday`.
+
+Cuando el servicio guarda recordatorios, Parla le pide que los añada, complete y
+borre. Si no, Parla los guarda en este ordenador y te avisa con una notificación
+de escritorio cuando vence uno, siempre que Parla esté abierto. Puedes posponer,
+completar, editar o borrar un recordatorio desde la lista.
+
+## Personas, perfiles y estado
+
+**Personas** abre el directorio del espacio de trabajo. Cada tarjeta muestra la
+foto, el nombre, el cargo, la presencia y la hora local de una persona cuando el
+servicio los comparte. Escribe para buscar por nombre o cargo, y usa los filtros
+para tu zona horaria o los bots.
+
+Haz clic en el nombre de una persona o en una mención para abrir su perfil en el
+panel derecho. Su perfil muestra el estado, la hora local, la presencia y los
+campos de contacto, con un botón **Mensaje** que abre tu mensaje directo con esa
+persona.
+
+Tu propio perfil está al final de la barra de espacios de trabajo. **Establecer
+un estado...** en el menú del espacio abre el diálogo de estado. Elige un emoji,
+escribe el texto y elige cuándo se borra: nunca, 30 minutos, 1 hora, 4 horas, hoy,
+esta semana o una hora personalizada. Preajustes como Concentrado, En una
+reunión, De camino, De baja y De vacaciones rellenan las tres cosas a la vez.
+**Ponerte como ausente** y **Ponerte como activo** cambian tu presencia.
+
+La presencia aparece como un punto pequeño: relleno cuando alguien está activo,
+un anillo cuando está ausente. Parla solo pregunta por la presencia de las
+personas que están en pantalla.
+
+## Moverse por Parla
+
+- **Selector rápido:** `cmd-k`. Escribe para filtrar canales, mensajes directos,
+  grupos y personas de todos los espacios. Intro abre el elemento seleccionado y
+  Escape lo cierra.
+- **Atrás y adelante:** `cmd-[` y `cmd-]`.
+- **Paleta de comandos:** `cmd-shift-p`. Enumera las acciones que puedes
+  ejecutar, con sus teclas.
+- **Enfocar el panel siguiente:** `cmd-f6`; el anterior: `cmd-shift-f6`.
+- **Abrir en una ventana nueva:** haz clic derecho en una conversación, usa
+  **Abrir en una ventana nueva** del panel del hilo, o pulsa `cmd-shift-o` con
+  una conversación o un hilo enfocado.
+- **Ir al mensaje más reciente:** `cmd-shift-down`.
+- **Hoja de atajos:** `cmd-/`.
+
+En macOS, la barra de título tiene botones de atrás y adelante, un control de
+búsqueda y una campana que abre el menú de pausa de notificaciones del espacio
+actual.
+
+## Huddles y llamadas
+
+Cuando hay un huddle en directo en una conversación, su fila de la barra lateral
+muestra un punto verde y el número de personas. Una barra sobre la cronología
+enumera hasta cinco personas, cuánto hace que empezó el huddle y **Unirse**.
+
+De forma predeterminada, Parla se une con su propio audio: la barra de llamada
+muestra **Conectando...**, después el número de personas, con **Silenciar** y
+**Salir**. Si el micrófono no está disponible, puedes seguir escuchando. Si el
+audio nativo no puede conectar, Parla prueba la ventana de llamada en macOS,
+después el navegador y después la app del propio servicio.
+
+**Dispositivos** en la barra de llamada elige el micrófono y el altavoz, o el
+valor predeterminado del sistema. El cambio se aplica a la llamada en curso al
+instante. El vídeo y el uso compartido de pantalla todavía no se transmiten;
+cuando alguien empieza a compartir, la barra ofrece **Abrir en el navegador**.
+
+Cuando alguien te llama a un huddle de mensaje directo, Parla muestra una
+notificación con **Unirse** y **Rechazar**, un aviso con los mismos botones y un
+tono. La llamada se detiene cuando quien llama cuelga, cuando termina el huddle,
+cuando respondes en otro dispositivo o después de 45 segundos; una llamada
+perdida se convierte en una notificación de "Huddle perdido".
+
+Puedes desactivar el tono, elegir el tono de llamada, elegir cómo se une Parla y
+silenciar el micrófono al unirte en Ajustes, Llamadas. Un tono nunca suena
+mientras las notificaciones están pausadas, durante las horas de silencio,
+cuando las notificaciones de escritorio están desactivadas o cuando el tono está
+desactivado.
+
+Siguiente: [Archivos](/parla/es/docs/files/).

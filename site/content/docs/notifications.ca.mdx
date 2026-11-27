@@ -1,0 +1,121 @@
+---
+title: Notificacions
+description: Què fa que Parla t'avisi, com pausar-ho i què mostren la insígnia del Dock i la icona de la barra de menús.
+---
+
+## Les notificacions d'escriptori necessiten el paquet de l'aplicació
+
+A macOS, les notificacions del sistema només funcionen quan Parla s'executa des
+d'un paquet d'aplicació. `mise run run` i `mise run bundle` en creen un. Si
+executes el binari directament, Parla es queda en silenci. Consulta
+[Instal·lació](/parla/ca/docs/install/).
+
+## Quan avisa Parla
+
+Només avisen els missatges en directe. Posar-se al dia després d'una desconnexió i
+carregar historial antic no avisen mai.
+
+Parla no avisa quan:
+
+- Les notificacions d'escriptori estan a **Res**.
+- El missatge és teu.
+- La finestra està activa i aquella conversa està oberta.
+- L'hora actual és dins de les teves hores de silenci.
+
+En cas contrari, **Notificacions d'escriptori** a Paràmetres, Notificacions
+decideix:
+
+| Paràmetre                                         | Avisa de                                                                                             |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Tots els missatges**                            | Tots els missatges de les converses on participes, excepte les respostes de fils que no et mencionen |
+| **Mencions i missatges directes** (predeterminat) | Missatges directes, mencions a tu i missatges que contenen una de les teves paraules clau            |
+| **Res**                                           | Res; les insígnies sí que s'actualitzen                                                              |
+
+Les paraules clau coincideixen amb paraules senceres i ignoren majúscules i
+minúscules. Una conversa silenciada només avisa quan algú et menciona directament.
+
+**Mostra previsualitzacions dels missatges** es pot desactivar. Una notificació
+llavors mostra només qui ha escrit i on, sense text ni nombre de fitxers.
+
+Les hores de silenci usen hores locals `HH:MM` i poden creuar la mitjanit. Pots
+triar els dies en què comença una finestra de silenci. Les mencions segueixen
+actualitzant les insígnies durant les hores de silenci.
+
+## Pausar les notificacions d'un espai de treball
+
+Fes clic dret en un espai de la barra i tria **Pausa les notificacions**, o prem
+`cmd-shift-d` (`ctrl-shift-d` a Linux i Windows) per a l'espai on ets. Tria 30
+minuts, 1 hora, 2 hores, fins demà a les 09:00 o una durada personalitzada.
+
+Mentre està pausat, res no avisa en aquell espai, la barra mostra una marca de
+pausa i la barra lateral diu quan acaba la pausa amb **Reprèn les notificacions**.
+La pausa és el no molestar del mateix servei, així que et segueix a altres
+dispositius quan el servei ho admet.
+
+A macOS, la campana de la barra de títol obre el mateix menú.
+
+## Nivells per conversa
+
+Fes clic dret en una conversa i tria **Notificacions**, o usa el botó de
+notificacions de la seva capçalera, per posar aquella conversa a **Predeterminat**,
+**Tots els missatges**, **Mencions** o **Res**. També pots silenciar-la.
+
+El menú de la capçalera també té:
+
+- **Respostes a fils que segueixo**, activat per defecte. Una resposta en un fil
+  que vas començar o on vas participar avisa, sigui quin sigui el nivell excepte
+  **Res**.
+- **So**, activat per defecte. Desactiva'l perquè les notificacions d'aquesta
+  conversa siguin silencioses.
+- **Silencia 1 hora**, que acaba sol, també després de reiniciar.
+- **Tots els paràmetres de notificacions...**, que obre Paràmetres, Notificacions.
+
+Parla desa aquests nivells en aquest ordinador quan el servei no els pot desar per
+tu.
+
+## Què mostra una notificació
+
+Un missatge directe mostra el remitent com a títol. Un missatge de canal mostra
+"nom a #canal". El cos és el text del missatge, tallat a 200 caràcters, o el
+nombre de fitxers quan el missatge només té fitxers.
+
+Hi ha com a màxim una notificació per conversa: una de nova substitueix
+l'anterior.
+
+Fes clic en una notificació per portar Parla al davant i obrir el seu espai de
+treball, la seva conversa i, en una resposta de fil, aquell fil. Les notificacions
+desapareixen quan has llegit la conversa.
+
+Una notificació de missatge té dos botons:
+
+- **Respon** obre la conversa o el fil perquè contestis allà.
+- **Marca com a llegit** la marca com a llegida sense obrir Parla.
+
+Els recordatoris i els huddles perduts no tenen botons.
+
+## Insígnia del Dock i icona de la barra de menús
+
+La insígnia del Dock mostra el nombre total de mencions de tots els espais amb la
+sessió iniciada i s'amaga quan és zero.
+
+Parla posa la seva pròpia icona a la barra de menús. Segueix la barra clara o
+fosca i mostra un punt i el nombre de mencions quan alguna cosa et necessita. El
+seu menú mostra els no llegits i les mencions, enumera cada espai amb la sessió
+iniciada i ofereix pausar notificacions, establir el teu estat, obrir Paràmetres,
+obrir Parla i sortir.
+
+Mentre la icona de la barra de menús està activa, tancar la finestra amaga Parla i
+la manté en marxa, així que les notificacions i els recomptes segueixen arribant.
+Tria **Obre Parla** a la icona per tornar a mostrar la finestra. Defineix
+`"tray": false` a `settings.json` per treure la icona i sortir quan es tanqui
+l'última finestra.
+
+A macOS, **Dock i barra de menús** a Paràmetres, General tria si la icona del Dock
+es mostra sempre, només mentre hi ha una finestra oberta o mai. Les dues últimes
+opcions necessiten la icona de la barra de menús.
+
+Amb **Obre Parla en iniciar la sessió** activat, Parla s'inicia en entrar. Amb la
+icona de la barra de menús activa, s'inicia amagat i l'obres des de la icona; amb
+la icona desactivada, obre la seva finestra.
+
+Següent: [Sense connexió i memòria cau](/parla/ca/docs/offline/).

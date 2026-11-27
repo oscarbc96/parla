@@ -1,0 +1,77 @@
+#!/bin/sh
+#MISE description="Write <dmg>.minisig for in-app updates: release:update-sign -- <dmg> <version> <app>"
+set -eu
+set +x
+umask 077
+
+# Strip the -- separator mise forwards.
+for arg do
+  shift
+  [ "$arg" = "--" ] && continue
+  set -- "$@" "$arg"
+done
+
+if [ "$#" -ne 3 ]; then
+  echo "usage: mise run release:update-sign -- <dmg> <version> <app>" >&2
+  exit 2
+fi
+
+dmg=$1
+version=$2
+app=$3
+
+if [ ! -f "$dmg" ]; then
+  echo "dmg not found: $dmg" >&2
+  exit 1
+fi
+
+if [ ! -d "$app" ]; then
+  echo "app not found: $app" >&2
+  exit 1
+fi
+
+sig="$dmg.minisig"
+base=$(basename "$dmg")
+
+if [ -z "${PARLA_UPDATE_SECRET_KEY:-}" ]; then
+  echo "no update signing key; this release offers the download link only" >&2
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    printf '%s\n' "no update signing key; this release offers the download link only" >> "$GITHUB_STEP_SUMMARY"
+  fi
+  exit 0
+fi
+
+if [ -z "${PARLA_UPDATE_PUBLIC_KEY:-}" ]; then
+  echo "PARLA_UPDATE_PUBLIC_KEY is not set; an app built without the key could not verify the signature" >&2
+  exit 1
+fi
+
+if ! grep -aqF "$PARLA_UPDATE_PUBLIC_KEY" "$app/Contents/MacOS/parla"; then
+  echo "$app does not embed PARLA_UPDATE_PUBLIC_KEY; it could not verify this signature. Set the repository variable PARLA_UPDATE_PUBLIC_KEY and rebuild the app." >&2
+  exit 1
+fi
+
+keyfile=$(mktemp "${TMPDIR:-/tmp}/parla-update-key.XXXXXX")
+cleanup() {
+  rm -f "$keyfile"
+}
+trap cleanup EXIT INT TERM
+
+printf '%s' "$PARLA_UPDATE_SECRET_KEY" > "$keyfile"
+
+minisign -S -s "$keyfile" -m "$dmg" -x "$sig" -t "parla $version $base" -c "Parla $version"
+
+verify_out=$(minisign -V -P "$PARLA_UPDATE_PUBLIC_KEY" -m "$dmg" -x "$sig" 2>&1) || {
+  rm -f "$sig"
+  printf '%s\n' "$verify_out" >&2
+  echo "minisign verification failed" >&2
+  exit 1
+}
+
+if ! printf '%s\n' "$verify_out" | grep -Fq "Trusted comment: parla $version $base"; then
+  rm -f "$sig"
+  echo "minisign trusted comment mismatch" >&2
+  exit 1
+fi
+
+echo "wrote $sig"

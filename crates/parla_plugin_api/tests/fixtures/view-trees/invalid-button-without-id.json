@@ -1,0 +1,18 @@
+{
+  "verdict": "invalid",
+  "rule": 4,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "column"
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "button": {
+          "label": "A"
+        }
+      }
+    }
+  ]
+}

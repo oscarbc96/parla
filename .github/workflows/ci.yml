@@ -1,0 +1,228 @@
+name: CI
+
+# One workflow, no path filters: the `changes` job maps the diff to the parts
+# of the repo it touches (scripts/changes.ts) and every heavy job runs only
+# when its part changed. `ci-ok` always reports, so a required check can be
+# just `ci-ok`. Tools and caches come from .github/actions/setup.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  # Superseded PR runs are cancelled; a main run never is, because main's
+  # caches serve every PR.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Cargo settings come from .github/actions/setup (one source for the cache key).
+env:
+  TURBO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  changes:
+    name: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      rust: ${{ steps.map.outputs.rust }}
+      site: ${{ steps.map.outputs.site }}
+      deps: ${{ steps.map.outputs.deps }}
+      package: ${{ steps.map.outputs.package }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          tools: bun
+      - name: Map the diff to parts of the repo
+        id: map
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: bun scripts/changes.ts --base "$BASE_SHA" --github-output
+
+  # OS-independent checks run once. Clippy runs per OS (in `rust`) so
+  # platform-specific cfg code is linted too.
+  lint:
+    name: lint
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          bun-install: site
+      # Only the files the change touches; each hk step has its own glob.
+      - name: Lint
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: mise exec -- hk check --from-ref "$BASE_SHA" --to-ref HEAD --skip-step cargo_clippy
+
+  deny:
+    name: cargo-deny
+    needs: changes
+    if: needs.changes.outputs.deps == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+      - name: Cargo deny
+        run: mise exec -- cargo deny check
+
+  # Clippy and tests share one runner and one Cargo cache per OS. Windows is
+  # not in the matrix; `mise run check:windows` compile-checks the
+  # Windows-only code from any host.
+  rust:
+    name: rust-${{ matrix.os }}
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          rust: "true"
+      - name: Clippy
+        run: mise run clippy
+      - name: Test
+        run: mise run test -- --profile ci --locked
+
+  # The visual baselines render on Metal, so macOS only for now.
+  ui:
+    name: ui-${{ matrix.os }}
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          rust: "true"
+          rust-cache-key: visual-${{ runner.os }}
+      - name: Visual tests
+        run: mise run test:visual
+      - name: E2E tests
+        run: mise run test:e2e
+      # No artifact uploads: the report goes to the job summary.
+      - name: Visual report summary
+        if: always()
+        shell: bash
+        run: |
+          for f in target/visual/*/report.md; do
+            [ -f "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY"
+          done
+          true
+
+  site:
+    name: site
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          tools: bun
+          bun-install: site
+      # Keyed by the lock file and turbo.json, then by the task inputs; a miss
+      # restores the newest entry for the same lock file.
+      - name: Cache Turborepo
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: site/.turbo/cache
+          key: turbo-${{ runner.os }}-${{ hashFiles('site/bun.lock', 'site/turbo.json') }}-${{ hashFiles('site/src/**', 'site/content/**', 'site/public/**', 'site/tests/**', 'site/astro.config.mjs') }}
+          restore-keys: |
+            turbo-${{ runner.os }}-${{ hashFiles('site/bun.lock', 'site/turbo.json') }}-
+      - name: Build and test
+        working-directory: site
+        run: bun run t:ci
+      - name: Repo tooling tests
+        run: mise run test:repo
+      - name: Translations in step with English
+        working-directory: site
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: bun scripts/check-translations.ts --base "$BASE_SHA"
+
+  package:
+    name: package
+    needs: changes
+    if: needs.changes.outputs.package == 'true'
+    runs-on: macos-15
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The release build job restores this entry (same key).
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          rust: "true"
+          rust-cache-key: release-${{ runner.os }}
+      - name: Build app
+        run: mise run release:app
+      - name: Ad-hoc sign
+        run: mise run release:sign -- target/release-assets/Parla.app --adhoc
+      - name: Create ad-hoc dmg
+        run: mise run release:dmg -- target/release-assets/Parla.app ci --adhoc
+      - name: Verify
+        run: mise run release:verify -- target/release-assets/Parla.app target/release-assets/Parla-ci-macos-universal.dmg --adhoc
+
+  ci-ok:
+    name: ci-ok
+    if: always()
+    needs: [changes, lint, deny, rust, ui, site, package]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      # Skipped jobs (nothing changed there) pass; failed or cancelled ones fail.
+      - name: All gated jobs passed or were skipped
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1

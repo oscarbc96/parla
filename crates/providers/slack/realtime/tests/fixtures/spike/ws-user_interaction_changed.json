@@ -1,0 +1,19 @@
+{
+  "data": {
+    "json": {
+      "event_ts": "1794526272.316800",
+      "interaction": {
+        "component": "HUDDLE_ENDED_PROMOTIONAL_COACHMARK",
+        "count": 11,
+        "date_first_recorded": 1775753197,
+        "date_last_recorded": 1794526272,
+        "step": "DEFAULT",
+        "type": "INTERNAL__SENT_TO_CLIENT"
+      },
+      "type": "user_interaction_changed"
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?frt=REDACTED&token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794521867%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000001-1&batch_presence_aware=1"
+}

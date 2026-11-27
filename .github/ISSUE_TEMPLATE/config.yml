@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and help
+    url: https://oscarbc96.github.io/parla/docs/
+    about: Read the documentation before you open an issue.

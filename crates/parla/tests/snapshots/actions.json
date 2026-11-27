@@ -1,0 +1,2417 @@
+[
+  {
+    "action": "app::About",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::BringAllToFront",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::CheckForUpdates",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::CloseWindow",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-w"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-w"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-w"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::CommandPalette",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-p"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-p"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-p"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::DeleteAllData",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::Hide",
+    "defaults": {
+      "linux": [],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-h"
+        }
+      ],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::HideOthers",
+    "defaults": {
+      "linux": [],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-alt-h"
+        }
+      ],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::Minimize",
+    "defaults": {
+      "linux": [],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-m"
+        }
+      ],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::OpenDocs",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::OpenKeyboardShortcuts",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-/"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-/"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-/"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::OpenKeymap",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-alt-,"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-alt-,"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-alt-,"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::OpenSettings",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-,"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-,"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-,"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::OpenSettingsFile",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::Quit",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-q"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-q"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-q"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::ReloadConfig",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-r"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-r"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-r"
+        }
+      ]
+    }
+  },
+  {
+    "action": "app::ReportIssue",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::ShowAll",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::ShowCrashReports",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "app::Zoom",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "auth::SignInAgain",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "auth::SignOut",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "call::Leave",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "call::ShowWindow",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "call::ToggleMute",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-m"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-m"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-m"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::AcceptCompletion",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "tab"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "tab"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "tab"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Bold",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-b"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-b"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-b"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::BulletList",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-8"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-8"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-8"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Cancel",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "escape"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "escape"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "escape"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Code",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-e"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-e"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-e"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::CodeBlock",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-alt-shift-c"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-alt-shift-c"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-alt-shift-c"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::EditLast",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "up"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "up"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "up"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Italic",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-i"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-i"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-i"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Link",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-u"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-u"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-u"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Newline",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "shift-enter"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "shift-enter"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "shift-enter"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::NumberedList",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-7"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-7"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-7"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Paste",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-v"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-v"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-v"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::PlainEnter",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer && send_cmd_enter",
+          "keys": "enter"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer && send_cmd_enter",
+          "keys": "enter"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer && send_cmd_enter",
+          "keys": "enter"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Quote",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-9"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-9"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-9"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Send",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "enter"
+        },
+        {
+          "context": "Composer && send_cmd_enter",
+          "keys": "ctrl-enter"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "enter"
+        },
+        {
+          "context": "Composer && send_cmd_enter",
+          "keys": "cmd-enter"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "enter"
+        },
+        {
+          "context": "Composer && send_cmd_enter",
+          "keys": "ctrl-enter"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::SendLater",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-enter"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-enter"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-enter"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::Strike",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-x"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-x"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-x"
+        }
+      ]
+    }
+  },
+  {
+    "action": "composer::ToggleBroadcast",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "mcp::ApproveWrite",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "mcp::ApproveWriteForSession",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "mcp::ClearAuditLog",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "mcp::DeclineWrite",
+    "defaults": {
+      "linux": [
+        {
+          "context": "ConfirmWrite",
+          "keys": "escape"
+        }
+      ],
+      "macos": [
+        {
+          "context": "ConfirmWrite",
+          "keys": "escape"
+        }
+      ],
+      "windows": [
+        {
+          "context": "ConfirmWrite",
+          "keys": "escape"
+        }
+      ]
+    }
+  },
+  {
+    "action": "mcp::OpenAuditLog",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "mcp::RebuildAuditLog",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "picker::Confirm",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Picker",
+          "keys": "enter"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Picker",
+          "keys": "enter"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Picker",
+          "keys": "enter"
+        }
+      ]
+    }
+  },
+  {
+    "action": "picker::Dismiss",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Picker",
+          "keys": "escape"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Picker",
+          "keys": "escape"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Picker",
+          "keys": "escape"
+        }
+      ]
+    }
+  },
+  {
+    "action": "picker::SelectLeft",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Picker",
+          "keys": "left"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Picker",
+          "keys": "left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Picker",
+          "keys": "left"
+        }
+      ]
+    }
+  },
+  {
+    "action": "picker::SelectNext",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Picker",
+          "keys": "down"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Picker",
+          "keys": "down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Picker",
+          "keys": "down"
+        }
+      ]
+    }
+  },
+  {
+    "action": "picker::SelectPrev",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Picker",
+          "keys": "up"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Picker",
+          "keys": "up"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Picker",
+          "keys": "up"
+        }
+      ]
+    }
+  },
+  {
+    "action": "picker::SelectRight",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Picker",
+          "keys": "right"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Picker",
+          "keys": "right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Picker",
+          "keys": "right"
+        }
+      ]
+    }
+  },
+  {
+    "action": "sidebar::NextUnread",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "alt-shift-down"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "alt-shift-down"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "alt-shift-down"
+        }
+      ]
+    }
+  },
+  {
+    "action": "sidebar::Open",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Sidebar",
+          "keys": "enter"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Sidebar",
+          "keys": "enter"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Sidebar",
+          "keys": "enter"
+        }
+      ]
+    }
+  },
+  {
+    "action": "sidebar::SelectNext",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Sidebar",
+          "keys": "down"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Sidebar",
+          "keys": "down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Sidebar",
+          "keys": "down"
+        }
+      ]
+    }
+  },
+  {
+    "action": "sidebar::SelectPrev",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Sidebar",
+          "keys": "up"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Sidebar",
+          "keys": "up"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Sidebar",
+          "keys": "up"
+        }
+      ]
+    }
+  },
+  {
+    "action": "store::RebuildCache",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "text_input::Backspace",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "backspace"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "backspace"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "backspace"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Copy",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-c"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-c"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-c"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Cut",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-x"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-x"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-x"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Delete",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "delete"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "delete"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "delete"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::DeleteWordLeft",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-backspace"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "alt-backspace"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-backspace"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::DocEnd",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-end"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-end"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::DocStart",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-home"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-up"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-home"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Down",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "down"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "down"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Left",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "left"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "left"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::LineEnd",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "end"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "end"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::LineStart",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "home"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "home"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Paste",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "text_input::Redo",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-z"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-y"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-shift-z"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-z"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-y"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Right",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "right"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "right"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectAll",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-a"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-a"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-a"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectDocEnd",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-end"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-shift-down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-end"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectDocStart",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-home"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-shift-up"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-home"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectDown",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "shift-down"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "shift-down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "shift-down"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectLeft",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "shift-left"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "shift-left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "shift-left"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectLineEnd",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "shift-end"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-shift-right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "shift-end"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectLineStart",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "shift-home"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-shift-left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "shift-home"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectRight",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "shift-right"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "shift-right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "shift-right"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectUp",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "shift-up"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "shift-up"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "shift-up"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectWordLeft",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-left"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "alt-shift-left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-left"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::SelectWordRight",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-right"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "alt-shift-right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-right"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Undo",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-z"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-z"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-z"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::Up",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "text_input::WordLeft",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-left"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "alt-left"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-left"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::WordRight",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-right"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "alt-right"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-right"
+        }
+      ]
+    }
+  },
+  {
+    "action": "theme::ToggleMode",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-l"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-l"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-l"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::AddReaction",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-\\"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "cmd-shift-\\"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-\\"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::CopyLink",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "timeline::DeleteMessage",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "delete"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "cmd-backspace"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "delete"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::EditMessage",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "e"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "e"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "e"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::JumpToLatest",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-down"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "cmd-shift-down"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-down"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::MarkUnread",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-u"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "cmd-shift-u"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-u"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::OpenThread",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-t"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "cmd-shift-t"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-t"
+        }
+      ]
+    }
+  },
+  {
+    "action": "timeline::TogglePin",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "timeline::ToggleSaved",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace1",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-1"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-1"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-1"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace2",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-2"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-2"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-2"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace3",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-3"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-3"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-3"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace4",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-4"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-4"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-4"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace5",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-5"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-5"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-5"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace6",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-6"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-6"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-6"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace7",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-7"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-7"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-7"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace8",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-8"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-8"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-8"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ActivateWorkspace9",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-9"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-9"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-9"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::AllMentions",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "workspace::AllScheduled",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "workspace::AllUnreads",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-a"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-a"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-a"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::ClosePanel",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Workspace",
+          "keys": "escape"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Workspace",
+          "keys": "escape"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Workspace",
+          "keys": "escape"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::FocusNextPane",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-f6"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-f6"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-f6"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::FocusPreviousPane",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-f6"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-f6"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-f6"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::GoBack",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-["
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-["
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-["
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::GoForward",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-]"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-]"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-]"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::NextWorkspace",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-]"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-]"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-]"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::PauseNotifications",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-d"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-d"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-d"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::PopOutConversation",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-o"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Timeline",
+          "keys": "cmd-shift-o"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Timeline",
+          "keys": "ctrl-shift-o"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::PopOutThread",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Workspace",
+          "keys": "ctrl-shift-o"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Workspace",
+          "keys": "cmd-shift-o"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Workspace",
+          "keys": "ctrl-shift-o"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::PreviousWorkspace",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-["
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-["
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-["
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::QuickSwitch",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-k"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-k"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-k"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::RemoveWorkspace",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  },
+  {
+    "action": "workspace::Search",
+    "defaults": {
+      "linux": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-f"
+        }
+      ],
+      "macos": [
+        {
+          "context": null,
+          "keys": "cmd-shift-f"
+        }
+      ],
+      "windows": [
+        {
+          "context": null,
+          "keys": "ctrl-shift-f"
+        }
+      ]
+    }
+  },
+  {
+    "action": "workspace::SetStatus",
+    "defaults": {
+      "linux": [],
+      "macos": [],
+      "windows": []
+    }
+  }
+]

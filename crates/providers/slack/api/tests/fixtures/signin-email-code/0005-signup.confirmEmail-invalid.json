@@ -1,0 +1,74 @@
+{
+  "method": "POST",
+  "url": "https://slack.com/api/signup.confirmEmail?_x_id=noversion-1700000000.000&_x_version_ts=noversion&_x_num_retries=0",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "email",
+          "user1@example.test"
+        ],
+        [
+          "locale",
+          "en-US"
+        ],
+        [
+          "_x_reason",
+          "get_started_send_code"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ]
+      ]
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "multipart/form-data; boundary=----WebKitFormBoundarySynthetic"
+      ],
+      [
+        "origin",
+        "https://slack.com"
+      ],
+      [
+        "referer",
+        "https://slack.com/get-started"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "noversion-1700000000.000"
+      ],
+      [
+        "_x_version_ts",
+        "noversion"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "ok": false,
+        "error": "invalid_email"
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  }
+}

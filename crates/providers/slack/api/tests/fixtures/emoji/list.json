@@ -1,0 +1,9 @@
+{
+ "ok": true,
+ "emoji": {
+  "party_example": "https://emoji.example.test/party_example.png",
+  "partying": "alias:party_example",
+  "thumbsup_alias": "alias:+1"
+ },
+ "cache_ts": "1700000000.000000"
+}

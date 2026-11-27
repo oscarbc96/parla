@@ -1,0 +1,142 @@
+// Parla default keymap (windows). Zed format; override in keymap.json.
+[
+  {
+    "bindings": {
+      "ctrl-/": "app::OpenKeyboardShortcuts",
+      "alt-shift-down": "sidebar::NextUnread",
+      "ctrl-q": "app::Quit",
+      "ctrl-,": "app::OpenSettings",
+      "ctrl-w": "app::CloseWindow",
+      "ctrl-alt-,": "app::OpenKeymap",
+      "ctrl-shift-r": "app::ReloadConfig",
+      "ctrl-shift-l": "theme::ToggleMode",
+      "ctrl-shift-m": "call::ToggleMute",
+      "ctrl-1": "workspace::ActivateWorkspace1",
+      "ctrl-2": "workspace::ActivateWorkspace2",
+      "ctrl-3": "workspace::ActivateWorkspace3",
+      "ctrl-4": "workspace::ActivateWorkspace4",
+      "ctrl-5": "workspace::ActivateWorkspace5",
+      "ctrl-6": "workspace::ActivateWorkspace6",
+      "ctrl-7": "workspace::ActivateWorkspace7",
+      "ctrl-8": "workspace::ActivateWorkspace8",
+      "ctrl-9": "workspace::ActivateWorkspace9",
+      "ctrl-shift-]": "workspace::NextWorkspace",
+      "ctrl-shift-[": "workspace::PreviousWorkspace",
+      "ctrl-shift-f": "workspace::Search",
+      "ctrl-shift-d": "workspace::PauseNotifications",
+      "ctrl-k": "workspace::QuickSwitch",
+      "ctrl-shift-p": "app::CommandPalette",
+      "ctrl-shift-a": "workspace::AllUnreads",
+      "ctrl-[": "workspace::GoBack",
+      "ctrl-]": "workspace::GoForward",
+      "ctrl-f6": "workspace::FocusNextPane",
+      "ctrl-shift-f6": "workspace::FocusPreviousPane"
+    }
+  },
+  {
+    "context": "Sidebar",
+    "bindings": {
+      "down": "sidebar::SelectNext",
+      "up": "sidebar::SelectPrev",
+      "enter": "sidebar::Open"
+    }
+  },
+  {
+    "context": "Timeline",
+    "bindings": {
+      "e": "timeline::EditMessage",
+      "ctrl-shift-\\": "timeline::AddReaction",
+      "ctrl-shift-t": "timeline::OpenThread",
+      "ctrl-shift-u": "timeline::MarkUnread",
+      "ctrl-shift-down": "timeline::JumpToLatest",
+      "delete": "timeline::DeleteMessage",
+      "ctrl-shift-o": "workspace::PopOutConversation"
+    }
+  },
+  {
+    "context": "Composer",
+    "bindings": {
+      "enter": "composer::Send",
+      "shift-enter": "composer::Newline",
+      "up": "composer::EditLast",
+      "escape": "composer::Cancel",
+      "ctrl-v": "composer::Paste",
+      "ctrl-b": "composer::Bold",
+      "ctrl-i": "composer::Italic",
+      "ctrl-shift-x": "composer::Strike",
+      "ctrl-e": "composer::Code",
+      "ctrl-alt-shift-c": "composer::CodeBlock",
+      "ctrl-shift-9": "composer::Quote",
+      "ctrl-shift-8": "composer::BulletList",
+      "ctrl-shift-7": "composer::NumberedList",
+      "ctrl-shift-u": "composer::Link",
+      "ctrl-shift-enter": "composer::SendLater",
+      "tab": "composer::AcceptCompletion"
+    }
+  },
+  {
+    "context": "Composer && send_cmd_enter",
+    "bindings": {
+      "enter": "composer::PlainEnter",
+      "ctrl-enter": "composer::Send"
+    }
+  },
+
+  {
+    "context": "TextInput",
+    "bindings": {
+      "left": "text_input::Left",
+      "right": "text_input::Right",
+      "down": "text_input::Down",
+      "shift-left": "text_input::SelectLeft",
+      "shift-right": "text_input::SelectRight",
+      "shift-up": "text_input::SelectUp",
+      "shift-down": "text_input::SelectDown",
+      "backspace": "text_input::Backspace",
+      "delete": "text_input::Delete",
+      "ctrl-left": "text_input::WordLeft",
+      "ctrl-right": "text_input::WordRight",
+      "ctrl-shift-left": "text_input::SelectWordLeft",
+      "ctrl-shift-right": "text_input::SelectWordRight",
+      "ctrl-backspace": "text_input::DeleteWordLeft",
+      "home": "text_input::LineStart",
+      "end": "text_input::LineEnd",
+      "shift-home": "text_input::SelectLineStart",
+      "shift-end": "text_input::SelectLineEnd",
+      "ctrl-home": "text_input::DocStart",
+      "ctrl-end": "text_input::DocEnd",
+      "ctrl-shift-home": "text_input::SelectDocStart",
+      "ctrl-shift-end": "text_input::SelectDocEnd",
+      "ctrl-a": "text_input::SelectAll",
+      "ctrl-x": "text_input::Cut",
+      "ctrl-c": "text_input::Copy",
+      "ctrl-z": "text_input::Undo",
+      "ctrl-shift-z": "text_input::Redo",
+      "ctrl-y": "text_input::Redo"
+    }
+  },
+  {
+    "context": "Picker",
+    "bindings": {
+      "enter": "picker::Confirm",
+      "down": "picker::SelectNext",
+      "up": "picker::SelectPrev",
+      "left": "picker::SelectLeft",
+      "right": "picker::SelectRight",
+      "escape": "picker::Dismiss"
+    }
+  },
+  {
+    "context": "ConfirmWrite",
+    "bindings": {
+      "escape": "mcp::DeclineWrite"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "escape": "workspace::ClosePanel",
+      "ctrl-shift-o": "workspace::PopOutThread"
+    }
+  }
+]

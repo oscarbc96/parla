@@ -1,0 +1,12 @@
+# zizmor: the security linter for these workflows (hk step `zizmor`, in
+# `mise run lint`). https://docs.zizmor.sh
+rules:
+  # Every action is pinned to a full commit SHA, not a tag.
+  unpinned-uses:
+    config:
+      policies:
+        "*": hash-pin
+  # `$/...` for local actions is new GitHub syntax; actionlint and older
+  # runners still expect `./...`.
+  self-repository:
+    disable: true

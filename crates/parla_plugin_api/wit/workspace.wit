@@ -1,0 +1,106 @@
+/// Reads and writes in the user's workspaces. Each
+/// function names the workspace area its grant must hold (§7.3; the names
+/// live in `parla_plugin_api::READ_AREAS` and `WRITE_AREAS`). A provider
+/// without the feature returns `unsupported`. Paged reads take `limit` 1 to
+/// 200; 60 reads per minute. Writes act as the user, follow the write
+/// confirmation (§7.5), are limited to 20 per minute and return `denied`
+/// inside an event hook.
+interface workspace {
+  use types.{
+    error, cursor, timestamp, workspace, workspace-id, conversation-id, user-id,
+    file-id, reminder-id, scheduled-id, message-id, message-ref, user, presence,
+    conversation, conversation-filter, message, file, status, context, content,
+    message-page, message-ref-page, conversation-page, file-page, reminder-page,
+    scheduled-page,
+  };
+
+  // Reads.
+
+  /// Area: `workspace:read`. Unpaged: at most 100 workspaces.
+  list-workspaces: func() -> result<list<workspace>, error>;
+  /// Area: none; ids only. The invoking window's workspace, conversation,
+  /// thread and selected message, if any.
+  get-context: func() -> result<context, error>;
+  /// Area: `workspace:read`.
+  me: func(ws: workspace-id) -> result<user, error>;
+  /// Area: `conversations:read`.
+  list-conversations: func(ws: workspace-id, filter: conversation-filter, cursor: cursor, limit: u32) -> result<conversation-page, error>;
+  /// Area: `conversations:read`.
+  get-conversation: func(ws: workspace-id, conversation: conversation-id) -> result<conversation, error>;
+  /// Area: `messages:read` (in context only), `history:read` for any
+  /// channel, plus `dms:read` for direct and group messages.
+  history: func(ws: workspace-id, conversation: conversation-id, cursor: cursor, limit: u32) -> result<message-page, error>;
+  /// Area: as `history`.
+  replies: func(ws: workspace-id, conversation: conversation-id, thread: message-id, cursor: cursor, limit: u32) -> result<message-page, error>;
+  /// Area: as `history`.
+  get-message: func(ws: workspace-id, message: message-ref) -> result<message, error>;
+  /// Area: as `history`.
+  permalink: func(ws: workspace-id, message: message-ref) -> result<string, error>;
+  /// Area: `people:read`.
+  get-user: func(ws: workspace-id, user: user-id) -> result<user, error>;
+  /// Area: `people:read`. `query` at most 256 bytes, `limit` 1 to 200.
+  find-users: func(ws: workspace-id, query: string, limit: u32) -> result<list<user>, error>;
+  /// Area: `people:read`.
+  get-presence: func(ws: workspace-id, user: user-id) -> result<presence, error>;
+  /// Area: `search:read`. `query` at most 256 bytes.
+  search-messages: func(ws: workspace-id, query: string, cursor: cursor, limit: u32) -> result<message-page, error>;
+  /// Area: `search:read`. `query` at most 256 bytes.
+  search-files: func(ws: workspace-id, query: string, cursor: cursor, limit: u32) -> result<file-page, error>;
+  /// Area: `files:read`.
+  file-info: func(ws: workspace-id, file: file-id) -> result<file, error>;
+  /// Area: `files:read`. Ranged read; `len` at most a quarter of the
+  /// plugin's `memory_mb`.
+  file-bytes: func(ws: workspace-id, file: file-id, offset: u64, len: u32) -> result<list<u8>, error>;
+  /// Area: `reminders:read`.
+  list-reminders: func(ws: workspace-id, cursor: cursor, limit: u32) -> result<reminder-page, error>;
+  /// Area: `scheduled:read`.
+  list-scheduled: func(ws: workspace-id, cursor: cursor, limit: u32) -> result<scheduled-page, error>;
+  /// Area: `saved:read`.
+  list-saved: func(ws: workspace-id, cursor: cursor, limit: u32) -> result<message-ref-page, error>;
+  /// Area: `pins:read`.
+  list-pins: func(ws: workspace-id, conversation: conversation-id, cursor: cursor, limit: u32) -> result<message-ref-page, error>;
+  /// Area: `status:read`.
+  my-status: func(ws: workspace-id) -> result<status, error>;
+
+  // Writes.
+
+  /// Area: `messages:write`.
+  send: func(ws: workspace-id, conversation: conversation-id, content: content) -> result<message-ref, error>;
+  /// Area: `messages:write`.
+  reply: func(ws: workspace-id, conversation: conversation-id, thread: message-id, content: content, also-to-channel: bool) -> result<message-ref, error>;
+  /// Area: `messages:edit`. The user's own messages only.
+  edit: func(ws: workspace-id, message: message-ref, content: content) -> result<_, error>;
+  /// Area: `messages:edit`. The user's own messages only.
+  delete: func(ws: workspace-id, message: message-ref) -> result<_, error>;
+  /// Area: `reactions:write`. `emoji` is a name, at most 100 bytes.
+  react: func(ws: workspace-id, message: message-ref, emoji: string) -> result<_, error>;
+  /// Area: `reactions:write`.
+  unreact: func(ws: workspace-id, message: message-ref, emoji: string) -> result<_, error>;
+  /// Area: `reminders:write`. `text` at most 4 KB.
+  add-reminder: func(ws: workspace-id, text: string, at: timestamp) -> result<reminder-id, error>;
+  /// Area: `reminders:write`.
+  complete-reminder: func(ws: workspace-id, reminder: reminder-id) -> result<_, error>;
+  /// Area: `reminders:write`.
+  delete-reminder: func(ws: workspace-id, reminder: reminder-id) -> result<_, error>;
+  /// Area: `scheduled:write`.
+  schedule: func(ws: workspace-id, conversation: conversation-id, content: content, at: timestamp) -> result<scheduled-id, error>;
+  /// Area: `scheduled:write`.
+  cancel-scheduled: func(ws: workspace-id, scheduled: scheduled-id) -> result<_, error>;
+  /// Area: `files:write`. At most 8 MB; `name` at most 255 bytes, `comment`
+  /// at most 4 KB.
+  upload: func(ws: workspace-id, conversation: conversation-id, name: string, bytes: list<u8>, comment: option<string>) -> result<file, error>;
+  /// Area: `status:write`. `text` at most 100 bytes.
+  set-status: func(ws: workspace-id, status: status) -> result<_, error>;
+  /// Area: `status:write`. `unknown` is `invalid`.
+  set-presence: func(ws: workspace-id, presence: presence) -> result<_, error>;
+  /// Area: `status:write`. `minutes` 1 to 1,440.
+  snooze: func(ws: workspace-id, minutes: u32) -> result<_, error>;
+  /// Area: `status:write`.
+  end-snooze: func(ws: workspace-id) -> result<_, error>;
+  /// Area: `saved:write`.
+  set-saved: func(ws: workspace-id, message: message-ref, saved: bool) -> result<_, error>;
+  /// Area: `pins:write`.
+  set-pinned: func(ws: workspace-id, message: message-ref, pinned: bool) -> result<_, error>;
+  /// Area: `read_state:write`. Marks read up to and including `upto`.
+  mark-read: func(ws: workspace-id, conversation: conversation-id, upto: message-id) -> result<_, error>;
+}

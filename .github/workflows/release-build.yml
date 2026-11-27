@@ -1,0 +1,317 @@
+# Builds, signs and publishes a release. Dispatched by release.yml on the tag
+# release-please creates. Configure the `release` environment to admit only
+# tags `v*` (deployment branch and tag rules).
+# Tag builds sign with the owner's self-signed certificate (MACOS_SELF_SIGNED_*)
+# or ad hoc when it is absent. macOS does not trust that certificate, so users
+# approve the first open: on macOS 15 or later, open Parla once, then System
+# Settings > Privacy & Security > Security > "Open Anyway"; on macOS 14,
+# Control-click (right-click) Parla in Applications and choose Open, then Open.
+# On pull requests that touch the release inputs and on branch dispatches it
+# builds a throwaway self-signed .dmg as a workflow artifact only: no secrets,
+# no environment, no release upload.
+name: Release build
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - mise-tasks/release/**
+      - .github/workflows/release-build.yml
+      - .github/actions/setup/**
+      - crates/parla/macos/**
+      - release-please-config.json
+
+permissions: {}
+
+concurrency:
+  group: release-build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build
+    runs-on: macos-15
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      # Restores the Cargo cache CI's package job saves on main (same key). The
+      # signing jobs below use no caches.
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          rust: "true"
+          rust-cache-key: release-${{ runner.os }}
+      - name: Check release version
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          TAG: ${{ github.ref_name }}
+        run: mise run release:version-check -- "$TAG"
+      - name: Check translations for release
+        run: mise run i18n:check
+      - name: Build app
+        env:
+          PARLA_UPDATE_PUBLIC_KEY: ${{ vars.PARLA_UPDATE_PUBLIC_KEY }}
+        run: mise run release:app
+      - name: Generate SBOM
+        run: mise run release:sbom
+      - name: Upload unsigned app
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-app
+          retention-days: 7
+          path: target/release-assets/Parla-unsigned.zip
+      - name: Upload SBOM
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-sbom
+          retention-days: 7
+          path: target/release-assets/Parla-*.cdx.json
+
+  sign:
+    name: sign
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: macos-15
+    timeout-minutes: 45
+    environment: release
+    permissions:
+      contents: read
+    env:
+      MISE_TASK_RUN_AUTO_INSTALL: "false"
+      MISE_AUTO_INSTALL: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - name: Release vars
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          echo "TAG=$REF_NAME" >> "$GITHUB_ENV"
+          echo "VERSION=${REF_NAME#v}" >> "$GITHUB_ENV"
+      - name: Set up tools
+        uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
+        with:
+          install_args: minisign
+          cache: false
+      - name: Signing mode
+        id: mode
+        env:
+          MACOS_SELF_SIGNED_P12: ${{ secrets.MACOS_SELF_SIGNED_P12 }}
+          MACOS_SELF_SIGNED_PASSWORD: ${{ secrets.MACOS_SELF_SIGNED_PASSWORD }}
+        run: |
+          mode="$(mise run release:signing-mode)"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+      - name: Download build artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-app
+          path: target/release-assets
+      - name: Extract app
+        run: ditto -x -k target/release-assets/Parla-unsigned.zip target/release-assets
+      - name: Create signing keychain
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+          PARLA_SIGNING_MODE: ${{ steps.mode.outputs.mode }}
+          MACOS_SELF_SIGNED_P12: ${{ secrets.MACOS_SELF_SIGNED_P12 }}
+          MACOS_SELF_SIGNED_PASSWORD: ${{ secrets.MACOS_SELF_SIGNED_PASSWORD }}
+        run: mise run release:keychain
+      # The mode decides the flags once; sign, dmg and verify reuse them.
+      - name: Signing arguments
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+          PARLA_SIGNING_MODE: ${{ steps.mode.outputs.mode }}
+        run: |
+          id="$RUNNER_TEMP/parla-signing-identity"
+          case "$PARLA_SIGNING_MODE" in
+            self-signed) sign="--identity-file $id"; verify="--self-signed $(cat "$id")" ;;
+            adhoc) sign="--adhoc"; verify="--adhoc" ;;
+            *) echo "unknown signing mode: $PARLA_SIGNING_MODE" >&2; exit 1 ;;
+          esac
+          { echo "SIGN_ARGS=$sign"; echo "VERIFY_ARGS=$verify"; } >> "$GITHUB_ENV"
+      - name: Sign app
+        run: |
+          # shellcheck disable=SC2086 # the args hold one or two words on purpose
+          mise run release:sign -- target/release-assets/Parla.app $SIGN_ARGS
+      - name: Create dmg
+        run: |
+          # shellcheck disable=SC2086 # the args hold one or two words on purpose
+          mise run release:dmg -- target/release-assets/Parla.app "$VERSION" $SIGN_ARGS
+      - name: Sign update
+        env:
+          PARLA_UPDATE_SECRET_KEY: ${{ secrets.PARLA_UPDATE_SECRET_KEY }}
+          PARLA_UPDATE_PUBLIC_KEY: ${{ vars.PARLA_UPDATE_PUBLIC_KEY }}
+        run: mise run release:update-sign -- "target/release-assets/Parla-${VERSION}-macos-universal.dmg" "$VERSION" target/release-assets/Parla.app
+      - name: Verify
+        run: |
+          # shellcheck disable=SC2086 # the args hold one or two words on purpose
+          mise run release:verify -- target/release-assets/Parla.app "target/release-assets/Parla-${VERSION}-macos-universal.dmg" $VERIFY_ARGS
+      - name: Cleanup signing material
+        if: always()
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: mise run release:cleanup
+      - name: Upload signed dmg
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-signed
+          retention-days: 7
+          path: |
+            target/release-assets/Parla-*-macos-universal.dmg
+            target/release-assets/Parla-*-macos-universal.dmg.minisig
+
+  unsigned:
+    name: unsigned
+    needs: build
+    if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: macos-15
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      VERSION: 0.0.0-dev
+      MISE_TASK_RUN_AUTO_INSTALL: "false"
+      MISE_AUTO_INSTALL: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - name: Set up tools
+        uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
+        with:
+          install: false
+      - name: Download build artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-app
+          path: target/release-assets
+      - name: Extract app
+        run: ditto -x -k target/release-assets/Parla-unsigned.zip target/release-assets
+      # The same task the owner uses for the real self-signed certificate.
+      - name: Create throwaway self-signed certificate
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          d="$RUNNER_TEMP/throwaway-cert"
+          mise run release:self-signed-cert -- "$d"
+          printf '::add-mask::%s\n' "$(cat "$d/parla-release.p12.b64")" "$(cat "$d/password.txt")"
+          printf 'MACOS_SELF_SIGNED_P12=%s\n' "$(cat "$d/parla-release.p12.b64")" >> "$GITHUB_ENV"
+          printf 'MACOS_SELF_SIGNED_PASSWORD=%s\n' "$(cat "$d/password.txt")" >> "$GITHUB_ENV"
+      - name: Create signing keychain
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+          PARLA_SIGNING_MODE: self-signed
+        run: mise run release:keychain
+      - name: Self-signed sign
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: mise run release:sign -- target/release-assets/Parla.app --identity-file "$RUNNER_TEMP/parla-signing-identity"
+      - name: Create self-signed dmg
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: mise run release:dmg -- target/release-assets/Parla.app "$VERSION" --identity-file "$RUNNER_TEMP/parla-signing-identity"
+      - name: Verify
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: mise run release:verify -- target/release-assets/Parla.app "target/release-assets/Parla-${VERSION}-macos-universal.dmg" --self-signed "$(cat "$RUNNER_TEMP/parla-signing-identity")"
+      - name: Cleanup signing material
+        if: always()
+        env:
+          RUNNER_TEMP: ${{ runner.temp }}
+        run: |
+          mise run release:cleanup
+          rm -rf "$RUNNER_TEMP/throwaway-cert"
+      - name: Upload self-signed dmg
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-unsigned-dmg
+          retention-days: 7
+          path: target/release-assets/Parla-*-macos-universal.dmg
+
+  publish:
+    name: publish
+    needs: sign
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MISE_TASK_RUN_AUTO_INSTALL: "false"
+      MISE_AUTO_INSTALL: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - name: Release vars
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          echo "TAG=$REF_NAME" >> "$GITHUB_ENV"
+          echo "VERSION=${REF_NAME#v}" >> "$GITHUB_ENV"
+      - name: Set up tools
+        uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
+        with:
+          install: false
+      - name: Download build artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-sbom
+          path: target/release-assets
+      - name: Download signed artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-signed
+          path: target/release-assets
+      - name: Generate checksums
+        run: |
+          dmg="target/release-assets/Parla-${VERSION}-macos-universal.dmg"
+          sbom="target/release-assets/Parla-${VERSION}.cdx.json"
+          set -- "$dmg" "$sbom"
+          if [ -f "$dmg.minisig" ]; then
+            set -- "$@" "$dmg.minisig"
+          fi
+          mise run release:sums -- "$@"
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: target/release-assets/Parla-${{ env.VERSION }}-macos-universal.dmg
+      - name: Attest SBOM
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
+        with:
+          subject-path: target/release-assets/Parla-${{ env.VERSION }}-macos-universal.dmg
+          sbom-path: target/release-assets/Parla-${{ env.VERSION }}.cdx.json
+      - name: Upload release assets
+        run: |
+          dmg="target/release-assets/Parla-${VERSION}-macos-universal.dmg"
+          sbom="target/release-assets/Parla-${VERSION}.cdx.json"
+          set -- "$dmg" "$sbom" target/release-assets/SHA256SUMS
+          if [ -f "$dmg.minisig" ]; then
+            set -- "$@" "$dmg.minisig"
+          fi
+          gh release upload "$TAG" "$@" --clobber
+      - name: Publish release
+        run: |
+          if [[ "$TAG" == *-rc.* ]]; then
+            gh release edit "$TAG" --draft=false --prerelease --latest=false
+          else
+            gh release edit "$TAG" --draft=false --latest
+          fi
+      - name: Dispatch Pages deploy
+        run: gh workflow run pages.yml --ref main

@@ -1,0 +1,36 @@
+{
+  "verdict": "ok",
+  "size": 102,
+  "nodes": [
+    {
+      "parent": null,
+      "id": "t",
+      "kind": {
+        "tabs": [
+          "One",
+          "Two"
+        ]
+      }
+    },
+    {
+      "parent": 0,
+      "kind": "split"
+    },
+    {
+      "parent": 1,
+      "kind": "card"
+    },
+    {
+      "parent": 1,
+      "kind": "card"
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "empty": {
+          "title": "Nothing"
+        }
+      }
+    }
+  ]
+}

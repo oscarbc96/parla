@@ -1,0 +1,63 @@
+---
+title: Actualitzacions
+description: Com comprova Parla si hi ha versions noves, com instal·la una actualització a macOS i com ometre una versió.
+---
+
+Parla comprova GitHub Releases per si hi ha una versió nova. Les actualitzacions
+des de l'aplicació verifiquen una actualització signada i necessiten Parla a
+Aplicacions; si no, baixa el nou dmg des de la pàgina de la versió.
+
+## Comprovació automàtica
+
+Amb les comprovacions activades, Parla consulta GitHub Releases com a màxim una
+vegada cada 24 hores. Les versions en esborrany i les preliminars s'ignoren.
+
+Si hi ha una versió més nova, Parla mostra un avís amb **Baixa**, que obre la
+pàgina de la versió al navegador, i **Omet aquesta versió**. Ometre amaga aquella
+versió; una de més nova es seguirà oferint més endavant.
+
+## Actualitzar i reiniciar a macOS
+
+A macOS, quan Parla s'executa des d'un `Parla.app` que pot substituir, l'avís també
+ofereix **Actualitza**. Parla no baixa ni instal·la res fins que hi fas clic.
+
+**Actualitza** baixa la versió, verifica la seva signatura amb la clau inclosa a
+Parla i substitueix l'aplicació instal·lada. L'aplicació instal·lada no s'edita mai
+al lloc, així que una baixada o instal·lació fallida la deixa intacta. L'avís diu
+llavors que la nova versió està llesta, i Parla només es reinicia quan tries
+**Reinicia per actualitzar**.
+
+Si un pas falla, l'avís diu quin i ofereix **Torna-ho a provar** i **Baixa**. Parla
+no instal·la mai un paquet la signatura del qual no coincideixi.
+
+Les compilacions de Windows i Linux, i les de macOS que no es poden substituir a si
+mateixes, mostren només l'enllaç **Baixa**.
+
+## Comprovar ara
+
+Tria **Comprova si hi ha actualitzacions** al menú de l'aplicació o a la paleta
+d'ordres, o usa **Comprova ara** a Paràmetres, General. Funciona encara que les
+comprovacions automàtiques estiguin desactivades. Si no hi ha res de nou, o Parla
+no pot arribar a GitHub, l'avís ho diu.
+
+## Desactivar les comprovacions
+
+Les comprovacions automàtiques estan activades per defecte. Desactiva **Comprova si
+hi ha actualitzacions automàticament** a Paràmetres, General, o defineix
+`updates.check` com a `false` a `settings.json`:
+
+```jsonc
+{
+  "updates": {
+    "check": false,
+  },
+}
+```
+
+Ometre una versió desa la seva etiqueta a `updates.skip`. Defineix aquella clau com
+a `null` o esborra-la per deixar d'ometre-la.
+
+Parla no envia dades de compte amb una comprovació d'actualitzacions. Consulta
+[Privadesa](/parla/ca/docs/privacy/).
+
+Següent: [Desinstal·lar](/parla/ca/docs/uninstall/).

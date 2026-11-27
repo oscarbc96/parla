@@ -1,0 +1,15 @@
+deploy in:#ops from:@ana after:2026-01-02 has:file "rolled back"
+in: from: before: after: on: during: has:
+before:yesterday
+on:2026-13-45
+during:2026-00
+has:banana
+"unterminated quote in:#ops
+in:#ops in:#dev in:@ana from:me from:@bob
+http://example.com/a:b 12:30 a::b ::: :x x:
+"" "" ""
+in:"quoted name"
+has:file has:link has:reaction has:pin
+before:2026-01-02 before:2026-02-03
+emoji :smile: query
+日本語 in:#日本 from:@名前

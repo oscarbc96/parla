@@ -1,0 +1,5 @@
+{"teams":{
+"T0000002":{"id":"T0000002","name":"Beta Org","url":"https://workspace2.slack.com/","token":"{{TOKEN_B}}"},
+"T0000001":{"id":"T0000001","name":"Acme","url":"https://workspace1.slack.com/","token":"{{TOKEN_A}}"},
+"T0000003":{"id":"T0000003","name":"No Token","url":"https://workspace3.slack.com/"}
+},"lastActiveTeamId":"T0000001"}

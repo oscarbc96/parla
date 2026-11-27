@@ -1,0 +1,7 @@
+id = "big-plugin"
+name = "Big"
+version = "0.1.0"
+api = "0.1"
+
+[limits]
+memory_mb = 65

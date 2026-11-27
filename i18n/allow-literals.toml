@@ -1,0 +1,461 @@
+# Prose literals the lint accepts in Rust sources. Each entry needs a reason;
+# an entry that no longer matches fails the lint.
+# [[allow]]
+# path = "crates/<crate>/src/<file>.rs"
+# literal = "..."
+# reason = "..."
+
+[[allow]]
+path = "crates/components/src/logo.rs"
+literal = "width=\"1024\" height=\"1024\""
+reason = "SVG markup attribute text patched into the embedded logo, not user-facing"
+
+[[allow]]
+path = "crates/components/src/logo.rs"
+literal = "width=\"{RASTER_PX}\" height=\"{RASTER_PX}\""
+reason = "SVG markup attribute text for rasterising the logo, not user-facing"
+
+[[allow]]
+path = "crates/components/src/rich_text.rs"
+literal = "JetBrains Mono"
+reason = "default monospace font family name, a font identifier"
+
+[[allow]]
+path = "crates/components/src/timeline.rs"
+literal = "clips cannot be fetched here"
+reason = "diagnostic detail of the default TimelineSource::download_clip; shown only inside the localized clip-error-download message"
+
+[[allow]]
+path = "crates/parla/src/app_state.rs"
+literal = "default keymap"
+reason = "label of the embedded default keymap in parse errors, not a user-facing sentence"
+
+[[allow]]
+path = "crates/parla/src/dev_credentials.rs"
+literal = "debug build: credentials in {}; set {USE_KEYCHAIN_VAR}=1 to use the keychain"
+reason = "developer console notice of debug builds, like a log line"
+
+[[allow]]
+path = "crates/parla/src/dev_credentials.rs"
+literal = "development credentials file is unreadable"
+reason = "internal error detail for the debug-only credentials file, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/dev_credentials.rs"
+literal = "secret is not utf-8"
+reason = "internal error detail for the debug-only credentials file, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/dev_credentials.rs"
+literal = "development credentials file unavailable"
+reason = "internal error detail for the debug-only credentials file, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/files.rs"
+literal = "{stem} ({n}).{e}"
+reason = "file name pattern for a unique download name, not prose"
+
+[[allow]]
+path = "crates/parla/src/files.rs"
+literal = "{stem} ({n})"
+reason = "file name pattern for a unique download name, not prose"
+
+[[allow]]
+path = "crates/parla/src/files.rs"
+literal = "bad cache path"
+reason = "internal error detail, logged and shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/log.rs"
+literal = "parla {level}: {text}"
+reason = "log line format"
+
+[[allow]]
+path = "crates/parla/src/log.rs"
+literal = "{now} {level} {text}"
+reason = "log line format"
+
+[[allow]]
+path = "crates/parla/src/log.rs"
+literal = "Bearer "
+reason = "HTTP authorization scheme scrubbed from logs"
+
+[[allow]]
+path = "crates/parla/src/login_item.rs"
+literal = "Parla"
+reason = "product name passed to the OS login item (never translated)"
+
+[[allow]]
+path = "crates/parla/src/login_item.rs"
+literal = "parla is not running from an app bundle"
+reason = "internal error detail, logged when a login item cannot be registered"
+
+[[allow]]
+path = "crates/parla/src/login_item.rs"
+literal = "could not resolve home directory"
+reason = "internal error detail, logged when a login item cannot be registered"
+
+[[allow]]
+path = "crates/parla/src/login_item.rs"
+literal = "Library"
+reason = "macOS LaunchAgents directory component"
+
+[[allow]]
+path = "crates/parla/src/login_item.rs"
+literal = "LaunchAgents"
+reason = "macOS LaunchAgents directory component"
+
+[[allow]]
+path = "crates/parla/src/login_item.rs"
+literal = "Parla.plist"
+reason = "macOS LaunchAgent plist filename"
+
+[[allow]]
+path = "crates/parla/src/main.rs"
+literal = "Parla"
+reason = "product name passed to the OS app identity (never translated)"
+
+[[allow]]
+path = "crates/parla/src/menus.rs"
+literal = "Parla"
+reason = "product name in the app menu (never translated)"
+
+[[allow]]
+path = "crates/parla/src/titlebar.rs"
+literal = "Parla"
+reason = "product name in the window title (never translated)"
+
+[[allow]]
+path = "crates/parla/src/notifications.rs"
+literal = "notifications are off: not running from an app bundle (use mise run run, or mise run bundle)"
+reason = "developer console hint, like a log line"
+
+[[allow]]
+path = "crates/parla/src/providers.rs"
+literal = "keychain unavailable"
+reason = "internal credential error detail, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/providers.rs"
+literal = "development credentials file unavailable"
+reason = "internal credential error detail, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/store_keys.rs"
+literal = "keychain unavailable"
+reason = "internal key store error detail, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/store_keys.rs"
+literal = "keychain: {e}"
+reason = "internal key store error detail, shown only as a diagnostic"
+
+[[allow]]
+path = "crates/parla/src/crash.rs"
+literal = "version: {}\nos: {} {}\nthread: {thread}\nlocation: {location}\npanic: {payload}\n\nbacktrace:\n{backtrace}\n"
+reason = "crash report file content, diagnostic data written locally"
+
+[[allow]]
+path = "crates/parla/src/crash.rs"
+literal = "<non-string panic>"
+reason = "crash report diagnostic fallback for non-string panic payloads"
+
+[[allow]]
+path = "crates/parla/src/updates/download.rs"
+literal = "Parla/{current}"
+reason = "HTTP User-Agent header value, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/mod.rs"
+literal = "Parla/{current}"
+reason = "HTTP User-Agent header value, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/package.rs"
+literal = "Parla-{version}-macos-universal.dmg"
+reason = "release asset file name, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/package.rs"
+literal = "parla {version} {dmg_name}"
+reason = "signed trusted comment of a release signature, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/install.rs"
+literal = "MacOS"
+reason = "macOS executable directory component, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/install.rs"
+literal = "Contents"
+reason = "macOS app bundle directory component, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/install.rs"
+literal = "AppTranslocation"
+reason = "macOS translocation path component, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/install.rs"
+literal = "Parla.app"
+reason = "macOS app bundle directory name, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/install.rs"
+literal = "Print :CFBundleIdentifier"
+reason = "PlistBuddy command for reading the bundle identifier, not user-facing prose"
+
+[[allow]]
+path = "crates/parla/src/updates/install.rs"
+literal = "Contents/Info.plist"
+reason = "macOS app bundle metadata path, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Plain text"
+reason = "fallback name of the plain text language; the UI shows the translated snippet-language-text instead"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Rust"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Python"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "JavaScript"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "TypeScript"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Go"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Java"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Ruby"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Shell"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Markdown"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "Diff"
+reason = "programming language name, a proper noun shown as is"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "diff --git"
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "pub fn "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "use std::"
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "let mut "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "pub struct "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "go func"
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "public class "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "public static void "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "import java."
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "insert into "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "INSERT INTO "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet.rs"
+literal = "create table "
+reason = "source code syntax matched to guess a snippet language, not user-facing prose"
+
+[[allow]]
+path = "crates/components/src/snippet_highlight.rs"
+literal = "Self"
+reason = "keyword of a highlighted programming language, matched in code, never shown as prose"
+
+[[allow]]
+path = "crates/components/src/snippet_highlight.rs"
+literal = "False"
+reason = "keyword of a highlighted programming language, matched in code, never shown as prose"
+
+[[allow]]
+path = "crates/components/src/snippet_highlight.rs"
+literal = "None"
+reason = "keyword of a highlighted programming language, matched in code, never shown as prose"
+
+[[allow]]
+path = "crates/components/src/snippet_highlight.rs"
+literal = "True"
+reason = "keyword of a highlighted programming language, matched in code, never shown as prose"
+
+[[allow]]
+path = "crates/parla/src/quarantine.rs"
+literal = "[ZoneTransfer]\r\nZoneId=3\r\n"
+reason = "Windows Zone.Identifier stream contents (internet zone), not user-facing"
+
+[[allow]]
+path = "crates/parla/src/quarantine.rs"
+literal = "ZoneId=3"
+reason = "Windows Zone.Identifier key checked in the stream, not user-facing"
+
+[[allow]]
+path = "crates/parla/src/shortcuts.rs"
+literal = "Composer"
+reason = "keymap context name (keymap.json syntax), shown as written like action names"
+
+[[allow]]
+path = "crates/parla/src/shortcuts.rs"
+literal = "Timeline"
+reason = "keymap context name (keymap.json syntax), shown as written like action names"
+
+[[allow]]
+path = "crates/parla/src/shortcuts.rs"
+literal = "Sidebar"
+reason = "keymap context name (keymap.json syntax), shown as written like action names"
+
+[[allow]]
+path = "crates/parla/src/shortcuts.rs"
+literal = "TextInput"
+reason = "keymap context name (keymap.json syntax), shown as written like action names"
+
+[[allow]]
+path = "crates/parla/src/shortcuts.rs"
+literal = "Picker"
+reason = "keymap context name (keymap.json syntax), shown as written like action names"
+
+[[allow]]
+path = "crates/parla/src/shortcuts.rs"
+literal = "Esc"
+reason = "key cap label, printed on keyboards and kept like Ctrl and Shift"
+
+[[allow]]
+path = "crates/parla/src/diagnostics.rs"
+literal = "Parla diagnostics\n"
+reason = "diagnostics report file content, English by design like crash reports"
+
+[[allow]]
+path = "crates/parla/src/diagnostics.rs"
+literal = "Tokens, cookies, ids, email addresses and workspace hosts are removed; message text is never included.\n\n"
+reason = "diagnostics report file content, English by design like crash reports"
+
+[[allow]]
+path = "crates/parla/src/diagnostics.rs"
+literal = "\nlog (last {} lines):\n"
+reason = "diagnostics report file content, English by design like crash reports"
+
+[[allow]]
+path = "crates/parla/src/diagnostics.rs"
+literal = "\ncrash reports: {}\n"
+reason = "diagnostics report file content, English by design like crash reports"
+
+[[allow]]
+path = "crates/parla/src/diagnostics.rs"
+literal = "newest crash report:\n"
+reason = "diagnostics report file content, English by design like crash reports"
+
+[[allow]]
+path = "crates/parla/src/diagnostics.rs"
+literal = "(omitted: log.include_content is on)"
+reason = "diagnostics report file content, English by design like crash reports"
+
+[[allow]]
+path = "crates/parla/src/process_stats.rs"
+literal = "Pss:"
+reason = "Linux /proc smaps_rollup field name, parsed not shown"
+
+[[allow]]
+path = "crates/components/src/dialog.rs"
+literal = "ParlaDialog"
+reason = "GPUI key context name of the Base dialog surface, not user-facing"
+
+[[allow]]
+path = "crates/components/src/popover.rs"
+literal = "Popover"
+reason = "GPUI key context name the gpui-base popover bindings match, not user-facing"
+
+[[allow]]
+path = "crates/components/src/popover.rs"
+literal = "PopoverContent"
+reason = "GPUI key context name the gpui-base popover content bindings match, not user-facing"
+
+[[allow]]
+path = "crates/components/src/sidebar.rs"
+literal = "SidebarField"
+reason = "GPUI key context name of the sidebar's text fields, not user-facing"
+
+[[allow]]
+path = "crates/components/src/sidebar.rs"
+literal = "Sidebar && !SidebarField"
+reason = "GPUI key binding context predicate, not user-facing"
+
+[[allow]]
+path = "crates/parla/src/send_timing.rs"
+literal = "send late echo: echo_ms={}"
+reason = "diagnostic log line built here and logged by the session, never shown to the user"
+
+[[allow]]
+path = "crates/parla/src/send_timing.rs"
+literal = "send timing: queue_ms={queue} echo_ms={echo} finished_ms={} attempts={} outcome={outcome}"
+reason = "diagnostic log line built here and logged by the session, never shown to the user"
+
+[[allow]]
+path = "crates/parla/src/platform/macos.rs"
+literal = "Tink"
+reason = "name of a macOS system sound, not user-facing text"

@@ -1,0 +1,93 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "json": {
+        "channel_ids": [
+          "D0000012"
+        ],
+        "token": "REDACTED"
+      }
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "text/plain;charset=UTF-8"
+      ],
+      [
+        "origin",
+        "https://app.slack.com"
+      ]
+    ],
+    "query": [
+      [
+        "_x_app_name",
+        "client"
+      ],
+      [
+        "fp",
+        "7a"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "huddles": [
+          {
+            "active_members": [],
+            "background_id": "ARIZONA",
+            "call_id": "R0000011",
+            "channel_id": "D0000012",
+            "created_by": "U0000014",
+            "dropped_members": [],
+            "expiration": 0,
+            "is_private": true,
+            "is_scheduled": false,
+            "knocks": {},
+            "last_invite_status_by_user": {
+              "U0000013": "pending"
+            },
+            "locale": "es-ES",
+            "name": "",
+            "pending_invitees": {
+              "U0000013": "pending"
+            },
+            "recording": {
+              "can_record_summary": "available",
+              "is_paused": false,
+              "recording_user": "",
+              "summary": false,
+              "transcript": false
+            },
+            "start_date": 1794994780,
+            "thread_root_ts": "1794994780.424609",
+            "updated": 0
+          }
+        ],
+        "ok": true
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "x-slack-edge-shared-secret-outcome",
+        "no-match"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://edgeapi.slack.com/cache/T0000002/huddles/info?_x_app_name=client&fp=7a&_x_num_retries=0"
+}

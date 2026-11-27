@@ -1,0 +1,22 @@
+#!/bin/sh
+#MISE description="Delete temporary signing keychain and credentials"
+set -eu
+
+for arg in "$@"; do
+  case "$arg" in
+    --) ;;
+    *) echo "unknown argument: $arg" >&2; exit 2 ;;
+  esac
+done
+
+: "${RUNNER_TEMP:?RUNNER_TEMP is required}"
+
+keychain="$RUNNER_TEMP/parla-signing.keychain-db"
+identity_file="$RUNNER_TEMP/parla-signing-identity"
+
+if [ -f "$keychain" ] || [ -d "$keychain" ]; then
+  security delete-keychain "$keychain" >/dev/null 2>&1 || true
+fi
+rm -f "$identity_file"
+# Any leftover p12 decoded during signing.
+rm -f "$RUNNER_TEMP"/*.p12 2>/dev/null || true

@@ -1,0 +1,43 @@
+[package]
+name = "slack"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+domain = { path = "../../../domain" }
+i18n = { path = "../../../i18n" }
+settings = { path = "../../../settings" }
+components = { path = "../../../components" }
+gpui.workspace = true
+slack_api = { path = "../api" }
+slack_auth = { path = "../auth" }
+slack_markup = { path = "../markup" }
+slack_realtime = { path = "../realtime" }
+redact = { path = "../../../redact" }
+futures.workspace = true
+log.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
+tokio = { workspace = true, features = ["rt", "sync", "time", "macros"] }
+url.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+jiff.workspace = true
+slack_api = { path = "../api", features = ["test-support"] }
+slack_auth = { path = "../auth", features = ["test-support"] }
+slack_realtime = { path = "../realtime", features = ["test-support"] }
+tempfile.workspace = true
+tokio = { workspace = true, features = ["test-util", "net", "io-util"] }
+wiremock.workspace = true
+# Native huddle media spike example (examples/native_spike.rs).
+chime_signal = { path = "../../../chime_signal" }
+str0m.workspace = true
+opus.workspace = true
+tokio-tungstenite.workspace = true
+futures.workspace = true

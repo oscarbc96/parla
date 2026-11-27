@@ -1,0 +1,9 @@
+{"ok":true,"huddles":[
+{"id":"R0000030","channels":["C0000005"],"created_by":"U0000002","date_start":1790000000,"date_end":0,"has_ended":false,"participants":["U0000002","U0000003"],"pending_invitees":{},"is_dm_call":false,"extra":{"x":1}},
+{"id":"R0000031","channels":["D0000007"],"created_by":"U0000002","date_start":1790000100,"date_end":0,"has_ended":false,"participants":null,"pending_invitees":{"U0000001":{}},"is_dm_call":true},
+{"id":"R0000032","channels":["C0000006"],"created_by":"U0000002","date_start":1780000000,"date_end":1780000900,"has_ended":true,"participants":[]},
+{"id":"","channels":["C0000007"],"has_ended":false},
+{"id":"R0000033","channels":[],"has_ended":false,"participants":["U0000002"]},
+null,
+{"channels":["C0000008"]}
+]}

@@ -1,0 +1,111 @@
+---
+title: Sense connexió i memòria cau
+description: Com desa Parla els missatges, posa en cua el que envies sense connexió, conserva esborranys i es recupera d'una memòria cau feta malbé.
+---
+
+Parla desa una còpia local de cada espai de treball perquè obri ràpid i segueixi
+funcionant quan la xarxa no ho fa.
+
+## El magatzem local xifrat
+
+Cada espai de treball té la seva pròpia base de dades SQLite xifrada. La seva clau
+es desa al clauer del sistema operatiu, un element per espai. Res del que hi ha al
+magatzem s'envia al projecte.
+
+A macOS, Parla també comprova si el xifratge de disc complet està actiu. Mantén-lo
+actiu: el magatzem protegeix el fitxer de la base de dades, no la resta del disc.
+
+## Posar-se al dia
+
+Quan Parla es reconnecta, demana al servei el que t'has perdut i omple els buits de
+l'historial de les converses. Posar-se al dia i carregar historial no generen mai
+notificacions. Només els missatges en directe poden fer-ho.
+
+## Safata de sortida
+
+Si envies un missatge sense connexió, Parla el posa en una safata de sortida
+ordenada i el mostra a la línia de temps com a **En cua**. Els missatges en cua
+surten en ordre quan torna la connexió, i cadascun s'envia com a màxim una vegada.
+
+Els missatges pendents i fallits es queden al final de la conversa, en l'ordre en
+què els vas enviar, sota tots els missatges ja lliurats.
+
+Si Parla es tanca mentre s'envia un missatge, no pot saber si va arribar. El
+missatge es marca com a fallit amb la nota **Pot ser que s'hagi enviat. Comprova-ho
+abans de tornar-ho a provar.** Un missatge fallit es queda a la línia de temps,
+també després de reiniciar, amb **No enviat.** i tres accions: **Torna-ho a
+provar** el posa en cua una altra vegada, **Esborra** el descarta i **Copia el
+text** posa el seu text al porta-retalls.
+
+## Esborranys
+
+Parla desa el text del compositor com a esborrany de cada conversa i de cada fil.
+L'esborrany es desa en canviar de conversa, tancar un fil o sortir, no amb un
+temporitzador. Buidar el compositor esborra l'esborrany.
+
+Els esborranys es queden en aquest ordinador, a la memòria cau xifrada, i no es
+comparteixen amb el servei.
+
+## Avís sense connexió
+
+Quan es perd la connexió amb un espai de treball, apareix **Estàs sense connexió.**
+sobre la conversa. Parla segueix reintentant per si sol amb una pausa cada cop més
+gran, així que no hi ha compte enrere. **Torna-ho a provar ara** ho intenta a
+l'instant. L'avís desapareix quan torna la connexió.
+
+## Reconstruir una memòria cau
+
+Si la memòria cau local d'un espai de treball no es pot obrir, Parla mostra un
+avís. Els missatges es tornaran a carregar des del servei, però els missatges en
+cua i els esborranys desats en aquest dispositiu no es poden recuperar. Tria
+**Reconstrueix la memòria cau** per esborrar el fitxer il·legible, crear una clau
+nova i començar de zero des del servei. Parla no ho fa mai per si sol.
+
+Si la teva sessió ha caducat, un avís a part nomena l'espai i ofereix tornar a
+iniciar la sessió. Pots seguir llegint els missatges en memòria cau, però el
+compositor està en només lectura i diu **Inicia la sessió de nou per enviar
+missatges** fins que ho facis.
+
+## Retenció i espai al disc
+
+Dos paràmetres controlen la memòria cau:
+
+```jsonc
+{
+  "storage": { "cache_mb": 8, "retention_days": 90 },
+}
+```
+
+- `retention_days` (90 per defecte) elimina els missatges més antics que això de
+  les converses que no has obert en els últims 30 dies. Les converses que vas obrir
+  fa poc no es poden mai. La safata de sortida i els esborranys no es poden mai.
+- `cache_mb` (8 per defecte) és la memòria que pot usar la base de dades,
+  compartida entre els espais oberts.
+
+Els dos s'apliquen la propera vegada que Parla s'iniciï. Pots canviar-los a
+Paràmetres, Privadesa i emmagatzematge.
+
+Quan el disc que conté el magatzem local té menys d'1 GiB lliure, apareix un avís
+**Disc gairebé ple** amb **Gestiona l'emmagatzematge**, que obre Paràmetres,
+Privadesa i emmagatzematge. Desapareix per sobre d'1,5 GiB. Pots buidar la memòria
+cau allà; cada espai esborra els seus missatges i esborranys en memòria cau i torna
+a carregar des del servei.
+
+Els missatges antics es tornen a carregar en desplaçar-te enrere.
+
+## Cercar sense connexió
+
+El magatzem manté un índex de text complet del text dels missatges. La cerca el fa
+servir, així que funciona sense connexió. Només troba missatges ja desats en aquest
+dispositiu; els missatges podats o que mai es van carregar no es cerquen. Quan el
+servei també cerca al seu servidor, això només passa mentre hi ha connexió, i el
+panell indica quan mostra només el dispositiu.
+
+## Primeres càrregues lentes
+
+Mentre s'executa la primera càrrega, la finestra mostra **Encara connectant...**.
+Els espais grans carreguen la primera part de la llista de membres abans que la
+finestra s'ompli; la resta arriba després. Si el servidor no respon en 20 segons,
+apareix una barra d'error amb un botó **Torna-ho a provar**.
+
+Següent: [Paràmetres](/parla/ca/docs/settings/).

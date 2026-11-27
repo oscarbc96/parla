@@ -1,0 +1,21 @@
+{
+  "verdict": "invalid",
+  "rule": 9,
+  "nodes": [
+    {
+      "parent": null,
+      "id": "f",
+      "kind": "form"
+    },
+    {
+      "parent": 0,
+      "id": "name",
+      "kind": {
+        "input": {
+          "label": "  ",
+          "value": ""
+        }
+      }
+    }
+  ]
+}

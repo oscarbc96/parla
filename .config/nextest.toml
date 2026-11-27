@@ -1,0 +1,19 @@
+# cargo-nextest settings (`mise run test`, `test:perf`, CI).
+#
+# A hung test is killed instead of blocking a gate forever: GPUI window and
+# realtime tests can wait on an event that never comes.
+
+[profile.default]
+slow-timeout = { period = "60s", terminate-after = 5 }
+
+# CI reports every failing test, not only the first.
+[profile.ci]
+fail-fast = false
+slow-timeout = { period = "60s", terminate-after = 5 }
+
+# `mise run test:perf` runs only the timing-sensitive ignored tests. They run
+# one at a time so they do not disturb each other's numbers,
+# and the soak gets a longer leash.
+[profile.perf]
+test-threads = 1
+slow-timeout = { period = "300s", terminate-after = 6 }

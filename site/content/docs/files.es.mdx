@@ -1,0 +1,127 @@
+---
+title: Archivos
+description: Previsualiza, abre, descarga y sube archivos, lee fragmentos de código y reproduce clips en Parla.
+---
+
+## Vistas previas
+
+Los archivos compartidos en una conversación aparecen como tarjetas bajo el
+mensaje:
+
+- **Imágenes**: se muestran en línea, ajustadas a un recuadro.
+- **PDF**: muestran la miniatura que proporciona el servicio. Parla no dibuja las
+  páginas del PDF.
+- **Fragmentos**: muestran el nombre del archivo, el lenguaje, los números de
+  línea y las primeras líneas.
+- **Clips**: son archivos de vídeo o audio con póster, nombre, tamaño y duración.
+- **Otros archivos**: muestran un icono, el nombre y el tamaño.
+- Los archivos borrados muestran un marcador de posición.
+
+El ajuste **Imágenes en línea** en Ajustes, General controla cuándo se cargan:
+**Siempre**, **Al hacer clic** o **Nunca**. El valor predeterminado es **Al hacer
+clic**. Las imágenes de más de 10 MB no se cargan en línea, y las animadas solo
+se reproducen mientras están visibles.
+
+## Abrir un archivo
+
+Haz clic en una imagen para abrirla en el visor multimedia. El visor muestra el
+nombre del archivo, quién lo envió, cuándo y su tamaño.
+
+- Usa **Anterior** y **Siguiente**, las flechas izquierda y derecha, o las
+  miniaturas para recorrer las imágenes cargadas de la conversación.
+- Ajusta el zoom con `+` y `-`, usa `0` para el tamaño real y `F` para ajustar a
+  la ventana. Arrastra o desplázate para moverte cuando la imagen es más grande
+  que la ventana.
+- **Copiar imagen**, **Descargar**, **Abrir en la app predeterminada** y **Abrir
+  en el canal** están en la barra de herramientas. Escape cierra el visor.
+
+Haz clic en un archivo de código o texto, o en **Abrir en el visor** de una
+tarjeta de fragmento, para abrir el visor de código. Muestra el nombre del
+archivo, quién lo envió, dónde y cuándo, con números de línea, ajuste de línea,
+copiar y descargar. `cmd-f` abre la búsqueda dentro del archivo; Escape cierra la
+búsqueda y un segundo Escape cierra la ventana.
+
+Los fragmentos muestran una vista previa de como mucho 400 líneas o 64 KB. Cuando
+la vista previa es solo una parte del archivo, la tarjeta lo indica, **Copiar
+vista previa** copia solo las líneas visibles y **Descargar** guarda el archivo
+completo.
+
+## Clips
+
+En macOS, **Reproducir** descarga el clip en la caché y lo reproduce con el
+decodificador del sistema. Parla nunca inicia un clip por sí solo. Haz clic otra
+vez en la tarjeta para pausar y reanudar sin quitar el teclado del compositor.
+
+La tarjeta muestra pausa y reanudación, una barra de búsqueda, velocidad (1x,
+1,5x y 2x), silencio y volumen, y subtítulos cuando el servicio los proporciona.
+Con la tarjeta enfocada, Espacio reproduce o pausa, Izquierda y Derecha mueven 5
+segundos y `m` silencia. Un clip se pausa cuando sale de la vista o la ventana
+pierde el foco.
+
+En Windows y Linux, y en macOS cuando la reproducción no es posible, la tarjeta
+muestra el póster y **Abrir en el navegador**.
+
+## Descargas
+
+**Descargar** guarda el archivo en tu carpeta de descargas con un nombre único,
+así que no se sobrescribe nada. Un aviso confirma el guardado y ofrece **Mostrar
+en la carpeta**.
+
+**Abrir en la app predeterminada** guarda primero el archivo y después abre solo
+archivos PNG, JPEG, GIF, WebP, HEIC y PDF cuyo nombre y tipo coincidan. Cualquier
+otro archivo solo se guarda. Los archivos descargados llevan la marca del sistema
+para archivos de internet, así que el sistema operativo pregunta antes de abrir o
+ejecutar algo.
+
+## Subidas
+
+Adjunta archivos de tres formas:
+
+- Arrastra archivos desde tu gestor de archivos a la cronología.
+- Pega archivos o una imagen del portapapeles en el compositor con `cmd-v`
+  (`ctrl-v` en Linux y Windows).
+- Usa el botón **Adjuntar archivos** del compositor.
+
+Los archivos no se suben hasta que pulsas **Enviar**. Se quedan en el compositor
+como fichas con una miniatura o una insignia de tipo, el nombre y el tamaño, y
+cada una tiene un botón para quitarla. Tu texto se convierte en el comentario de
+los archivos y puede estar vacío. El compositor del hilo funciona igual.
+
+Al enviar, cada ficha muestra **Subiendo** con su tamaño y un botón **Cancelar**.
+**Enviar** espera a que terminen las subidas. Si una subida falla, la ficha se
+pone roja con el motivo y ofrece **Reintentar** y **Quitar**. Las subidas
+necesitan conexión y no se ponen en cola: enviar sin conexión muestra un error y
+mantiene los archivos adjuntos.
+
+Los archivos de más de 1 GB se rechazan, y los directorios también. Los demás
+archivos del mismo arrastre sí se suben.
+
+## Los textos largos se convierten en fragmentos
+
+Pegar más de 20 líneas o más de 2.000 caracteres en el compositor no llena el
+borrador. Parla ofrece compartir el texto como fragmento: dale un título,
+comprueba el lenguaje que ha adivinado y elige **Compartir como fragmento**. El
+texto se adjunta como una ficha de archivo y se envía como cualquier otro
+archivo.
+
+Elige **Pegar como texto** o pulsa Escape para poner el texto en el borrador. Un
+pegado de más de 1 MB nunca es un fragmento; Parla ofrece adjuntarlo como un
+archivo de texto normal.
+
+## La pestaña Archivos
+
+La pestaña **Archivos** bajo la cabecera de una conversación enumera los archivos
+compartidos en ella, del más reciente al más antiguo, incluidas las respuestas de
+los hilos. Cada fila muestra el tipo, el nombre, el tamaño, quién lo compartió y
+cuándo.
+
+Haz clic en una fila, o muévete con las flechas y pulsa Intro o Espacio, para
+abrirla: las imágenes y los PDF en el visor multimedia, los fragmentos y archivos
+de código en el visor de código, y los demás archivos como descargas. La lista se
+carga por páginas al desplazarte, hasta 500 archivos. **Mensajes** vuelve a la
+conversación.
+
+La pestaña enumera los archivos de los mensajes que Parla tiene guardados, así
+que los archivos antiguos aparecen cuando se cargan sus mensajes.
+
+Siguiente: [Notificaciones](/parla/es/docs/notifications/).

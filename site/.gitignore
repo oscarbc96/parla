@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.linkinator/
+public/settings.schema.json
+public/actions.json
+dist-tests/
+.turbo/
+.release.json
+.releases.json

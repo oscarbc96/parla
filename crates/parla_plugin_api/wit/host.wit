@@ -1,0 +1,20 @@
+/// Always available. WASI adds clocks, random and stdio wired
+/// to the plugin log; there is no filesystem, sockets or `wasi:http`.
+interface host {
+  use types.{error, version, app-info, timestamp};
+
+  enum log-level { debug, info, warn, error }
+
+  /// Capability: none.
+  api-version: func() -> result<version, error>;
+  /// Capability: none. App version, platform, locale, appearance, density.
+  get-app-info: func() -> result<app-info, error>;
+  /// Capability: none. Writes to the plugin's log (a 256 KB ring); `debug`
+  /// is kept only in dev mode. `message` at most 4 KB, longer is cut.
+  log: func(level: log-level, message: string) -> result<_, error>;
+  /// Capability: none. Wall clock.
+  now: func() -> result<timestamp, error>;
+  /// Capability: none. The plugin's own Fluent string `key` (at most 128
+  /// bytes) in the user's locale, with at most 16 named arguments (§17).
+  t: func(key: string, args: list<tuple<string, string>>) -> result<string, error>;
+}

@@ -1,0 +1,13 @@
+[package]
+name = "test-guest-fs-import"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "plugin_host engine test guest (fs-import); see crates/plugin_host/tests/engine.rs."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wit-bindgen.workspace = true

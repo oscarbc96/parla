@@ -1,0 +1,102 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "room",
+          "R0000010"
+        ],
+        [
+          "_x_reason",
+          "all-calls-store/conditional-fetch"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "ok": true,
+        "room": {
+          "app_id": "A00",
+          "attached_file_ids": [],
+          "background_id": "GARDEN_OFFICE",
+          "call_family": "huddle",
+          "canvas_background": "GARDEN_OFFICE",
+          "canvas_thread_ts": "1794526178.065219",
+          "channels": [
+            "C0000005"
+          ],
+          "created_by": "U0000001",
+          "date_end": 0,
+          "date_start": 1794526177,
+          "display_id": "",
+          "external_unique_id": "126b28be-4c0f-446c-bd8a-685306c32713",
+          "has_ended": false,
+          "huddle_link": "https://app.slack.com/huddle/T0000001/C0000005",
+          "id": "R0000010",
+          "is_dm_call": false,
+          "is_prewarmed": false,
+          "is_scheduled": false,
+          "knocks": {},
+          "last_invite_status_by_user": {},
+          "locale": "en-GB",
+          "media_backend_type": "free_willy",
+          "media_server": "",
+          "name": "",
+          "participant_history": [
+            "U0000001"
+          ],
+          "participants": [
+            "U0000001"
+          ],
+          "participants_camera_off": [],
+          "participants_camera_on": [],
+          "participants_events": {
+            "U0000001": {
+              "camera_off": false,
+              "camera_on": false,
+              "joined": true,
+              "screenshare_off": false,
+              "screenshare_on": false,
+              "user_team": {}
+            }
+          },
+          "participants_screenshare_off": [],
+          "participants_screenshare_on": [],
+          "pending_invitees": {},
+          "recording": {
+            "can_record_summary": "unavailable"
+          },
+          "thread_root_ts": "1794526178.065219",
+          "was_accepted": false,
+          "was_missed": false,
+          "was_rejected": false
+        }
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/screenhero.rooms.info?_x_id=9aeb8a04-1794526180.733&_x_gantry=true&_x_desktop_ia=4&_x_csid=y1DBQLYWuFo&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=cf&_x_num_retries=0"
+}

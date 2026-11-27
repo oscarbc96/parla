@@ -1,0 +1,12 @@
+{
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://ws.example.test/",
+  "data": {
+    "json": {
+      "type": "item_removed",
+      "folder": "B0000001",
+      "user": "A0000001"
+    }
+  }
+}

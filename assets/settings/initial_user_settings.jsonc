@@ -1,0 +1,10 @@
+// Parla settings. Edit and save; changes apply immediately.
+// Only list what you want to change; everything else uses the defaults.
+// Reference: https://oscarbc96.github.io/parla/docs/settings (or open the default settings from the app).
+{
+  "$schema": "./settings.schema.json",
+  // "theme": { "mode": "system", "light": "Parla Light", "dark": "Parla Dark" },
+  // "ui_font_size": 14,
+  // "density": "compact",
+  // "mcp": { "enabled": true, "workspaces": { "<provider>/<id>": { "enabled": true } } }
+}

@@ -1,0 +1,38 @@
+[package]
+name = "slack_api"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+# Test-only: lets `FileHosts` admit a mock server.
+test-support = []
+
+[dependencies]
+thiserror.workspace = true
+log.workspace = true
+zeroize.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
+futures.workspace = true
+serde_path_to_error.workspace = true
+url = { workspace = true, features = ["serde"] }
+reqwest.workspace = true
+tokio = { workspace = true, features = ["fs", "io-util"] }
+redact = { path = "../../../redact" }
+slack_redact = { path = "../redact_rules" }
+
+governor.workspace = true
+backon.workspace = true
+httpdate.workspace = true
+
+[dev-dependencies]
+wiremock.workspace = true
+tracing.workspace = true
+tempfile.workspace = true
+tokio = { workspace = true, features = ["test-util"] }
+slack_api = { path = ".", features = ["test-support"] }

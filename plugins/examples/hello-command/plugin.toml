@@ -1,0 +1,12 @@
+id = "hello-command"
+name = "Hello command"
+namespace = "hello"
+version = "0.1.0"
+api = "0.1"
+description = "Example plugin: one command that shows a toast."
+license = "Apache-2.0 OR MIT"
+activation = ["command:hello::greet"]
+
+[[commands]]
+id = "greet"
+title = "Say hello"

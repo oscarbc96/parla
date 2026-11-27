@@ -1,0 +1,88 @@
+// Parla built-in defaults. Layering: this file < settings.json < workspaces/<provider>/<id>.json.
+// Objects merge, arrays replace. Every setting is listed here with its default.
+{
+  "theme": {
+    "mode": "system", // system | light | dark
+    "light": "Parla Light",
+    "dark": "Parla Dark"
+  },
+  "locale": "system", // system | en | es | ca (the codes in i18n/locales.toml); en-XA is a pseudo-locale for testing
+  "ui_font_family": "Inter",
+  "ui_font_size": 14.0,
+  "buffer_font_family": "JetBrains Mono", // code blocks
+  "density": "compact", // compact | cozy
+  "sidebar": {
+    "show_unreads_section": true,
+    "sort": "alphabetical" // alphabetical | recent
+  },
+  "messages": {
+    "show_avatars": true,
+    "clock": "24h", // 24h | 12h
+    "inline_images": "on_click" // always | on_click | never
+  },
+  "notifications": {
+    "desktop": "mentions", // all | mentions | none
+    "keywords": [],
+    "sound": "subtle",
+    "quiet_hours": null, // or { "from": "20:00", "to": "08:00", "days": ["mon", "tue"] } (days optional: empty is every day)
+    "show_preview": true // false: a notification shows only the sender and the channel
+  },
+  "performance": {
+    "image_cache_mb": 32,
+    "message_window": 200,
+    "lean_after_minutes": 10
+  },
+  "send_later": {
+    "presets": ["tomorrow 09:00", "monday 09:00"],
+    "timezone": null // IANA zone name (e.g. "Europe/Madrid") that overrides your profile zone for scheduling
+  },
+  "storage": {
+    "cache_mb": 8, // the local database cache; applies at the next start
+    "retention_days": 90, // cached messages older than this are dropped at start
+    "lock_after_minutes": 0 // close the store and show a lock screen after this many idle minutes; 0 is off
+  },
+  "gifs": {
+    "providers": ["giphy", "klipy"], // plugin ids, order = tab order
+    "rating": "pg-13",
+    "send_as": "link", // link | upload
+    "folder": null, // watched folder for My GIFs, e.g. "~/Pictures/GIFs"
+    "autoplay_in_messages": "visible" // visible | hover | never
+  },
+  "calls": {
+    "ring": true, // ring for incoming DM huddles
+    "ringtone": "parla-chime", // our own sounds only
+    "join_with": "native", // native | window | browser | provider_app
+    "mute_on_join": true,
+    "camera_on_join": false,
+    "input_device": null, // microphone name; null follows the system default
+    "output_device": null // speaker name; null follows the system default
+  },
+  "updates": {
+    "check": true,
+    "skip": null // a release tag you chose to skip, e.g. "v0.4.0"; set by Skip this version
+  },
+  "mcp": {
+    "enabled": false,
+    "audit_retention_days": 90, // audit log rows older than this are pruned
+    // Per workspace policy, keyed "<provider>/<id>" (a workspace is invisible to MCP until enabled), e.g.
+    // "<provider>/<id>": { "enabled": true, "allow_writes": true, "confirm_writes": true, "include_dms": false, "allow_channels": ["<conversation id>"], "deny_channels": ["<conversation id>"] }
+    "workspaces": {}
+  },
+  "log": {
+    "include_content": false,
+    "level": "info" // error | info | debug: how much parla.log records; applies at once
+  },
+  "crash_reports": "ask", // off | ask | local: a redacted report kept on this device, never sent
+  "windows": {
+    "restore": true // reopen the main window at its last size and position
+  },
+  "tray": true, // menu-bar icon with workspace badges; closing the window keeps Parla running in it
+  "dock_icon": "always", // macOS: always | with_window (hide the Dock icon while the window is closed) | never (menu bar only); the last two need tray
+  "launch_at_login": false, // start Parla at login, hidden behind the menu-bar icon
+  "plugins": {
+    "auto_update": false, // apply updates that ask for no new permissions at start
+    "dev_paths": [] // folders loaded as dev plugins
+    // "<plugin-id>": { "enabled": true, "workspaces": ["<provider>/<id>"], "config": {} }
+    // workspaces is optional (absent: every workspace); secret settings live in the keychain
+  }
+}

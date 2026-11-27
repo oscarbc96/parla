@@ -1,0 +1,9 @@
+id = "slash-plugin"
+name = "Slash"
+version = "0.1.0"
+api = "0.1"
+activation = ["slash:later"]
+
+[[slash]]
+name = "later"
+description = "Later"

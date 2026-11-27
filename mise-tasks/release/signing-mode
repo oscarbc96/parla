@@ -1,0 +1,35 @@
+#!/bin/sh
+#MISE description="Select self-signed or ad hoc release signing"
+set -eu
+set +x
+
+p12_set=0
+password_set=0
+missing=""
+
+if [ -n "${MACOS_SELF_SIGNED_P12:-}" ]; then
+  p12_set=1
+else
+  missing="$missing MACOS_SELF_SIGNED_P12"
+fi
+if [ -n "${MACOS_SELF_SIGNED_PASSWORD:-}" ]; then
+  password_set=1
+else
+  missing="$missing MACOS_SELF_SIGNED_PASSWORD"
+fi
+
+if [ "$p12_set" -eq 1 ] && [ "$password_set" -eq 1 ]; then
+  mode="self-signed"
+else
+  if [ "$p12_set" -ne "$password_set" ]; then
+    printf 'signing-mode: incomplete self-signed configuration; missing:%s\n' "$missing" >&2
+    exit 1
+  fi
+  mode="adhoc"
+  printf 'signing-mode: ad hoc signing means every update will make the keychain ask again\n' >&2
+fi
+
+printf '%s\n' "$mode"
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+  printf 'Signing mode: %s\n' "$mode" >> "$GITHUB_STEP_SUMMARY"
+fi

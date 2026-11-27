@@ -1,0 +1,19 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "install",
+    "sign-in",
+    "messaging",
+    "files",
+    "notifications",
+    "offline",
+    "settings",
+    "keymap",
+    "updates",
+    "uninstall",
+    "troubleshooting",
+    "privacy",
+    "terms"
+  ]
+}

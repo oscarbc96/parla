@@ -1,0 +1,13 @@
+[package]
+name = "test-guest-sdk-all-exports"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "SDK test guest: exports every extension point; see plugins/sdk-rust/tests/build.rs."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+parla_plugin_sdk.workspace = true

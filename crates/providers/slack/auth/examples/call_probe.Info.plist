@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>org.parla.call-probe</string>
+	<key>CFBundleName</key>
+	<string>Parla call probe</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Parla uses the microphone so you can talk in a huddle.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Parla uses the camera so you can share video in a huddle.</string>
+</dict>
+</plist>

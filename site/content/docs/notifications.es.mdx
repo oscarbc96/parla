@@ -1,0 +1,123 @@
+---
+title: Notificaciones
+description: Qué hace que Parla te avise, cómo pausarlo y qué muestran la insignia del Dock y el icono de la barra de menús.
+---
+
+## Las notificaciones de escritorio necesitan el paquete de la aplicación
+
+En macOS, las notificaciones del sistema solo funcionan cuando Parla se ejecuta
+desde un paquete de aplicación. `mise run run` y `mise run bundle` crean uno. Si
+ejecutas el binario directamente, Parla se queda en silencio. Consulta
+[Instalación](/parla/es/docs/install/).
+
+## Cuándo avisa Parla
+
+Solo avisan los mensajes en directo. Ponerse al día después de una desconexión y
+cargar historial antiguo nunca avisan.
+
+Parla no avisa cuando:
+
+- Las notificaciones de escritorio están en **Nada**.
+- El mensaje es tuyo.
+- La ventana está activa y esa conversación está abierta.
+- La hora actual está dentro de tus horas de silencio.
+
+En caso contrario, **Notificaciones de escritorio** en Ajustes, Notificaciones
+decide:
+
+| Ajuste                                             | Avisa de                                                                                                            |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Todos los mensajes**                             | Todos los mensajes de las conversaciones en las que participas, excepto las respuestas de hilos que no te mencionan |
+| **Menciones y mensajes directos** (predeterminado) | Mensajes directos, menciones a ti y mensajes que contienen una de tus palabras clave                                |
+| **Nada**                                           | Nada; las insignias sí se actualizan                                                                                |
+
+Las palabras clave coinciden con palabras completas e ignoran mayúsculas y
+minúsculas. Una conversación silenciada solo avisa cuando alguien te menciona
+directamente.
+
+**Mostrar vistas previas de mensajes** se puede desactivar. Una notificación
+entonces muestra solo quién escribió y dónde, sin texto ni número de archivos.
+
+Las horas de silencio usan horas locales `HH:MM` y pueden cruzar la medianoche.
+Puedes elegir los días en que empieza una ventana de silencio. Las menciones
+siguen actualizando las insignias durante las horas de silencio.
+
+## Pausar las notificaciones de un espacio de trabajo
+
+Haz clic derecho en un espacio de la barra y elige **Pausar notificaciones**, o
+pulsa `cmd-shift-d` (`ctrl-shift-d` en Linux y Windows) para el espacio en el que
+estás. Elige 30 minutos, 1 hora, 2 horas, hasta mañana a las 09:00 o una duración
+personalizada.
+
+Mientras está pausado, nada avisa en ese espacio, la barra muestra una marca de
+pausa y la barra lateral dice cuándo termina la pausa con **Reanudar
+notificaciones**. La pausa es el no molestar del propio servicio, así que te
+sigue a otros dispositivos cuando el servicio lo admite.
+
+En macOS, la campana de la barra de título abre el mismo menú.
+
+## Niveles por conversación
+
+Haz clic derecho en una conversación y elige **Notificaciones**, o usa el botón
+de notificaciones de su cabecera, para poner esa conversación en
+**Predeterminado**, **Todos los mensajes**, **Menciones** o **Nada**. También
+puedes silenciarla.
+
+El menú de la cabecera también tiene:
+
+- **Respuestas a hilos que sigo**, activado por defecto. Una respuesta en un hilo
+  que empezaste o en el que participaste avisa, sea cual sea el nivel excepto
+  **Nada**.
+- **Sonido**, activado por defecto. Desactívalo para que las notificaciones de
+  esta conversación sean silenciosas.
+- **Silenciar 1 hora**, que termina solo, también después de reiniciar.
+- **Todos los ajustes de notificaciones...**, que abre Ajustes, Notificaciones.
+
+Parla guarda estos niveles en este ordenador cuando el servicio no puede
+guardarlos por ti.
+
+## Qué muestra una notificación
+
+Un mensaje directo muestra al remitente como título. Un mensaje de canal muestra
+"nombre en #canal". El cuerpo es el texto del mensaje, cortado a 200 caracteres,
+o el número de archivos cuando el mensaje solo tiene archivos.
+
+Hay como mucho una notificación por conversación: una nueva sustituye a la
+anterior.
+
+Haz clic en una notificación para traer Parla al frente y abrir su espacio de
+trabajo, su conversación y, en una respuesta de hilo, ese hilo. Las notificaciones
+desaparecen cuando has leído la conversación.
+
+Una notificación de mensaje tiene dos botones:
+
+- **Responder** abre la conversación o el hilo para que contestes ahí.
+- **Marcar como leído** la marca como leída sin abrir Parla.
+
+Los recordatorios y los huddles perdidos no tienen botones.
+
+## Insignia del Dock e icono de la barra de menús
+
+La insignia del Dock muestra el número total de menciones de todos los espacios
+con sesión iniciada y se oculta cuando es cero.
+
+Parla pone su propio icono en la barra de menús. Sigue la barra clara u oscura y
+muestra un punto y el número de menciones cuando algo te necesita. Su menú muestra
+los no leídos y las menciones, enumera cada espacio con sesión iniciada y ofrece
+pausar notificaciones, establecer tu estado, abrir Ajustes, abrir Parla y salir.
+
+Mientras el icono de la barra de menús está activo, cerrar la ventana oculta
+Parla y la mantiene en marcha, así que las notificaciones y los recuentos siguen
+llegando. Elige **Abrir Parla** en el icono para volver a mostrar la ventana.
+Define `"tray": false` en `settings.json` para quitar el icono y salir cuando se
+cierre la última ventana.
+
+En macOS, **Dock y barra de menús** en Ajustes, General elige si el icono del Dock
+se muestra siempre, solo mientras hay una ventana abierta o nunca. Las dos
+últimas opciones necesitan el icono de la barra de menús.
+
+Con **Abrir Parla al iniciar sesión** activado, Parla se inicia al entrar. Con el
+icono de la barra de menús activo, se inicia oculto y lo abres desde el icono; con
+el icono desactivado, abre su ventana.
+
+Siguiente: [Sin conexión y caché](/parla/es/docs/offline/).

@@ -1,0 +1,63 @@
+---
+title: Desinstal·lar
+description: Elimina Parla, les seves dades locals, la memòria cau, els elements del clauer i l'element d'inici de l'ordinador.
+---
+
+Per eliminar Parla del tot, esborra l'aplicació, treu les seves dades locals i la
+seva memòria cau, i neteja l'element d'inici i les credencials desades.
+
+## Treure l'aplicació
+
+Tanca Parla. A macOS, mou `Parla.app` d'Aplicacions a la Paperera. Si el vas
+instal·lar des del codi font, esborra la compilació o el paquet que vas crear.
+
+## Desactivar l'obertura en iniciar la sessió
+
+Si vas activar **Obre Parla en iniciar la sessió**, desactiva-ho a Paràmetres,
+General abans de treure l'aplicació. També pots esborrar el fitxer de l'element
+d'inici `~/Library/LaunchAgents/Parla.plist`.
+
+## Esborrar les dades locals i la memòria cau
+
+Parla desa les dades en carpetes separades de configuració, dades i memòria cau:
+
+| Tipus        | macOS                                 | Linux                                           | Windows                |
+| ------------ | ------------------------------------- | ----------------------------------------------- | ---------------------- |
+| Configuració | `~/.config/parla`                     | `$XDG_CONFIG_HOME/parla` o `~/.config/parla`    | `%APPDATA%\parla`      |
+| Dades        | `~/Library/Application Support/parla` | `$XDG_DATA_HOME/parla` o `~/.local/share/parla` | `%APPDATA%\parla`      |
+| Memòria cau  | `~/Library/Caches/parla`              | `$XDG_CACHE_HOME/parla` o `~/.cache/parla`      | `%LOCALAPPDATA%\parla` |
+
+La carpeta de dades conté les bases de dades locals, l'estat de la comprovació
+d'actualitzacions, els informes de fallades i, en compilacions de depuració,
+`development_credentials.json`. També conté els registres i, a macOS i Linux, el
+socket MCP a `run/mcp.sock`. La carpeta de memòria cau conté multimèdia en memòria
+cau i fitxers temporals de pujada. La carpeta de configuració conté `settings.json`,
+`keymap.json`, temes, fitxers de paràmetres per espai i connectors.
+
+Per treure tot el que Parla ha desat en aquest dispositiu, esborra les carpetes de
+dades i memòria cau. Esborra també la carpeta de configuració si no vols conservar
+els teus paràmetres, mapa de tecles, temes o connectors. A Windows, la configuració
+i les dades usen la mateixa carpeta (`%APPDATA%\parla`), així que esborrar-la també
+esborra els teus paràmetres.
+
+També pots usar **Esborra totes les dades** dins de Parla: tanca la sessió a tots
+els espais i esborra les carpetes de dades i memòria cau, però conserva la carpeta
+de configuració.
+
+## Elements del clauer
+
+A les compilacions release, Parla desa els inicis de sessió i les claus de xifratge
+del magatzem al clauer del sistema com a contrasenyes d'internet el servidor de les
+quals comença per `parla://`. Inclouen `parla://workspace/<id>` per als inicis de
+sessió i `parla://store/app` i `parla://store/<provider>/<id>` per a les claus de
+xifratge del magatzem.
+
+Després d'esborrar les dades de Parla, obre Accés a Clauers i cerca `parla://` per
+treure les entrades que quedin si vols eliminar del tot les credencials desades.
+
+Les compilacions de depuració desen les credencials a
+`development_credentials.json` dins de la carpeta de dades en lloc del clauer, tret
+que s'hagi definit `PARLA_DEV_USE_KEYCHAIN=1`. Esborrar la carpeta de dades elimina
+aquell fitxer.
+
+Següent: [Solució de problemes](/parla/ca/docs/troubleshooting/).

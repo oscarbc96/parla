@@ -1,0 +1,24 @@
+[package]
+name = "store"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+default = []
+# Shared backend contract suite (`store::contract`).
+test-support = ["domain/test-support"]
+
+[dependencies]
+domain = { path = "../domain" }
+settings = { path = "../settings", default-features = false }
+futures.workspace = true
+jiff.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+store = { path = ".", features = ["test-support"] }

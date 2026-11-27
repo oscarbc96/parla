@@ -1,0 +1,65 @@
+---
+title: Actualizaciones
+description: Cómo comprueba Parla si hay versiones nuevas, cómo instala una actualización en macOS y cómo omitir una versión.
+---
+
+Parla comprueba GitHub Releases en busca de una versión nueva. Las
+actualizaciones desde la app verifican una actualización firmada y necesitan
+Parla en Aplicaciones; si no, descarga el nuevo dmg desde la página de la
+versión.
+
+## Comprobación automática
+
+Con las comprobaciones activadas, Parla consulta GitHub Releases como mucho una
+vez cada 24 horas. Las versiones en borrador y las preliminares se ignoran.
+
+Si hay una versión más nueva, Parla muestra un aviso con **Descargar**, que abre
+la página de la versión en tu navegador, y **Omitir esta versión**. Omitir oculta
+esa versión; una más nueva se seguirá ofreciendo más adelante.
+
+## Actualizar y reiniciar en macOS
+
+En macOS, cuando Parla se ejecuta desde un `Parla.app` que puede sustituir, el
+aviso también ofrece **Actualizar**. Parla nunca descarga ni instala nada hasta
+que haces clic.
+
+**Actualizar** descarga la versión, verifica su firma con la clave incluida en
+Parla y sustituye la aplicación instalada. La aplicación instalada nunca se edita
+en el sitio, así que una descarga o instalación fallida la deja intacta. El aviso
+dice entonces que la nueva versión está lista, y Parla solo se reinicia cuando
+eliges **Reiniciar para actualizar**.
+
+Si un paso falla, el aviso dice cuál y ofrece **Reintentar** y **Descargar**.
+Parla nunca instala un paquete cuya firma no coincida.
+
+Las compilaciones de Windows y Linux, y las de macOS que no pueden sustituirse a
+sí mismas, muestran solo el enlace **Descargar**.
+
+## Comprobar ahora
+
+Elige **Buscar actualizaciones** en el menú de la aplicación o en la paleta de
+comandos, o usa **Comprobar ahora** en Ajustes, General. Funciona aunque las
+comprobaciones automáticas estén desactivadas. Si no hay nada nuevo, o Parla no
+puede llegar a GitHub, el aviso lo dice.
+
+## Desactivar las comprobaciones
+
+Las comprobaciones automáticas están activadas por defecto. Desactiva **Buscar
+actualizaciones automáticamente** en Ajustes, General, o define `updates.check`
+como `false` en `settings.json`:
+
+```jsonc
+{
+  "updates": {
+    "check": false,
+  },
+}
+```
+
+Omitir una versión guarda su etiqueta en `updates.skip`. Define esa clave como
+`null` o bórrala para dejar de omitirla.
+
+Parla no envía datos de cuenta con una comprobación de actualizaciones. Consulta
+[Privacidad](/parla/es/docs/privacy/).
+
+Siguiente: [Desinstalar](/parla/es/docs/uninstall/).

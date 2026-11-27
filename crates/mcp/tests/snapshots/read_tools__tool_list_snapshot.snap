@@ -1,0 +1,525 @@
+---
+source: crates/mcp/tests/read_tools.rs
+assertion_line: 36
+expression: "serde_json::to_string_pretty(&canon(&shapes[0])).unwrap()"
+---
+[
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "List the workspaces the user shared with MCP clients, with whether writes are allowed.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object"
+    },
+    "name": "list_workspaces"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "List visible conversations (channels, private channels, direct messages, groups), unread first.",
+    "inputSchema": {
+      "$defs": {
+        "KindArg": {
+          "enum": [
+            "channel",
+            "private",
+            "dm",
+            "group"
+          ],
+          "type": "string"
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "kind": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KindArg"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Only this kind of conversation."
+        },
+        "limit": {
+          "description": "At most this many (default 200, max 1000).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "unread_only": {
+          "description": "Only conversations with unread messages.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`; all enabled workspaces when absent.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "name": "list_channels"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "Unread conversations across workspaces, mentions first, with their newest unread messages.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "per_conversation": {
+          "description": "Newest unread messages per conversation (default 5, max 20).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`; all enabled workspaces when absent.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "name": "get_unreads"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "Read a conversation's messages, newest first, one page at a time.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "conversation": {
+          "description": "Conversation id as listed by `list_channels`.",
+          "type": "string"
+        },
+        "cursor": {
+          "description": "`next_cursor` of the previous page, unchanged.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "description": "Messages per page, newest first (default 20, max 100).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "conversation"
+      ],
+      "type": "object"
+    },
+    "name": "read_channel"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "Read a thread: the root message, then its replies oldest first.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "conversation": {
+          "description": "Conversation id as listed by `list_channels`.",
+          "type": "string"
+        },
+        "cursor": {
+          "description": "`next_cursor` of the previous page, unchanged.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "description": "Messages per page, oldest first (default 50, max 200).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "ts": {
+          "description": "Timestamp of the thread's root message.",
+          "type": "string"
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "conversation",
+        "ts"
+      ],
+      "type": "object"
+    },
+    "name": "read_thread"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "Search messages by words: the local copy first, then the chat service when local results fall short.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "limit": {
+          "description": "At most this many hits (default 20, max 50).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "query": {
+          "description": "Words to look for (1 to 256 characters).",
+          "type": "string"
+        },
+        "remote": {
+          "description": "Also ask the chat service when local results fall short (default true).",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`; all enabled workspaces when absent.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object"
+    },
+    "name": "search_messages"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "Look up one user by id.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "user": {
+          "description": "User id, as seen in an author field.",
+          "type": "string"
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "user"
+      ],
+      "type": "object"
+    },
+    "name": "get_user"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "Find users whose display name or real name contains the query.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "limit": {
+          "description": "At most this many (default 20, max 50).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "query": {
+          "description": "Part of a display name or real name (1 to 256 characters).",
+          "type": "string"
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "query"
+      ],
+      "type": "object"
+    },
+    "name": "search_users"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "List the user's scheduled messages in visible conversations.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`; all enabled workspaces when absent.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "name": "list_scheduled"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": false
+    },
+    "description": "Send a message as the user, or a thread reply. The user may be asked to confirm and may decline; the text is sent exactly as given.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "also_send_to_conversation": {
+          "description": "With `thread_ts`: also show the reply in the conversation.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "conversation": {
+          "description": "Conversation id as listed by `list_channels`.",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "description": "A key you choose (up to 64 characters): repeating the call with the\nsame key returns the first result instead of sending again.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "description": "The message text (1 to 12,000 characters), sent as typed.",
+          "type": "string"
+        },
+        "thread_ts": {
+          "description": "Reply in the thread of the message with this timestamp.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "conversation",
+        "text"
+      ],
+      "type": "object"
+    },
+    "name": "send_message"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": false
+    },
+    "description": "Schedule a message to be sent later as the user. The user may be asked to confirm and may decline.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "at": {
+          "description": "When to send, RFC 3339 with an offset, such as `2030-01-31T09:00:00+01:00`.",
+          "type": "string"
+        },
+        "conversation": {
+          "description": "Conversation id as listed by `list_channels`.",
+          "type": "string"
+        },
+        "text": {
+          "description": "The message text (1 to 12,000 characters), sent as typed.",
+          "type": "string"
+        },
+        "thread_ts": {
+          "description": "Schedule a reply in the thread of the message with this timestamp.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "conversation",
+        "text",
+        "at"
+      ],
+      "type": "object"
+    },
+    "name": "schedule_message"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": false
+    },
+    "description": "Add an emoji reaction to a message as the user. The user may be asked to confirm and may decline.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "conversation": {
+          "description": "Conversation id as listed by `list_channels`.",
+          "type": "string"
+        },
+        "emoji": {
+          "description": "Emoji shortcode without colons, such as `tada`.",
+          "type": "string"
+        },
+        "ts": {
+          "description": "Timestamp of the message to react to.",
+          "type": "string"
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace",
+        "conversation",
+        "ts",
+        "emoji"
+      ],
+      "type": "object"
+    },
+    "name": "add_reaction"
+  },
+  {
+    "annotations": {
+      "destructiveHint": false,
+      "openWorldHint": true,
+      "readOnlyHint": false
+    },
+    "description": "Set or clear the user's status. The user may be asked to confirm and may decline.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "clear": {
+          "description": "Remove the status instead of setting one.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "emoji": {
+          "description": "Status emoji shortcode without colons.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expires": {
+          "description": "When the status ends, RFC 3339 with an offset.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "description": "Status text (up to 100 characters).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workspace": {
+          "description": "Workspace key as listed by `list_workspaces`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace"
+      ],
+      "type": "object"
+    },
+    "name": "set_status"
+  }
+]

@@ -1,0 +1,102 @@
+---
+import Airplay from "@lucide/astro/icons/airplay";
+import ChevronDown from "@lucide/astro/icons/chevron-down";
+import Languages from "@lucide/astro/icons/languages";
+import Moon from "@lucide/astro/icons/moon";
+import Star from "@lucide/astro/icons/star";
+import Sun from "@lucide/astro/icons/sun";
+import { getUi, locales, localePath } from "@/i18n";
+import { logoMarkup } from "@/lib/logo";
+import { repoUrl } from "@/lib/seo";
+
+/**
+ * Static site header: no framework JavaScript. Used by every page that has no
+ * React island (landing, downloads, changelog, 404). The docs keep the
+ * Fumadocs layout; the theme switch and language picker mirror its markup so
+ * both look alike.
+ */
+interface Props {
+  locale: string;
+  /** Locale-free path of the current page, to link the same page in other languages. */
+  path: string;
+  stars?: string;
+  /** Current section, for `aria-current`. */
+  section?: "home" | "docs" | "downloads" | "changelog";
+}
+
+const { locale, path, stars, section } = Astro.props;
+const ui = getUi(locale);
+const tr = ui.translations;
+// Same order and icons as Fumadocs' theme switch.
+const modes = [
+  ["light", tr["Light(theme switcher)(aria-label)"] ?? "Light", Sun],
+  ["dark", tr["Dark(theme switcher)(aria-label)"] ?? "Dark", Moon],
+  ["system", tr["System(theme switcher)(aria-label)"] ?? "System", Airplay],
+] as const;
+const chooseLanguage = tr["Choose a language(language switcher)"] ?? "Choose a language";
+const currentLanguage = locales.find((item) => item.code === locale)?.name ?? locale;
+// Same store as the docs theme switch (next-themes keeps `theme` in localStorage).
+const themeScript = `var b=document.querySelectorAll("[data-theme-set]");function s(v){for(var i=0;i<b.length;i++)b[i].setAttribute("aria-pressed",String(b[i].dataset.themeSet===v))}var c="system";try{c=localStorage.getItem("theme")||"system"}catch(e){}s(c);for(var i=0;i<b.length;i++)b[i].addEventListener("click",function(){var v=this.dataset.themeSet;try{localStorage.setItem("theme",v)}catch(e){}document.documentElement.classList.toggle("dark",v==="dark"||(v==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));s(v)});var d=document.querySelector("[data-lang-menu]");if(d){document.addEventListener("click",function(e){if(!d.contains(e.target))d.removeAttribute("open")});d.addEventListener("keydown",function(e){if(e.key==="Escape"){d.removeAttribute("open");d.querySelector("summary").focus()}})}`;
+const link =
+  "rounded-md px-2.5 py-2 text-sm font-medium text-parla-muted no-underline transition-colors hover:text-parla-text";
+---
+
+<header class="sticky top-0 z-20 border-b border-parla-line-subtle bg-parla-app">
+  <div class="mx-auto flex min-h-16 max-w-[1160px] flex-wrap items-center gap-x-4 gap-y-1 px-5 sm:px-6">
+    <a
+      class="parla-wordmark mr-1 inline-flex items-center gap-2.5 py-2 text-xl text-parla-text no-underline"
+      href={localePath(locale, "/")}
+      aria-label="Parla"><span class="size-[30px]" set:html={logoMarkup} />Parla</a
+    >
+    <nav class="flex flex-wrap items-center gap-0.5" aria-label={ui.nav.main}>
+      <a class={link} href={localePath(locale, "/docs/")} aria-current={section === "docs" ? "page" : undefined}>{ui.nav.docs}</a>
+      <a class={link} href={localePath(locale, "/downloads/")} aria-current={section === "downloads" ? "page" : undefined}>{ui.nav.download}</a>
+      <a class={link} href={localePath(locale, "/changelog/")} aria-current={section === "changelog" ? "page" : undefined}>{ui.nav.changelog}</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-1.5">
+      <a
+        class="btn btn-ghost btn-sm hidden sm:inline-flex"
+        href={repoUrl}
+        aria-label={stars ? ui.starsLabel.replace("{count}", stars) : ui.nav.github}
+      >
+        <Star size={14} fill="currentColor" aria-hidden="true" />{ui.nav.github}{stars && <span class="text-xs">{stars}</span>}
+      </a>
+      <details class="group relative" data-lang-menu>
+        <summary
+          class="inline-flex cursor-pointer list-none items-center gap-1.5 rounded-lg p-1.5 text-sm font-medium text-parla-muted transition-colors duration-100 hover:bg-parla-hover hover:text-parla-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-parla-focus group-open:bg-parla-hover [&::-webkit-details-marker]:hidden"
+          aria-label={ui.language}
+        >
+          <Languages size={16} aria-hidden="true" />
+          {currentLanguage}
+          <ChevronDown size={16} aria-hidden="true" />
+        </summary>
+        <div class="absolute end-0 z-50 mt-2 flex min-w-40 flex-col gap-0.5 rounded-xl border border-parla-line bg-parla-raised p-1 text-parla-text shadow-parla-lg">
+          <p class="p-2 text-xs font-medium text-parla-muted">{chooseLanguage}</p>
+          {
+            locales.map((item) => (
+              <a
+                class={
+                  item.code === locale
+                    ? "rounded-lg bg-parla-accent-soft px-2 py-1.5 text-start text-sm font-medium text-parla-accent-soft-text no-underline"
+                    : "rounded-lg px-2 py-1.5 text-start text-sm text-parla-muted no-underline transition-colors hover:bg-parla-hover hover:text-parla-text"
+                }
+                href={localePath(item.code, path)}
+                lang={item.code}
+                hreflang={item.code}
+                aria-current={item.code === locale ? "true" : undefined}>{item.name}</a
+              >
+            ))
+          }
+        </div>
+      </details>
+      <div class="inline-flex items-center overflow-hidden rounded-full border border-parla-line p-1 *:rounded-full" role="group" aria-label={tr["Toggle Theme(theme switcher)(aria-label)"] ?? "Toggle theme"}>
+        {
+          modes.map(([mode, label, Icon]) => (
+            <button type="button" class="size-6.5 p-1.5 text-parla-muted aria-pressed:bg-parla-accent-soft aria-pressed:text-parla-accent-soft-text" data-theme-set={mode} aria-label={label} aria-pressed="false"><Icon fill="currentColor" class="size-full" aria-hidden="true" /></button>
+          ))
+        }
+      </div>
+      <script is:inline set:html={themeScript} />
+    </div>
+  </div>
+</header>

@@ -1,0 +1,1 @@
+{"ok": true, "prefs": {"all_notifications_prefs": "{\"global\": {\"global_desktop\": \"everything\"}, \"channels\": {\"C0000001\": {\"desktop\": \"mentions\", \"mobile\": \"mentions\", \"muted\": false}, \"C0000002\": {\"desktop\": \"nothing\", \"muted\": true}, \"\": {\"desktop\": \"all\"}, \"C0000009\": null}}", "muted_channels": "C0000003,C0000002,"}}

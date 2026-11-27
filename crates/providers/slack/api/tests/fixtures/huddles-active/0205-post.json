@@ -1,0 +1,86 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "json": {
+        "token": "REDACTED"
+      }
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "text/plain;charset=UTF-8"
+      ],
+      [
+        "origin",
+        "https://app.slack.com"
+      ]
+    ],
+    "query": [
+      [
+        "_x_app_name",
+        "client"
+      ],
+      [
+        "fp",
+        "7a"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "huddles": [
+          {
+            "active_members": [],
+            "background_id": "GRADIENT_01",
+            "call_id": "R0000014",
+            "channel_id": "C0000010",
+            "created_by": "U0000013",
+            "dropped_members": [],
+            "expiration": 0,
+            "is_private": false,
+            "is_scheduled": false,
+            "knocks": {},
+            "last_invite_status_by_user": {},
+            "locale": "es-ES",
+            "name": "",
+            "pending_invitees": {},
+            "recording": {
+              "can_record_summary": "available",
+              "is_paused": false,
+              "recording_user": "",
+              "summary": false,
+              "transcript": false
+            },
+            "start_date": 1794995685,
+            "thread_root_ts": "1794995685.362499",
+            "updated": 0
+          }
+        ],
+        "ok": true
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "x-slack-edge-shared-secret-outcome",
+        "no-match"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://edgeapi.slack.com/cache/T0000002/huddles/list?_x_app_name=client&fp=7a&_x_num_retries=0"
+}

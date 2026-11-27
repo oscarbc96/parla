@@ -1,0 +1,24 @@
+[
+  {
+    "file": "0001-conversations.history.json",
+    "kind": "http",
+    "method": "conversations.history",
+    "status": 200
+  },
+  {
+    "file": "0002-conversations.history.json",
+    "kind": "http",
+    "method": "conversations.history",
+    "status": 200
+  },
+  {
+    "file": "ws-0001-message.json",
+    "kind": "ws",
+    "type": "message"
+  },
+  {
+    "file": "ws-0002-user_typing.json",
+    "kind": "ws",
+    "type": "user_typing"
+  }
+]

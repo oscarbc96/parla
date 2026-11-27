@@ -1,0 +1,62 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "message_ids",
+          "[{\"channel\":\"C0000005\",\"timestamps\":[\"1794526178.065219\"]}]"
+        ],
+        [
+          "org_wide_aware",
+          "true"
+        ],
+        [
+          "cached_latest_updates",
+          "{}"
+        ],
+        [
+          "_x_reason",
+          "messages-ufm"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "messages": {},
+        "messages_data": {
+          "C0000005": {
+            "latest_updates": {},
+            "messages": [],
+            "unchanged_messages": []
+          }
+        },
+        "ok": true
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/messages.list?_x_id=9aeb8a04-1794526287.835&_x_gantry=true&_x_desktop_ia=4&_x_csid=pce342n6MQA&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=cf&_x_num_retries=0"
+}

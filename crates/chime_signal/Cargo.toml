@@ -1,0 +1,19 @@
+[package]
+name = "chime_signal"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+build = "build.rs"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+prost.workspace = true
+thiserror.workspace = true
+zeroize.workspace = true
+
+[build-dependencies]
+prost-build.workspace = true
+protox.workspace = true

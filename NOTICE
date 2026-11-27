@@ -1,0 +1,100 @@
+Parla
+Copyright (c) the Parla contributors
+
+Licensed under the Mozilla Public License, version 2.0. See LICENSE.
+The documentation in this repository (docs/, site/content/docs/, the README and
+other prose files) is licensed under the Creative Commons Attribution 4.0
+International licence (CC-BY-4.0). See LICENSE-DOCS.
+
+The plugin API (crates/parla_plugin_api), the plugin SDK
+(plugins/sdk-rust) and the first-party example plugin
+(plugins/examples/hello-command) are licensed under either of the Apache
+License, version 2.0 (LICENSE-APACHE) or the MIT licence (LICENSE-MIT), at
+your option (`Apache-2.0 OR MIT`). The test-only guest crates under
+plugins/examples/test-guests stay MPL-2.0.
+
+Not created by, affiliated with, or supported by Slack Technologies, LLC.
+
+Original Parla assets
+---------------------
+Everything below was made for Parla and is licensed like the code
+(MPL-2.0), unless a different licence is named. No Slack artwork is used.
+
+- assets/icons/ui: original 24 px line icons, drawn for Parla.
+- assets/icons/app, assets/icons/tray, assets/brand: the Parla logo and the
+  app and tray icons generated from it.
+- assets/themes: the built-in Parla Light, Parla Dark and Parla High Contrast
+  themes.
+- assets/keymaps: the default macOS, Linux and Windows keymaps.
+- assets/settings: the default and initial user settings templates.
+- site/public/favicon.svg: the Parla logo, as served by the website.
+- site/public/shots and crates/ui_testing/baselines: screenshots of Parla
+  rendered from the FakeProvider fixtures; they show only synthetic data.
+- crates/domain/src/test_support/solved.png and party.gif: generated 32 px
+  test images for the fixture's custom emoji.
+- crates/providers/*/tests/fixtures: synthetic and redacted API samples for
+  the tests; they contain no third-party creative work.
+
+assets/sounds/parla-chime.wav is original work synthesised by
+scripts/gen_chime.ts and released under CC0-1.0; see
+assets/sounds/README.md.
+
+crates/ui_testing/fonts bundles test-only fonts under the SIL Open Font
+License 1.1, with the licence text next to each family: Inter, JetBrains
+Mono and Noto Emoji. They are never packaged with the app.
+
+Third-party software
+--------------------
+Parla is built on GPUI through the crates.io snapshots gpui-fast and
+gpui-fast-platform (GPUI Fast), and gpui-base (GPUI Base, from the gpui-kit
+project), all Apache-2.0, at the exact versions pinned in Cargo.toml. They
+depend on the gpui-pre-* utility crates (util, collections, sum-tree and
+others), also Apache-2.0 Zed-derived snapshots. No other Zed crate is a
+dependency and no code is copied from Zed. Zed's theme and keymap file
+formats are implemented from their documented shape.
+
+The app statically links these native libraries, each under a permissive
+licence:
+
+- AWS-LC (aws-lc-rs and aws-lc-sys): ISC and Apache-2.0, with BoringSSL and
+  OpenSSL heritage. Copyright Amazon.com, Inc. or its affiliates, Google
+  Inc. and the OpenSSL Project.
+- OpenSSL 3.6.3 (openssl-src): Apache-2.0.
+- SQLCipher 4.20.0 with SQLite 3.54.1 and libtomcrypt 1.18.2
+  (sqlcipher-src): SQLCipher is BSD-3-Clause (Copyright (c) 2025 ZETETIC
+  LLC), SQLite is in the public domain, and libtomcrypt is WTFPL and
+  "blessing".
+- libopus 1.6.1 (opusic-sys): BSD-3-Clause, including its royalty-free
+  patent licences.
+
+MPL-2.0 crates in the dependency tree (cssparser, cssparser-macros,
+selectors, dtoa-short, dwrote and option-ext, plus cbindgen at build time)
+are used unmodified;
+their source is published on crates.io.
+
+Unicode data and tables in ICU4X, unicode-ident, unicode-properties and
+emojis are used under the Unicode License v3 (Copyright (c) Unicode, Inc.).
+
+The Mozilla CA root store shipped by webpki-root-certs is used under the
+Community Data License Agreement - Permissive 2.0
+(CDLA-Permissive-2.0).
+
+Nothing in the dependency tree is GPL-only, AGPL or SSPL: self_cell offers
+Apache-2.0 and r-efi offers MIT/Apache-2.0 alternatives, and Parla uses
+those.
+
+crates/chime_signal vendors the Apache-2.0 Chime signalling protobuf from
+aws/amazon-chime-sdk-js; see crates/chime_signal/NOTICE. The text system in
+ui_testing is ported from gpui-ce under Apache-2.0; see
+crates/ui_testing/NOTICE.
+
+The website bundles Inter and JetBrains Mono webfonts from @fontsource
+(SIL OFL 1.1) and Lucide icons (ISC). Its build tools are not shipped:
+sharp uses libvips (LGPL-3.0-or-later) only to rasterise images at build
+time, and the Lighthouse dev dependency reaches Sentry's
+FSL-1.1-Apache-2.0 CLI, which the site build never runs.
+
+The full list of third-party crates and their licences is generated with
+`cargo about` (about.toml and about.hbs). `mise run release:notice` writes
+this file followed by that list to target/release-assets/NOTICE, which is
+bundled with the app; `cargo deny list` shows the licences in the tree.

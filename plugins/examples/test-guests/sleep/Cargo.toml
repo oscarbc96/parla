@@ -1,0 +1,13 @@
+[package]
+name = "test-guest-sleep"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "plugin_host engine test guest (sleep); see crates/plugin_host/tests/engine.rs."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wit-bindgen.workspace = true

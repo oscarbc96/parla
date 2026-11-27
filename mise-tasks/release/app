@@ -1,0 +1,35 @@
+#!/bin/sh
+#MISE description="Build an unsigned universal macOS Parla.app and zip it"
+#MISE depends=["release:notice"]
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+
+mkdir -p target/release-assets target/universal-apple-darwin/release
+
+cargo build --release -p parla --target aarch64-apple-darwin
+cargo build --release -p parla --target x86_64-apple-darwin
+
+lipo -create \
+  target/aarch64-apple-darwin/release/parla \
+  target/x86_64-apple-darwin/release/parla \
+  -output target/universal-apple-darwin/release/parla
+
+# NOTICE (the packager resource) comes from the release:notice dependency.
+
+# cargo-packager 0.11.8: package from the universal target so we never copy the
+# fat binary onto target/release/parla (that would taint target/release/deps
+# hardlinks and make later host builds and perf:size use the universal binary).
+cargo packager -p parla --release --formats app --target universal-apple-darwin --out-dir "$root/target/release-assets"
+
+app="target/release-assets/Parla.app"
+if [ ! -d "$app" ]; then
+  echo "expected $app after packaging" >&2
+  exit 1
+fi
+
+ditto -c -k --keepParent "$app" target/release-assets/Parla-unsigned.zip
+
+echo "wrote $app"
+echo "wrote target/release-assets/Parla-unsigned.zip"

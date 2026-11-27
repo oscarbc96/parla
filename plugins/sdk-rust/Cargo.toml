@@ -1,0 +1,25 @@
+[package]
+name = "parla_plugin_sdk"
+version.workspace = true
+edition.workspace = true
+# Permissive like the API crate, so plugin authors pick their own licence
+# (plan M8 Global Constraints, Licence).
+license = "Apache-2.0 OR MIT"
+description = "Rust guest SDK for Parla plugins: typed host calls, the Plugin trait and export! macro, view builders and a fake-host test harness."
+repository = "https://github.com/oscarbc96/parla"
+readme = "README.md"
+# Publishable later; not published in M8.
+publish = false
+
+[features]
+# Native-target test harness (`testing::FakeHost`): host calls go to an
+# in-memory fake instead of the wasm imports.
+testing = ["dep:toml"]
+
+[dependencies]
+wit-bindgen.workspace = true
+toml = { workspace = true, optional = true }
+
+[dev-dependencies]
+wit-component.workspace = true
+serde_json.workspace = true

@@ -1,0 +1,1 @@
+{"ok":true,"scheduled_messages":[{"id":"Q0000001","channel_id":"C0000001","post_at":1800000000,"date_created":1799990000,"text":"first"},{"id":"Q0000002","channel_id":"C0000002","post_at":1800000500,"date_created":1799990100,"text":"in thread","thread_ts":"1700000000.000100"}],"response_metadata":{"next_cursor":"cur2"}}

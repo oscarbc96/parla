@@ -1,0 +1,49 @@
+{
+  // A theme family in the shape editors such as Zed document for theme files.
+  // Written for this test; it carries keys Parla does not use.
+  "$schema": "https://example.com/schemas/themes/v0.2.0.json",
+  "name": "Sample",
+  "author": "Parla contributors",
+  "themes": [
+    {
+      "name": "Sample Dark",
+      "appearance": "dark",
+      "style": {
+        "background.appearance": "opaque",
+        "border": "#464b57ff",
+        "border.variant": "#363c46ff",
+        "elevated_surface.background": "#2f343eff",
+        "surface.background": "#2f343eff",
+        "background": "#3b414dff",
+        "element.background": "#2e343eff",
+        "element.selected": "#454a56ff",
+        "text": "#dce0e5ff",
+        "text.muted": "#a9afbcff",
+        "text.accent": "#74ade8ff",
+        "panel.background": "#2f343eff",
+        "title_bar.background": "#3b414dff",
+        "editor.background": "#282c33ff",
+        "editor.document_highlight.read_background": "#74ade81a",
+        "scrollbar.thumb.background": "#c8ccd44c",
+        "terminal.ansi.red": "#d07277ff",
+        "error": "#d07277ff",
+        "warning": "not a colour",
+        "success": "#a1c181ff",
+        "accents": ["#74ade8ff", "#be5046ff"],
+        "players": [{ "cursor": "#74ade8ff", "background": "#74ade8ff", "selection": "#74ade83d" }],
+        "syntax": { "comment": { "color": "#5d636fff", "font_style": "italic", "font_weight": null } },
+        "parla": { "sidebar_background": "#1b1e24ff", "presence_away": "oops" },
+      },
+    },
+    {
+      "name": "Sample Light",
+      "appearance": "light",
+      "style": {
+        "background": "#dcdcddff",
+        "text": "#242529ff",
+        "panel.background": "#ebebecff",
+        "future.key.nobody.knows": "#ff00ffff"
+      }
+    }
+  ]
+}

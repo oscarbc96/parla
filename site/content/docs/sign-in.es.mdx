@@ -1,0 +1,164 @@
+---
+title: Iniciar sesión
+description: Cómo usa Parla tu propia sesión de chat, cómo añadir espacios de trabajo y qué riesgos aceptas.
+---
+
+Parla inicia sesión con tu propia sesión web del servicio de chat. En Slack, usa
+el token y la cookie que tu navegador envía al cliente web de Slack. No hay que
+crear ninguna app, no hay pantalla de consentimiento OAuth, no hay token de bot y
+no hay ningún servidor del proyecto.
+
+Funciona porque la sesión ya tiene tu acceso completo. No hay una lista de
+permisos que aprobar ni una app que un administrador del espacio de trabajo deba
+instalar.
+
+## Primer arranque
+
+Sin ningún espacio de trabajo, la ventana principal te guía por la configuración.
+Un indicador en la parte superior muestra en qué paso estás.
+
+1. **Bienvenida** explica qué es Parla. Elige **Empezar**.
+2. **Elegir proveedor** muestra los servicios de chat con los que Parla puede
+   iniciar sesión. Elige uno y pulsa **Continuar**.
+3. **Iniciar sesión** muestra las opciones de inicio de sesión del propio
+   servicio.
+4. **Primera sincronización** muestra cómo se prepara el nuevo espacio de
+   trabajo: se abre el almacén local cifrado, llegan los canales y las personas y
+   después los mensajes recientes. **Abrir Parla** se activa cuando el espacio
+   está listo, o cuando falló y la ventana principal ofrece **Reintentar**.
+5. **Recorrido** señala la barra lateral y la barra de espacios de trabajo y
+   nombra los atajos del selector rápido y de la hoja de atajos. Elige
+   **Omitir recorrido**, el botón de cerrar o Escape para terminarlo. Solo se
+   muestra una vez.
+
+Un selector de **Idioma** en la bienvenida y en la pantalla del proveedor cambia
+el idioma de la aplicación al instante, sin reiniciar. Es el mismo ajuste que
+**Idioma de la interfaz** en Ajustes, General.
+
+Cada paso entra deslizándose horizontalmente sobre el anterior, con la duración
+del movimiento del tema. Con **Reducir movimiento** activado en el sistema, los
+pasos cambian al instante, sin animación. Escape retrocede un paso; en la página
+de bienvenida cierra la configuración inicial, y mientras se está iniciando
+sesión no hace nada.
+
+## Iniciar sesión con una ventana del navegador
+
+Es el flujo predeterminado.
+
+1. Elige **Iniciar sesión con ventana del navegador**. Parla abre una ventana de
+   inicio de sesión nativa en la página del servicio.
+2. Inicia sesión con normalidad, también con SSO si lo usas. Puedes iniciar
+   sesión en varios espacios de trabajo en la misma ventana.
+3. Parla muestra los espacios de trabajo que la sesión puede abrir. Los que ya
+   están en Parla se actualizan en segundo plano; los nuevos se marcan por ti.
+4. Elige **Añadir N espacios de trabajo**. Parla los añade de uno en uno y muestra
+   el progreso de cada fila. Si un espacio necesita que vuelvas a iniciar sesión,
+   termina ese paso u omítelo.
+5. Cuando los espacios están añadidos, la ventana se cierra y Parla los abre.
+
+Parla no automatiza el formulario de inicio de sesión. Escribes tus propias
+credenciales. La ventana solo se usa para tu inicio de sesión interactivo en el
+servicio real.
+
+Para añadir otro espacio más adelante, usa el **+** de la barra de espacios de
+trabajo. El inicio de sesión se abre en su propia ventana, así que la ventana
+principal sigue funcionando.
+
+Si tu proveedor de identidad rechaza el inicio de sesión dentro de una ventana
+integrada, usa el flujo manual de abajo.
+
+## Pegar un token y una cookie
+
+Úsalo si prefieres no iniciar sesión a través de la ventana de Parla o si la
+ventana integrada está bloqueada. Los pasos exactos dependen del servicio; en
+Slack:
+
+1. En un navegador normal, inicia sesión en el cliente web de Slack.
+2. Abre la consola de las herramientas de desarrollo del navegador, ejecuta
+   `copy(localStorage.getItem("localConfig_v2"))` y guarda el texto copiado.
+   Enumera todos los espacios de trabajo con sesión iniciada, cada uno con su
+   token y su URL.
+3. Abre el panel Aplicación o Almacenamiento, busca las cookies del dominio de
+   Slack y copia el valor de la cookie `d`. Empieza por `xoxd-`. Como es
+   `HttpOnly`, cópiala desde el panel de cookies, no desde la consola.
+4. En Parla elige **Pegar token y cookie**, marca la casilla de consentimiento y
+   pega la cookie y la salida de la consola.
+5. Parla comprueba cada espacio con el servicio antes de guardarlo, muestra lo que
+   ha verificado y usa el mismo almacenamiento del llavero.
+
+Los campos son campos de texto normales. Los campos de cookie y token muestran
+puntos y rechazan copiar y cortar. Tab se mueve entre campos e Intro inicia
+sesión.
+
+## Añadir, actualizar y quitar espacios de trabajo
+
+- **Añadir:** usa el **+** de la barra de espacios de trabajo.
+- **Cambiar:** haz clic en un espacio, pulsa `cmd-1` a `cmd-9` (`ctrl-1` a
+  `ctrl-9` en Linux y Windows) o pulsa `cmd-shift-]` y `cmd-shift-[` para el
+  siguiente y el anterior.
+- **Quitar:** haz clic derecho en el espacio de la barra y elige **Quitar este
+  espacio de trabajo de Parla**. Parla pregunta primero y después borra los datos
+  locales y el inicio de sesión guardado de ese espacio. No se borra nada en el
+  servidor.
+- **Cerrar sesión:** abre Ajustes, Espacios de trabajo, y elige **Cerrar sesión**
+  junto a un espacio.
+
+## Cuando caduca la sesión
+
+Una sesión deja de funcionar cuando caduca la cookie o cuando cierras sesión en
+todas partes. Parla marca el espacio como caducado, mantiene los mensajes en
+caché legibles y deja el compositor en solo lectura hasta que vuelvas a iniciar
+sesión.
+
+Un aviso ofrece **Iniciar sesión de nuevo**. En macOS, Parla también muestra una
+notificación titulada "Inicia sesión en el espacio de trabajo de nuevo" por cada caducidad;
+haz clic en ella para traer Parla al frente y abrir la ventana de inicio de
+sesión. Parla no puede renovar la sesión por sí solo.
+
+## Riesgos que aceptas
+
+Lee esto antes de iniciar sesión.
+
+- **Endpoints no documentados.** Parla llama a los endpoints que usa el cliente
+  web del servicio. No están documentados ni versionados y pueden cambiar sin
+  aviso. El inicio de sesión, las actualizaciones en tiempo real o una función
+  pueden dejar de funcionar para todos a la vez.
+- **Acceso completo a la cuenta.** El token y la cookie son una sesión completa
+  de la cuenta. Cualquiera que los obtenga puede actuar como tú. No están
+  limitados a Parla, a un espacio de trabajo ni a un dispositivo.
+- **Política de la empresa.** Extraer una sesión puede incumplir la política de
+  TI de tu empresa o las condiciones que se aplican a tu espacio de trabajo.
+  Pregunta antes de usar Parla con una cuenta de trabajo.
+- **Condiciones.** Este enfoque puede no encajar con las condiciones de la API y
+  la política para desarrolladores del servicio. Parla sigue siendo gratuito, no
+  oficial y no comercial, y divulga el riesgo en vez de ocultarlo. Esta página no
+  es asesoramiento legal.
+
+## Dónde están los secretos
+
+En las compilaciones release, los tokens y las cookies van al llavero del sistema
+operativo, por espacio de trabajo. Nunca se escriben en los archivos de ajustes,
+en el almacén local de mensajes ni en los registros. La salida de depuración y de
+pantalla los oculta, y los informes de fallos eliminan los valores que parecen
+tokens.
+
+Parla lee cada elemento del llavero una vez por sesión y lo mantiene en memoria,
+así que macOS pregunta como mucho una vez por elemento. Elige **Permitir
+siempre** y dejará de preguntar. Si compilas Parla tú mismo, ejecuta
+`mise run dev:cert` una vez para que las recompilaciones mantengan la misma
+firma; consulta [Instalación](/parla/es/docs/install/).
+
+Las compilaciones de depuración son la excepción: guardan los secretos en un
+archivo sin cifrar, legible solo por tu usuario, en la carpeta de datos, en vez
+del llavero. Consulta [Instalación](/parla/es/docs/install/) para los detalles y
+`PARLA_DEV_USE_KEYCHAIN`.
+
+## Teclado
+
+Todos los controles de las pantallas de inicio de sesión se alcanzan con el
+teclado y muestran un anillo de foco. Tab y Mayús-Tab se mueven por los
+controles. Intro o Espacio pulsan el botón enfocado o marcan la casilla de
+consentimiento, e Intro en un campo envía el formulario. Escape vuelve desde el
+formulario de pegado o cancela la lista de espacios.
+
+Siguiente: [Uso diario](/parla/es/docs/messaging/).

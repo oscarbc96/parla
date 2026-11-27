@@ -1,0 +1,19 @@
+/// The plugin's own key-value store, encrypted with the app store (design
+/// §9.5). Capability: `storage`. Keys at most 256 bytes, values at most
+/// 256 KB; 5 MB and 2,000 keys per plugin.
+interface storage {
+  use types.{error, workspace-id, cursor, key-page};
+
+  variant scope { global, workspace(workspace-id) }
+
+  /// Capability: `storage`.
+  get: func(scope: scope, key: string) -> result<option<list<u8>>, error>;
+  /// Capability: `storage`.
+  set: func(scope: scope, key: string, value: list<u8>) -> result<_, error>;
+  /// Capability: `storage`.
+  delete: func(scope: scope, key: string) -> result<_, error>;
+  /// Capability: `storage`. `limit` 1 to 200.
+  keys: func(scope: scope, prefix: string, cursor: cursor, limit: u32) -> result<key-page, error>;
+  /// Capability: `storage`.
+  clear: func(scope: scope) -> result<_, error>;
+}

@@ -1,0 +1,81 @@
+{
+  "method": "POST",
+  "url": "https://slack.com/api/signin.confirmCode?_x_id=noversion-1700000000.000&_x_version_ts=noversion&_x_num_retries=0",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "email",
+          "user1@example.test"
+        ],
+        [
+          "code",
+          "REDACTED"
+        ],
+        [
+          "_x_reason",
+          "get_started_confirm_code"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ]
+      ]
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "multipart/form-data; boundary=----WebKitFormBoundarySynthetic"
+      ],
+      [
+        "origin",
+        "https://slack.com"
+      ],
+      [
+        "referer",
+        "https://slack.com/get-started"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "noversion-1700000000.000"
+      ],
+      [
+        "_x_version_ts",
+        "noversion"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "ok": true
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "set-cookie",
+        "ec=REDACTED; Domain=.slack.com; Path=/; Secure; HttpOnly; SameSite=Lax"
+      ],
+      [
+        "set-cookie",
+        "pec=REDACTED; Domain=.slack.com; Path=/; Secure; HttpOnly; SameSite=Lax"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  }
+}

@@ -1,0 +1,57 @@
+#!/bin/sh
+#MISE description="Check a release tag matches the workspace version and all members agree"
+set -eu
+
+# Strip -- separator (mise forwards it).
+for arg do
+  shift
+  [ "$arg" = "--" ] && continue
+  set -- "$@" "$arg"
+done
+
+tag="${1:-}"
+if [ -z "$tag" ]; then
+  echo "usage: mise run release:version-check -- <tag>" >&2
+  exit 2
+fi
+
+# PARLA_CARGO_METADATA_FILE: read a saved `cargo metadata --no-deps` output
+# instead of running cargo (the repo tests reuse one run for every case).
+if [ -n "${PARLA_CARGO_METADATA_FILE:-}" ]; then
+  meta=$(cat "$PARLA_CARGO_METADATA_FILE")
+else
+  meta=$(cargo metadata --no-deps --format-version 1)
+fi
+members=$(printf '%s\n' "$meta" | jq -r '.workspace_members[]')
+count=$(printf '%s\n' "$members" | wc -l | tr -d ' ')
+if [ "$count" -eq 0 ]; then
+  echo "no workspace members" >&2
+  exit 1
+fi
+
+versions=""
+for id in $members; do
+  v=$(printf '%s\n' "$meta" | jq -r --arg id "$id" '.packages[] | select(.id == $id) | .version')
+  if [ -z "$v" ] || [ "$v" = "null" ]; then
+    echo "could not read version for $id" >&2
+    exit 1
+  fi
+  versions="${versions}${v}
+"
+done
+
+uniq=$(printf '%s' "$versions" | awk 'NF' | sort -u)
+lines=$(printf '%s\n' "$uniq" | wc -l | tr -d ' ')
+if [ "$lines" -ne 1 ]; then
+  echo "workspace member versions disagree:" >&2
+  printf '%s\n' "$meta" | jq -r '.packages[] | select(.source == null) | "\(.name) \(.version)"' >&2
+  exit 1
+fi
+
+want="v${uniq}"
+if [ "$tag" != "$want" ]; then
+  echo "tag $tag != $want" >&2
+  exit 1
+fi
+
+echo "ok: $tag matches workspace version $uniq"

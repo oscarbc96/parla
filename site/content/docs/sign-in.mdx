@@ -1,0 +1,147 @@
+---
+title: Sign in
+description: How Parla uses your own chat session, how to add workspaces, and the risks you accept.
+---
+
+Parla signs in with your own web session for the chat service. For Slack, it
+uses the token and cookie your browser sends to the Slack web client. There is
+no app to create, no OAuth consent screen, no bot token and no server run by the
+project.
+
+This works because the session already has your full access. There is no scope
+list to approve and no app for a workspace admin to install.
+
+## First run
+
+With no workspace yet, the main window walks you through setup. A stepper at the
+top shows where you are.
+
+1. **Welcome** explains what Parla is. Choose **Get started**.
+2. **Choose provider** lists the chat services Parla can sign in to. Pick one and
+   choose **Continue**.
+3. **Sign in** shows the service's own sign-in options.
+4. **First sync** shows the new workspace being set up: the encrypted local store
+   opening, channels and people arriving, then recent messages. **Open Parla**
+   turns on when the workspace is ready, or when it failed and the main window
+   offers **Retry**.
+5. **Tour** points at the sidebar and the workspace rail and names the shortcuts
+   for the quick switcher and the shortcuts sheet. Choose **Skip tour**, the
+   close button or Escape to end it. It shows once.
+
+A **Language** selector on Welcome and on the provider screen changes the app
+language at once, with no restart. It is the same setting as **Interface
+language** in Settings, General.
+
+Each step slides in horizontally over the one before it, using the theme's
+motion timing. With **Reduce motion** on in the system settings, steps switch
+at once with no animation. Escape goes back a step; on the Welcome page it
+closes onboarding, and while a sign-in is running it does nothing.
+
+## Sign in with a browser window
+
+This is the default flow.
+
+1. Choose **Sign in with browser window**. Parla opens a native login window at
+   the service's sign-in page.
+2. Sign in normally, including SSO if you use it. You can sign in to several
+   workspaces in the same window.
+3. Parla lists the workspaces the session can open. Workspaces already in Parla
+   refresh in the background; new ones are ticked for you.
+4. Choose **Add N workspaces**. Parla adds them one at a time and shows each
+   row's progress. If a workspace needs you to sign in again, finish that step
+   or skip it.
+5. When the workspaces are added, the window closes and Parla opens them.
+
+Parla does not automate the login form. You type your own credentials. The
+window is used only for your interactive login to the real service.
+
+To add another workspace later, use the **+** on the workspace rail. Signing in
+opens in its own window, so the main window keeps working.
+
+If your identity provider refuses sign-in inside an embedded window, use the
+manual flow below.
+
+## Paste a token and cookie
+
+Use this if you would rather not sign in through Parla's window, or if the
+embedded window is blocked. The exact steps depend on the service; for Slack:
+
+1. In a normal browser, sign in to the Slack web client.
+2. Open the browser developer tools console, run
+   `copy(localStorage.getItem("localConfig_v2"))` and keep the copied text. It
+   lists every workspace you are signed in to, each with its token and URL.
+3. Open the Application or Storage panel, find the cookies for the Slack domain,
+   and copy the value of the `d` cookie. It starts with `xoxd-`. Because it is
+   `HttpOnly`, copy it from the cookie panel, not from the console.
+4. In Parla choose **Paste token and cookie**, tick the consent box, and paste the
+   cookie and the console output.
+5. Parla checks each workspace with the service before it saves it, shows what
+   it verified, and uses the same keychain storage.
+
+The fields are normal text fields. The cookie and token fields show bullets and
+refuse copy and cut. Tab moves between fields and Enter signs in.
+
+## Add, refresh and remove workspaces
+
+- **Add:** use the **+** on the workspace rail.
+- **Switch:** click a workspace, press `cmd-1` to `cmd-9` (`ctrl-1` to `ctrl-9`
+  on Linux and Windows), or press `cmd-shift-]` and `cmd-shift-[` for the next
+  and previous workspace.
+- **Remove:** right-click the workspace on the rail and choose **Remove this
+  workspace from Parla**. Parla asks first, then deletes that workspace's local
+  data and saved sign-in. Nothing is deleted on the server.
+- **Sign out:** open Settings, Workspaces, and choose **Sign out** next to a
+  workspace.
+
+## When the session expires
+
+A session stops working when the cookie expires or when you sign out everywhere.
+Parla marks the workspace as expired, keeps cached messages readable, and makes
+the composer read-only until you sign in again.
+
+A banner offers **Sign in again**. On macOS, Parla also shows one notification
+titled "Sign in to the workspace again" for each expiry; click it to bring Parla
+forward and open the sign-in window. Parla cannot refresh the session by itself.
+
+## Risks you are accepting
+
+Read these before you sign in.
+
+- **Undocumented endpoints.** Parla calls the endpoints the service's web client
+  calls. They are undocumented and unversioned, and they can change without
+  notice. Sign-in, realtime updates or a feature can break for everyone at once.
+- **Full account access.** The token and cookie are a complete account session.
+  Anyone who obtains them can act as you. They are not scoped to Parla, to one
+  workspace or to one device.
+- **Employer policy.** Extracting a session may break your employer's IT policy
+  or the terms that apply to your workspace. Ask before you use Parla on a work
+  account.
+- **Terms.** This approach may not fit the service's API terms and developer
+  policy. Parla stays free, unofficial and non-commercial, and discloses the
+  risk rather than hiding it. This page is not legal advice.
+
+## Where secrets live
+
+In release builds, tokens and cookies go to the operating system keychain,
+keyed by workspace. They are never written to settings files, the local message
+store or logs. Debug and display output redact them, and crash reports remove
+values that look like tokens.
+
+Parla reads each keychain item once per session and keeps it in memory, so macOS
+asks at most once per item. Choose **Always Allow** and it stops asking. If you
+build Parla yourself, run `mise run dev:cert` once so rebuilds keep the same
+signature; see [Install](/parla/docs/install/).
+
+Debug builds are the exception: they keep secrets in an unencrypted, user-only
+file in the data folder instead of the keychain. See
+[Install](/parla/docs/install/) for details and `PARLA_DEV_USE_KEYCHAIN`.
+
+## Keyboard
+
+Every control on the sign-in screens can be reached with the keyboard and shows
+a focus ring. Tab and Shift-Tab move through the controls. Enter or Space
+presses the focused button or ticks the consent box, and Enter in a field
+submits the form. Escape goes back from the paste form, or cancels the workspace
+list.
+
+Next: [Daily use](/parla/docs/messaging/).

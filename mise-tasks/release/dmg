@@ -1,0 +1,89 @@
+#!/bin/sh
+#MISE description="Create and sign a Parla .dmg from a signed app bundle"
+set -eu
+
+usage() {
+  echo "usage: mise run release:dmg -- <app> <version> (--adhoc | --identity-file <path>)" >&2
+  exit 2
+}
+
+app=""
+version=""
+adhoc=0
+identity_file=""
+identity_pending=0
+for arg in "$@"; do
+  if [ "$identity_pending" -eq 1 ]; then
+    identity_file=$arg
+    identity_pending=0
+    continue
+  fi
+  case "$arg" in
+    --) ;;
+    --adhoc) adhoc=1 ;;
+    --identity-file) identity_pending=1 ;;
+    -*) echo "unknown option: $arg" >&2; usage ;;
+    *)
+      if [ -z "$app" ]; then
+        app=$arg
+      elif [ -z "$version" ]; then
+        version=$arg
+      else
+        echo "unexpected argument: $arg" >&2
+        usage
+      fi
+      ;;
+  esac
+done
+
+if [ "$identity_pending" -eq 1 ] || [ -z "$app" ] || [ -z "$version" ]; then
+  usage
+fi
+if [ "$adhoc" -eq 1 ] && [ -n "$identity_file" ]; then
+  echo "--adhoc and --identity-file are mutually exclusive" >&2
+  usage
+fi
+if [ "$adhoc" -eq 0 ] && [ -z "$identity_file" ]; then
+  echo "a signing mode is required: --adhoc or --identity-file <path>" >&2
+  usage
+fi
+if [ ! -d "$app" ]; then
+  echo "app bundle not found: $app" >&2
+  exit 1
+fi
+
+out=${PARLA_RELEASE_ASSETS:-$(git rev-parse --show-toplevel)/target/release-assets}
+dmg="$out/Parla-${version}-macos-universal.dmg"
+sign_identity=""
+if [ "$adhoc" -eq 0 ]; then
+  sign_identity=$(cat "$identity_file")
+  if [ -z "$sign_identity" ]; then
+    echo "signing identity file is empty: $identity_file" >&2
+    exit 1
+  fi
+fi
+
+stage=$(mktemp -d "${TMPDIR:-/tmp}/parla-dmg.XXXXXX")
+cleanup() {
+  rm -rf "$stage"
+}
+trap cleanup EXIT INT TERM
+
+cp -R "$app" "$stage/"
+ln -s /Applications "$stage/Applications"
+
+mkdir -p "$out"
+rm -f "$dmg"
+hdiutil create -volname Parla -srcfolder "$stage" -fs HFS+ -format UDZO "$dmg" >/dev/null
+
+if [ "$adhoc" -eq 1 ]; then
+  codesign --force --sign - "$dmg"
+else
+  # Apple's timestamp server countersigns the untrusted self-signed signature.
+  codesign --force --timestamp --sign "$sign_identity" "$dmg"
+fi
+
+cleanup
+trap - EXIT INT TERM
+
+echo "wrote $dmg"

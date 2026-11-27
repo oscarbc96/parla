@@ -1,0 +1,19 @@
+{
+  "verdict": "ok",
+  "size": 51,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "column"
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "image": {
+          "src": "assets/logo.png",
+          "alt": "Logo"
+        }
+      }
+    }
+  ]
+}

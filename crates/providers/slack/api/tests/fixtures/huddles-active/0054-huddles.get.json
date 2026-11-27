@@ -1,0 +1,149 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "huddle_id",
+          "R0000012"
+        ],
+        [
+          "_x_reason",
+          "get-huddle-thread"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "multipart/form-data; boundary=----WebKitFormBoundaryxjT3m7sMLk1SkwMz"
+      ],
+      [
+        "origin",
+        "https://app.slack.com"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "c30ea77a-1794994794.967"
+      ],
+      [
+        "_x_gantry",
+        "true"
+      ],
+      [
+        "_x_desktop_ia",
+        "4"
+      ],
+      [
+        "_x_csid",
+        "6axzrYuE3TE"
+      ],
+      [
+        "slack_route",
+        "T0000002"
+      ],
+      [
+        "_x_version_ts",
+        "1794990456"
+      ],
+      [
+        "_x_foreground",
+        "true"
+      ],
+      [
+        "_x_frontend_build_type",
+        "next-8e48c84f87f5"
+      ],
+      [
+        "fp",
+        "7a"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "huddle": {
+          "attached_file_ids": [],
+          "background_id": "GRADIENT_03",
+          "channels": [
+            "C0000010"
+          ],
+          "created_by": "U0000013",
+          "date_end": 0,
+          "date_start": 1794994794,
+          "external_unique_id": "380f0e14-e495-4007-8cf7-4916fe692713",
+          "has_ended": false,
+          "huddle_link": "https://app.slack.com/huddle/T0000002/C0000010",
+          "id": "R0000012",
+          "last_invite_status_by_user": {},
+          "locale": "es-ES",
+          "name": "",
+          "participant_history": [],
+          "participants": [],
+          "pending_invitees": {},
+          "prototypes": {
+            "is_prewarmed": true,
+            "is_scheduled": false
+          },
+          "recording": {
+            "can_record_summary": "available"
+          },
+          "thread_root_ts": "1794994794.922689"
+        },
+        "ok": true
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "x-slack-edge-shared-secret-outcome",
+        "no-match"
+      ],
+      [
+        "x-slack-req-id",
+        "78c613e0744001c8570ee1db1ba09698"
+      ],
+      [
+        "x-slack-shared-secret-outcome",
+        "no-match"
+      ],
+      [
+        "x-slack-unique-id",
+        "74175b3a-39a4-4df1-8e4f-263a59d7427a"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace2.slack.com/api/huddles.get?_x_id=c30ea77a-1794994794.967&_x_gantry=true&_x_desktop_ia=4&_x_csid=6axzrYuE3TE&slack_route=T0000002&_x_version_ts=1794990456&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=7a&_x_num_retries=0"
+}

@@ -1,0 +1,13 @@
+ui_testing/src/text_system/ is ported from gpui-ce,
+https://github.com/gpui-ce/gpui-ce (upstream commit 66bd421), Apache-2.0:
+
+- crates/gpui_ce_parley/src/store.rs (now text_system/font_store.rs)
+- crates/gpui_ce_parley/src/text_system.rs, font resolution and line
+  layout setup (now text_system/mod.rs)
+- crates/gpui_render/src/swash_glyph_rasterizer.rs (now
+  text_system/rasterizer.rs)
+
+Copyright the gpui-ce contributors. Licensed under the Apache License,
+Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0). The code is
+adapted to GPUI Fast's `PlatformTextSystem` trait; the license is
+unchanged.

@@ -1,0 +1,221 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "only_logged_in_teams",
+          "true"
+        ],
+        [
+          "ssb_signin",
+          "false"
+        ],
+        [
+          "_x_reason",
+          "get_started_already_signed_into"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ]
+      ]
+    },
+    "headers": [
+      [
+        "accept",
+        "*/*"
+      ],
+      [
+        "content-type",
+        "multipart/form-data; boundary=----WebKitFormBoundarynUiOCew7cFvMKmjg"
+      ],
+      [
+        "origin",
+        "https://slack.com"
+      ],
+      [
+        "referer",
+        "https://slack.com/signin"
+      ]
+    ],
+    "query": [
+      [
+        "_x_id",
+        "noversion-1794997947.779"
+      ],
+      [
+        "slack_route",
+        "T0000009"
+      ],
+      [
+        "_x_version_ts",
+        "noversion"
+      ],
+      [
+        "fp",
+        "7a"
+      ],
+      [
+        "_x_num_retries",
+        "0"
+      ]
+    ]
+  },
+  "response": {
+    "body": {
+      "json": {
+        "confirmed_email": "",
+        "current_orgs": [],
+        "current_teams": [
+          {
+            "email": "user6@example.test",
+            "teams": [
+              {
+                "active_users": 0,
+                "associated_user": "U0000013",
+                "can_apply_canvas": true,
+                "can_apply_list": true,
+                "can_apply_workflow": true,
+                "domain": "workspace3",
+                "ia_version": 4,
+                "icon": {
+                  "image_102": "https://files.example.test/image/45",
+                  "image_132": "https://files.example.test/image/46",
+                  "image_230": "https://files.example.test/image/47",
+                  "image_34": "https://files.example.test/image/48",
+                  "image_44": "https://files.example.test/image/49",
+                  "image_68": "https://files.example.test/image/50",
+                  "image_88": "https://files.example.test/image/51",
+                  "image_default": true
+                },
+                "icon_44": "https://files.example.test/file/2592",
+                "icon_88": "https://files.example.test/file/2593",
+                "id": "T0000002",
+                "image_default": true,
+                "is_logged_out": false,
+                "is_on_trial": true,
+                "is_owner": true,
+                "last_login_ts": 1794997072,
+                "name": "Name 39",
+                "product_level": "std",
+                "profile_photos": [
+                  "https://files.example.test/file/2594",
+                  "https://files.example.test/file/2595"
+                ],
+                "sso_required": false,
+                "two_factor_required": false,
+                "url": "https://workspace3.slack.com/ssb/redirect",
+                "user_14d_messages": 0,
+                "user_email": "user6@example.test",
+                "user_icon": {
+                  "avatar_hash": "Avatar 2",
+                  "image_1024": "https://files.example.test/image/83",
+                  "image_192": "https://files.example.test/image/84",
+                  "image_24": "https://files.example.test/image/85",
+                  "image_32": "https://files.example.test/image/86",
+                  "image_48": "https://files.example.test/image/87",
+                  "image_512": "https://files.example.test/image/88",
+                  "image_72": "https://files.example.test/image/89",
+                  "image_original": "https://files.example.test/image/61"
+                },
+                "user_name": "Name 29",
+                "user_title": "",
+                "user_type": "owner",
+                "user_workspace_signal_score": 0,
+                "variant": "commercial"
+              }
+            ]
+          },
+          {
+            "email": "user1@example.test",
+            "teams": [
+              {
+                "active_users": 4,
+                "associated_user": "U0000001",
+                "can_apply_canvas": true,
+                "can_apply_list": true,
+                "can_apply_workflow": true,
+                "domain": "workspace",
+                "ia_version": 4,
+                "icon": {
+                  "image_102": "https://files.example.test/image/90",
+                  "image_132": "https://files.example.test/image/91",
+                  "image_230": "https://files.example.test/image/92",
+                  "image_34": "https://files.example.test/image/93",
+                  "image_44": "https://files.example.test/image/94",
+                  "image_68": "https://files.example.test/image/95",
+                  "image_88": "https://files.example.test/image/96",
+                  "image_default": false
+                },
+                "icon_44": "https://files.example.test/file/2596",
+                "icon_88": "https://files.example.test/file/2597",
+                "id": "T0000001",
+                "image_default": false,
+                "is_logged_out": false,
+                "last_login_ts": 1794997201,
+                "name": "Name 650",
+                "product_level": "",
+                "profile_photos": [
+                  "https://files.example.test/file/2598",
+                  "https://files.example.test/file/2599",
+                  "https://files.example.test/file/2600",
+                  "https://files.example.test/file/2601"
+                ],
+                "sso_required": false,
+                "two_factor_required": false,
+                "url": "https://workspace.slack.com/ssb/redirect",
+                "user_14d_messages": 0,
+                "user_email": "user1@example.test",
+                "user_icon": {
+                  "avatar_hash": "Avatar 1",
+                  "image_192": "https://files.example.test/image/35",
+                  "image_24": "https://files.example.test/image/36",
+                  "image_32": "https://files.example.test/image/37",
+                  "image_48": "https://files.example.test/image/38",
+                  "image_512": "https://files.example.test/image/39",
+                  "image_72": "https://files.example.test/image/40"
+                },
+                "user_name": "Name 30",
+                "user_title": "",
+                "user_type": "full_member",
+                "user_workspace_signal_score": 0,
+                "variant": "commercial"
+              }
+            ]
+          }
+        ],
+        "domain_enabled_teams": [],
+        "has_valid_cookie": false,
+        "invited_teams": [],
+        "ok": true,
+        "privacy_consent_group": "B"
+      }
+    },
+    "headers": [
+      [
+        "content-type",
+        "application/json; charset=utf-8"
+      ],
+      [
+        "x-slack-edge-shared-secret-outcome",
+        "no-match"
+      ],
+      [
+        "x-slack-req-id",
+        "1c7533c43df67f09e7eb45d0361e1501"
+      ],
+      [
+        "x-slack-shared-secret-outcome",
+        "no-match"
+      ],
+      [
+        "x-slack-unique-id",
+        "fa02783a-3ba1-45a0-ad5a-93e0a932fb17"
+      ]
+    ],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://slack.com/api/signin.findWorkspaces?_x_id=noversion-1794997947.779&slack_route=T0000009&_x_version_ts=noversion&fp=7a&_x_num_retries=0"
+}

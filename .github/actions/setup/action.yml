@@ -1,0 +1,98 @@
+name: Set up
+description: >-
+  The tools and caches every job shares: mise tools, and optionally a Rust
+  build (system packages, Metal toolchain, Cargo cache) and a Bun install.
+  Every cache key comes from lock files (Cargo.lock, bun.lock, mise.toml), so a
+  dependency change starts a fresh entry. Every run saves what it built when
+  its key is new: main's entries serve every PR, and a PR's own entries serve
+  its next runs (GitHub scopes them to that PR). GitHub evicts the least
+  recently used entries past the repo quota; main's, restored by every run,
+  go last.
+
+inputs:
+  tools:
+    description: "mise tools to install: empty for everything in mise.toml, or a list such as `bun`."
+    default: ""
+  rust:
+    description: Prepare a Rust build.
+    default: "false"
+  rust-cache-key:
+    description: >-
+      Cargo cache entry for jobs that build the same profile and features.
+      Jobs that build different things need different keys, or the first to
+      finish saves and the others are never cached.
+    default: ""
+  bun-install:
+    description: Directory to run `bun install --frozen-lockfile` in (with a download cache).
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Linux system packages (GPUI)
+      if: inputs.rust == 'true' && runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          clang cmake lld pkg-config \
+          libasound2-dev libfontconfig-dev libglib2.0-dev libssl-dev \
+          libvulkan-dev libwayland-dev libx11-xcb-dev libxcb1-dev \
+          libxkbcommon-dev libxkbcommon-x11-dev libzstd-dev
+    # One place for the Cargo settings: rust-cache hashes every CARGO_* variable
+    # into its key, so jobs that share a key must see the same values.
+    - name: Cargo settings
+      if: inputs.rust == 'true'
+      shell: bash
+      run: |
+        {
+          echo "CARGO_INCREMENTAL=0"
+          echo "CARGO_TERM_COLOR=always"
+          # Line tables keep backtraces readable but shrink target/ (and the cache) a lot.
+          echo "CARGO_PROFILE_DEV_DEBUG=line-tables-only"
+          echo "CARGO_PROFILE_TEST_DEBUG=line-tables-only"
+        } >> "$GITHUB_ENV"
+    # macOS jobs pin the macos-15 image, which carries the Xcode CI expects.
+    - name: Install Metal toolchain
+      if: inputs.rust == 'true' && runner.os == 'macOS'
+      shell: bash
+      run: xcodebuild -downloadComponent MetalToolchain || true
+    - name: Set up tools
+      uses: jdx/mise-action@924e7c586e33d7d4bae9c14e26c5d22e2beb6e78 # v5.3.0
+      with:
+        install_args: ${{ inputs.tools }}
+        cache: true
+    # Keyed by both Cargo.lock files, the toolchain, the CARGO_* settings and
+    # the job (or rust-cache-key). The registry and dependency builds are
+    # cached; workspace crates are not (checkout resets their timestamps, so
+    # Cargo rebuilds them anyway). The guest plugin workspace builds outside
+    # target/, since cleaning target/ keeps only the host workspace's
+    # dependencies. cache-bin is off: it keeps only what `cargo install` adds to
+    # $CARGO_HOME/bin during the job, and nothing does (mise installs the cargo
+    # tools in its own, cached, directory). The toolchain itself (~/.rustup,
+    # about 1 GB) is not cached: downloading it is as fast as restoring it.
+    - name: Cache Cargo
+      if: inputs.rust == 'true'
+      uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      with:
+        shared-key: ${{ inputs.rust-cache-key }}
+        workspaces: |
+          . -> target
+          plugins -> target/build
+          plugins -> target/test
+        cache-bin: "false"
+        cache-on-failure: true
+    # Keyed by the lock file only: the packages depend on nothing else, and
+    # Bun's download cache stays usable across Bun upgrades.
+    - name: Cache Bun downloads
+      if: inputs.bun-install != ''
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.bun/install/cache
+        key: bun-${{ runner.os }}-${{ hashFiles(format('{0}/bun.lock', inputs.bun-install)) }}
+        restore-keys: bun-${{ runner.os }}-
+    - name: Install dependencies
+      if: inputs.bun-install != ''
+      shell: bash
+      working-directory: ${{ inputs.bun-install }}
+      run: bun install --frozen-lockfile

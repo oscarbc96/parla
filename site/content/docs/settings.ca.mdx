@@ -1,0 +1,280 @@
+---
+title: Paràmetres
+description: La finestra de paràmetres, els temes, el mapa de tecles, les notificacions, la privadesa, l'emmagatzematge, MCP i les opcions avançades.
+---
+
+Parla desa la seva configuració en fitxers JSONC normals. No hi ha cap base de
+dades oculta de paràmetres ni sincronització amb un compte. Edita un fitxer,
+desa'l i l'aplicació en marxa aplica el canvi.
+
+## La finestra de paràmetres
+
+Prem `cmd-,` (`ctrl-,` a Linux i Windows), tria Paràmetres al menú de l'aplicació,
+o fes clic al botó Paràmetres al final de la barra d'espais de treball. Parla té una
+sola finestra de paràmetres; la drecera la porta al davant si ja està oberta.
+
+Les pàgines són General, Aparença, Notificacions, Tecles, Espais de treball,
+Privadesa i emmagatzematge, Trucades, IA, Connectors, MCP i Avançat. IA i
+Connectors encara no tenen controls; et remeten a `settings.json`. Espais de
+treball i Privadesa i emmagatzematge mostren la mateixa pàgina.
+
+Cada control escriu la seva clau a `settings.json` amb una edició que conserva els
+comentaris, així que l'aplicació en marxa ho aplica com una edició manual. Si el
+fitxer es rebutja, per exemple perquè un valor té el tipus equivocat, la pàgina diu
+per què i manté els últims paràmetres vàlids fins que ho arreglis.
+
+## General
+
+| Control                                          | Què fa                                                                                   |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Idioma de la interfície                          | Predeterminat del sistema, anglès, espanyol o català. S'aplica a l'instant               |
+| Obre Parla en iniciar la sessió                  | Inicia Parla en entrar. Amb la icona de la barra de menús activa, s'inicia amagat        |
+| Restaura les finestres de l'última sessió        | Reobre la finestra principal i les finestres emergents amb la seva última mida i posició |
+| Dock i barra de menús                            | macOS: tots dos, Dock només amb una finestra oberta, o només barra de menús              |
+| Rellotge                                         | 24 o 12 hores als missatges                                                              |
+| Imatges en línia                                 | Sempre, En fer clic o Mai                                                                |
+| Comprova si hi ha actualitzacions automàticament | Consulta GitHub Releases com a màxim una vegada al dia                                   |
+
+**Comprova ara** executa una comprovació d'actualitzacions a l'instant.
+
+## Aparença
+
+| Control                     | Què fa                                          |
+| --------------------------- | ----------------------------------------------- |
+| Mode de tema                | Sistema, Clar o Fosc                            |
+| Targetes de tema            | Tria el tema clar i el fosc per separat         |
+| Accent                      | Brand, Ember, Amber, Coral o Ink                |
+| Densitat                    | Compacta o Còmoda                               |
+| Tecla d'enviament           | Retorn envia, o Comanda-Retorn envia            |
+| Mostra la secció No llegits | Afegeix la secció No llegits a la barra lateral |
+| Ordena les converses        | D'A a Z o Recents                               |
+
+El tema, l'accent, la densitat, la tecla d'enviament i els canvis de la barra
+lateral s'apliquen a l'instant. L'accent canvia botons, focus i selecció als dos
+temes. Els temes d'alt contrast ignoren l'accent.
+
+Parla inclou **Parla Light**, **Parla Dark**, **Parla High Contrast Light** i
+**Parla High Contrast Dark**. A macOS, Parla usa els temes d'alt contrast mentre
+**Augmenta el contrast** està actiu, tret que hagis triat un tema tu mateix. A
+Linux i Windows els pots triar pel seu nom.
+
+### Temes personalitzats
+
+Un tema és un fitxer JSON a la carpeta `themes` dins de la carpeta de configuració
+de Parla. Segueix la mateixa forma general que una família de temes de Zed: un
+array `themes` on cada entrada té un `name`, un `appearance` (`light` o `dark`) i
+un objecte `style` amb claus de color. Es permeten comentaris i comes finals.
+
+Per crear-ne un, copia un tema del `parla.json` inclòs, canvia'n el nom i els
+colors, i desa'l a `themes/`. Els temes d'usuari es carreguen en iniciar i es
+recarreguen quan deses. Tria'ls a Paràmetres, Aparença, o defineix `theme.light` i
+`theme.dark` a `settings.json` amb el `name` del tema.
+
+Les fonts i els avatars dels missatges encara no són a la finestra de paràmetres.
+Defineix `ui_font_family`, `ui_font_size`, `buffer_font_family` i
+`messages.show_avatars` a `settings.json`.
+
+## Notificacions
+
+| Control                                  | Què fa                                                                |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| Notificacions d'escriptori               | Tots els missatges, Mencions i missatges directes, o Res              |
+| Mostra previsualitzacions dels missatges | Desactivat mostra només qui ha escrit i on                            |
+| Paraules clau                            | Paraules que avisen com una menció. Escriu-ne una i prem Retorn       |
+| Reprodueix un so per a les notificacions | Usa el so subtil propi de Parla                                       |
+| Hores de silenci                         | Hores d'inici i fi, i els dies en què comença una finestra de silenci |
+| So per a huddles de missatge directe     | Reprodueix el so i mostra Uneix-te i Refusa                           |
+
+Consulta [Notificacions](/parla/ca/docs/notifications/) per saber quan avisa Parla
+i com funcionen els nivells per conversa.
+
+## Trucades
+
+| Control                              | Què fa                                                                           |
+| ------------------------------------ | -------------------------------------------------------------------------------- |
+| So per a huddles de missatge directe | Sona quan algú inicia un huddle amb tu                                           |
+| To de trucada                        | El so de Parla, o silenci amb només un avís                                      |
+| Uneix-te amb                         | Àudio de Parla, finestra de Parla, navegador o l'app del servei                  |
+| Silencia el micròfon en unir-te      | S'uneix silenciat                                                                |
+| Micròfon i Altaveu                   | Dispositius d'àudio per a l'àudio de Parla, o el valor predeterminat del sistema |
+
+L'àudio de Parla s'uneix sense una finestra extra. Si no pot connectar, Parla prova
+la finestra de trucada a macOS, després el navegador i després l'app del servei.
+Els canvis de dispositiu s'apliquen a la trucada en curs a l'instant. Parla encara
+no transmet vídeo ni compartició de pantalla.
+
+## Espais de treball i privadesa
+
+La part superior de la pàgina enumera cada espai amb la sessió iniciada i el seu
+estat: connectat, sessió caducada o no connectat. **Inicia la sessió de nou** obre
+el flux d'inici de sessió, i **Tanca la sessió** pregunta primer.
+
+| Control                             | Què fa                                                                                                                        |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Límit de memòria cau                | Memòria que pot usar la base de dades local                                                                                   |
+| Conserva els missatges durant       | Dies de missatges en memòria cau que es conserven                                                                             |
+| Buida la memòria cau                | Esborra els missatges i esborranys en memòria cau de tots els espais; es tornen a carregar des del servei                     |
+| Bloqueja el magatzem en inactivitat | Després de 5, 15, 30 o 60 minuts sense entrada, tanca el magatzem xifrat i cobreix les finestres amb una pantalla de bloqueig |
+| Informes de fallades                | Desactivats, Pregunta sempre o Desa en local. No surten mai del teu dispositiu                                                |
+
+**Esborra...** a la zona de perill tanca la sessió a tot arreu i elimina el
+magatzem xifrat i els inicis de sessió desats. Els teus paràmetres es conserven.
+
+El límit de memòria cau i la retenció s'apliquen la propera vegada que Parla
+s'iniciï. Els altres controls de privadesa s'apliquen a l'instant.
+
+## IA i MCP
+
+Parla inclou un servidor MCP local perquè les eines d'IA del teu ordinador puguin
+llegir els espais que triïs i, si ho permets, escriure-hi. Està desactivat per
+defecte, i també cada espai. No escolta mai a la xarxa.
+
+### Activar-lo
+
+1. Obre Paràmetres, MCP i activa **Executa el servidor MCP**.
+2. A **Espais de treball**, activa **Comparteix amb clients MCP** per a cada espai
+   que vulguis compartir.
+3. Activa **Permet accions d'escriptura** si el client pot enviar missatges,
+   programar missatges, afegir reaccions o establir el teu estat. Deixa-ho
+   desactivat per a accés de només lectura.
+4. Mantén **Pregunta abans de cada escriptura** activat tret que vulguis que les
+   escriptures passin sense confirmació.
+
+La pàgina enumera cada espai amb la sessió iniciada i qualsevol altre espai que ja
+tingui una política a `settings.json`. Aquí, cada espai s'identifica amb
+`<provider>/<id>`; `list_workspaces` mostra les claus exactes.
+
+### Connectar un client
+
+**Copia la configuració del client** copia al porta-retalls una entrada
+`mcpServers` que inicia aquesta còpia de Parla amb `mcp`. Usa aquella entrada al
+teu client MCP.
+
+El relay és `parla mcp`. Parla amb l'aplicació en marxa per un socket local que
+només el teu usuari pot obrir. Si Parla no està obert, el relay l'inicia sense
+finestra. Per exemple, amb Parla instal·lat a Aplicacions:
+
+```sh
+claude mcp add parla -- /Applications/Parla.app/Contents/MacOS/parla mcp
+```
+
+Per a Zed, afegeix un servidor de context a `context_servers` amb la mateixa ordre
+i `["mcp"]` com a arguments. El camí ha d'apuntar a la teva còpia de Parla;
+**Copia la configuració del client** omple la correcta.
+
+### Eines
+
+| Eina               | Tipus      |
+| ------------------ | ---------- |
+| `list_workspaces`  | Lectura    |
+| `list_channels`    | Lectura    |
+| `get_unreads`      | Lectura    |
+| `read_channel`     | Lectura    |
+| `read_thread`      | Lectura    |
+| `search_messages`  | Lectura    |
+| `get_user`         | Lectura    |
+| `search_users`     | Lectura    |
+| `list_scheduled`   | Lectura    |
+| `send_message`     | Escriptura |
+| `schedule_message` | Escriptura |
+| `add_reaction`     | Escriptura |
+| `set_status`       | Escriptura |
+
+Els clients MCP també poden adjuntar una conversa o un fil per URI:
+`parla://<provider>/<workspace>/conversation/<conversation>` i
+`parla://<provider>/<workspace>/thread/<conversation>/<ts>`.
+
+### Confirmació i seguretat
+
+- Un espai és invisible per als clients MCP fins que el comparteixes. Els
+  missatges directes segueixen ocults tret que defineixis `include_dms`.
+- Amb **Pregunta abans de cada escriptura** activat (`confirm_writes`), Parla
+  mostra una finestra que nomena el client, l'eina, on publicarà i com a qui, amb
+  el text exacte.
+  **Detalls** mostra els arguments de la petició. Tria **Denega**, **Sempre per a
+  aquesta sessió** o **Permet una vegada**. Denega té el focus, així que Retorn i
+  Escape deneguen. Una petició sense respondre es denega al cap de dos minuts.
+- **Sempre per a aquesta sessió** omet la pregunta per a escriptures posteriors
+  d'aquella eina en aquella conversa fins que el client es desconnecta o Parla es
+  tanca. Només es desa a la memòria.
+- El text dels missatges d'altres persones pot contenir instruccions adreçades a
+  l'agent. Tracta tot el que llegeixi un agent com a no fiable.
+
+### Registre d'auditoria
+
+Cada crida es registra en local amb l'eina, el client, l'espai, el destí, el
+resultat, la decisió i la durada. El registre està xifrat amb les teves altres dades
+locals i no surt mai del teu dispositiu. El text dels missatges només es registra
+si actives `log.include_content`.
+
+Obre **Activitat de l'agent** des de la pàgina MCP, la paleta d'ordres o la línia
+d'estat de MCP al final de la finestra. Pots filtrar-lo per espai, eina o només
+escriptures, i buidar-lo allà. Les entrades anteriors a `audit_retention_days` (90
+per defecte) s'eliminen al següent inici.
+
+### Límits
+
+Cada client pot fer 120 lectures i 10 escriptures per minut. Cada espai pot fer 20
+lectures al proveïdor per minut. A un client que supera un límit se li demana que
+ho torni a provar més tard, i Parla segueix responent.
+
+## Avançat
+
+| Control                                           | Què fa                                                                               |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Memòria cau d'imatges                             | Memòria per a imatges. S'aplica al següent inici                                     |
+| Missatges a la memòria per conversa               | S'aplica a la següent conversa que carreguis                                         |
+| Passa a mode lleuger després d'amagar la finestra | Quant temps manté una finestra amagada els missatges de tots els espais a la memòria |
+| Nivell de registre                                | Error, Info o Depuració. S'aplica a l'instant                                        |
+
+Passar a mode lleuger depèn de si la finestra es veu a la pantalla, no de si té el
+focus de teclat. Una finestra darrere d'una altra aplicació o en un segon monitor
+continua desperta; els espais només passen a mode lleuger mentre està
+minimitzada, amagada, completament coberta o la pantalla està adormida.
+
+**Registres i diagnòstics** pot obrir la carpeta de registres o exportar un fitxer
+de text censurat amb la versió, el sistema operatiu, els paràmetres, les línies
+recents del registre i els comptadors de rendiment. Abans s'eliminen testimonis,
+galetes, text de missatges, adreces i hosts d'espais de treball. Llegeix-lo abans
+d'adjuntar-lo a un informe d'error.
+
+**Restableix els paràmetres** torna a escriure els valors predeterminats comentats a
+`settings.json`. Els teus temes i `keymap.json` es conserven.
+
+## Fitxers i capes
+
+La carpeta de configuració de Parla és:
+
+| Plataforma | Directori                                     |
+| ---------- | --------------------------------------------- |
+| macOS      | `~/.config/parla`                             |
+| Linux      | `$XDG_CONFIG_HOME/parla`, o `~/.config/parla` |
+| Windows    | `%APPDATA%\parla`                             |
+
+Els fitxers principals són:
+
+```text
+~/.config/parla/
+  settings.json                     paràmetres d'usuari JSONC
+  settings.schema.json              autocompletat i validació a l'editor
+  keymap.json                       dreceres de teclat JSONC
+  themes/*.json                     temes d'usuari
+  workspaces/<provider>/<id>.json   anul·lacions opcionals per espai
+```
+
+Els paràmetres s'apliquen en aquest ordre:
+
+1. Valors predeterminats inclosos.
+2. `settings.json`.
+3. `workspaces/<provider>/<id>.json` per a aquell espai de treball.
+
+Els objectes es combinen i els arrays se substitueixen. Tots els fitxers de
+paràmetres són JSONC, així que es permeten comentaris i comes finals. Parla vigila
+la carpeta i recarrega després d'una breu pausa. Un canvi vàlid s'aplica a
+l'instant; un fitxer invàlid no substitueix els últims paràmetres vàlids, i Parla
+mostra el fitxer, la línia i la columna perquè ho arreglis.
+
+No posis mai testimonis ni galetes en aquests fitxers. Parla els desa al clauer del
+sistema operatiu.
+
+Següent: [Dreceres de teclat](/parla/ca/docs/keymap/).

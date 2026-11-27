@@ -1,0 +1,14 @@
+{
+  "verdict": "invalid",
+  "rule": 1,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "column"
+    },
+    {
+      "parent": null,
+      "kind": "card"
+    }
+  ]
+}

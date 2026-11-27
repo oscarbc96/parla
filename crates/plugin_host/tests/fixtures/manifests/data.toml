@@ -1,0 +1,14 @@
+# A data plugin: themes and an icon pack, no code, no capabilities.
+id = "solarised-themes"
+name = { key = "plugin-name" }
+version = "1.2.0"
+api = "0.1"
+description = { key = "plugin-description" }
+categories = ["themes", "icon-packs"]
+
+[themes]
+files = ["themes/solarised.json"]
+
+[[icon_packs]]
+name = "Outline"
+dir = "icons/outline"

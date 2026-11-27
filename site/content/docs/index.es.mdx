@@ -1,0 +1,73 @@
+---
+title: ¿Qué es Parla?
+description: Un cliente de chat de escritorio gratuito y de código abierto, rápido, ligero y pensado para el teclado.
+---
+
+Parla es un cliente de chat de escritorio gratuito y de código abierto. Está
+escrito en Rust y dibuja sus propias ventanas con
+[GPUI Fast](https://github.com/longbridge/gpui-fast). Guarda
+una pequeña caché cifrada en tu ordenador y no ejecuta un navegador web dentro
+de la aplicación.
+
+Slack es el primer servicio de chat compatible con Parla. Parla no lo ha creado
+Slack y Slack no le da soporte.
+
+**Estado: fase inicial.** Las compilaciones de macOS (14 o posterior, Apple
+silicon e Intel, autofirmadas) están en
+[GitHub Releases](https://github.com/oscarbc96/parla/releases). Windows y Linux
+se compilan desde el código fuente; por ahora, macOS es la plataforma con
+soporte.
+
+## Para quién es
+
+- Para quien usa el chat todo el día y quiere una ventana nativa y rápida.
+- Para quien mantiene varios espacios de trabajo abiertos y cambia a menudo
+  entre ellos.
+- Para quien prefiere el teclado, sin renunciar a los menús ni al ratón.
+- Para quien quiere sus mensajes guardados en su propio ordenador.
+
+## Qué hace
+
+- **Va rápido.** Parla dibuja en la GPU. No hay un navegador residente ni un
+  entorno de ejecución de JavaScript.
+- **Usa poca memoria.** Un proceso, un hilo de interfaz y una caché local
+  acotada. Un espacio de trabajo que no estás mirando libera sus mensajes al
+  cabo de un rato.
+- **Mantiene muchos espacios abiertos.** Cada espacio con sesión iniciada sigue
+  conectado, con su propia insignia y una lista combinada de no leídos.
+- **Funciona con el teclado.** Selector rápido, paleta de comandos, hoja de
+  atajos y un mapa de teclas JSON con nombres de acción estables.
+- **Funciona sin conexión.** Los mensajes se guardan en local, los borradores se
+  conservan y lo que envías sin conexión espera en una bandeja de salida.
+- **Cubre el día a día.** Hilos, reacciones, archivos, búsqueda, recordatorios,
+  mensajes programados, huddles y notificaciones.
+- **Puede conectar herramientas de IA locales.** Parla incluye un servidor MCP
+  desactivado por defecto que solo escucha en tu ordenador.
+- **Sigue siendo código abierto.** El código es MPL-2.0, la API de complementos y
+  el SDK son Apache-2.0 OR MIT, y la documentación es CC-BY-4.0.
+
+## Cómo se conecta
+
+Parla inicia sesión con tu propia sesión de chat. En Slack, eso significa el
+token y la cookie que usa tu navegador. No hay que crear ninguna app, no hay
+pantalla de consentimiento OAuth y no hay ningún servidor del proyecto. Un solo
+inicio de sesión puede cubrir todos los espacios de trabajo que ya tienen sesión
+iniciada en esa sesión.
+
+Es un enfoque no oficial con riesgos reales. Lee
+[Iniciar sesión](/parla/es/docs/sign-in/) antes de usar Parla con una cuenta de
+trabajo.
+
+## Por dónde empezar
+
+1. [Instala Parla](/parla/es/docs/install/) desde una versión, o compílalo desde
+   el código fuente en macOS.
+2. [Inicia sesión](/parla/es/docs/sign-in/) con tu propia sesión.
+3. Aprende el [uso diario](/parla/es/docs/messaging/), los
+   [archivos](/parla/es/docs/files/), las
+   [notificaciones](/parla/es/docs/notifications/) y el
+   [modo sin conexión](/parla/es/docs/offline/).
+4. [Configura Parla](/parla/es/docs/settings/) y aprende los
+   [atajos de teclado](/parla/es/docs/keymap/).
+5. Lee la [Privacidad](/parla/es/docs/privacy/) y las
+   [Condiciones](/parla/es/docs/terms/).

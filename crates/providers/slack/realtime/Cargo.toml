@@ -1,0 +1,32 @@
+[package]
+name = "slack_realtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+# Exposes the in-process fake websocket server (`slack_realtime::fake_server`) to other crates' tests.
+test-support = []
+
+[dependencies]
+slack_api = { path = "../api" }
+redact = { path = "../../../redact" }
+backon.workspace = true
+futures.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
+thiserror.workspace = true
+tokio = { workspace = true, features = ["net", "sync", "time", "rt", "macros"] }
+tokio-tungstenite.workspace = true
+url.workspace = true
+
+# ws_probe still talks HTTP by itself.
+[dev-dependencies]
+slack_redact = { path = "../redact_rules" }
+tempfile.workspace = true
+reqwest.workspace = true
+tokio = { workspace = true, features = ["test-util", "net", "io-util"] }

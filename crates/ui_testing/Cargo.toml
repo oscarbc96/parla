@@ -1,0 +1,68 @@
+[package]
+name = "ui_testing"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+visual = []
+e2e = []
+
+[dependencies]
+gpui = { workspace = true, features = ["test-support"] }
+gpui_platform = { workspace = true, features = ["test-support"] }
+themes.path = "../themes"
+components.path = "../components"
+settings.path = "../settings"
+image.workspace = true
+anyhow.workspace = true
+domain = { path = "../domain", features = ["test-support"] }
+futures.workspace = true
+jiff.workspace = true
+i18n = { path = "../i18n", features = ["gpui"] }
+thiserror.workspace = true
+oxipng = { version = "10", default-features = false }
+# One text pipeline on every OS, ported from gpui-ce: parley
+# shapes and fontique resolves bundled fonts, skrifa reads metrics, swash
+# rasterises. Versions match the gpui-ce workspace.
+parley = { version = "0.12.0", default-features = false, features = [
+  "std",
+  "complex-scripts",
+] }
+fontique = { version = "0.12.0", default-features = false, features = ["std"] }
+skrifa = { version = "0.44.0", default-features = false, features = ["std"] }
+swash = "0.2.10"
+
+[dev-dependencies]
+smallvec = "1"
+tempfile.workspace = true
+toml.workspace = true
+parla = { path = "../parla" }
+semver.workspace = true
+url.workspace = true
+mcp = { path = "../mcp" }
+write_confirm = { path = "../write_confirm" }
+store = { path = "../store" }
+
+
+[[test]]
+name = "harness"
+path = "tests/harness.rs"
+required-features = ["visual"]
+
+[[test]]
+name = "visual_components"
+path = "tests/visual_components.rs"
+required-features = ["visual"]
+
+[[test]]
+name = "retention_oracle"
+path = "tests/retention_oracle.rs"
+# GPUI Fast creates the macOS platform on the main thread only, so the oracle
+# runs from `main` instead of the libtest worker thread.
+harness = false
+required-features = ["visual"]

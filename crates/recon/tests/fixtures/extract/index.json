@@ -1,0 +1,24 @@
+[
+  {
+    "file": "0001-items.list.json",
+    "kind": "http",
+    "method": "items.list",
+    "status": 200
+  },
+  {
+    "file": "0002-items.list.json",
+    "kind": "http",
+    "method": "items.list",
+    "status": 200
+  },
+  {
+    "file": "ws-0001-item_added.json",
+    "kind": "ws",
+    "type": "item_added"
+  },
+  {
+    "file": "ws-0002-item_removed.json",
+    "kind": "ws",
+    "type": "item_removed"
+  }
+]

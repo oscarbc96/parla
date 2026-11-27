@@ -1,0 +1,23 @@
+#!/bin/sh
+#MISE description="Write SHA256SUMS for release artifacts"
+set -eu
+
+# Strip the -- separator mise forwards.
+[ "${1:-}" = "--" ] && shift
+[ "$#" -ge 1 ] || { echo "usage: mise run release:sums -- <files...>" >&2; exit 2; }
+
+outdir=$(dirname "$1")
+for f in "$@"; do
+  [ "$(dirname "$f")" = "$outdir" ] || {
+    echo "all files must share one directory: $f is not in $outdir" >&2
+    exit 2
+  }
+done
+
+(
+  cd "$outdir"
+  # Hash basenames so the checksums verify from the asset directory.
+  for f in "$@"; do set -- "$@" "$(basename "$f")"; shift; done
+  shasum -a 256 "$@" > SHA256SUMS
+)
+echo "wrote $outdir/SHA256SUMS"

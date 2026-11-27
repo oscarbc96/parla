@@ -1,0 +1,144 @@
+// Parla default keymap (macos). Zed format; override in keymap.json.
+[
+  {
+    "bindings": {
+      "cmd-/": "app::OpenKeyboardShortcuts",
+      "alt-shift-down": "sidebar::NextUnread",
+      "cmd-q": "app::Quit",
+      "cmd-,": "app::OpenSettings",
+      "cmd-w": "app::CloseWindow",
+      "cmd-h": "app::Hide",
+      "cmd-alt-h": "app::HideOthers",
+      "cmd-m": "app::Minimize",
+      "cmd-alt-,": "app::OpenKeymap",
+      "cmd-shift-r": "app::ReloadConfig",
+      "cmd-shift-l": "theme::ToggleMode",
+      "cmd-shift-m": "call::ToggleMute",
+      "cmd-1": "workspace::ActivateWorkspace1",
+      "cmd-2": "workspace::ActivateWorkspace2",
+      "cmd-3": "workspace::ActivateWorkspace3",
+      "cmd-4": "workspace::ActivateWorkspace4",
+      "cmd-5": "workspace::ActivateWorkspace5",
+      "cmd-6": "workspace::ActivateWorkspace6",
+      "cmd-7": "workspace::ActivateWorkspace7",
+      "cmd-8": "workspace::ActivateWorkspace8",
+      "cmd-9": "workspace::ActivateWorkspace9",
+      "cmd-shift-]": "workspace::NextWorkspace",
+      "cmd-shift-[": "workspace::PreviousWorkspace",
+      "cmd-shift-f": "workspace::Search",
+      "cmd-shift-d": "workspace::PauseNotifications",
+      "cmd-k": "workspace::QuickSwitch",
+      "cmd-shift-p": "app::CommandPalette",
+      "cmd-shift-a": "workspace::AllUnreads",
+      "cmd-[": "workspace::GoBack",
+      "cmd-]": "workspace::GoForward",
+      "cmd-f6": "workspace::FocusNextPane",
+      "cmd-shift-f6": "workspace::FocusPreviousPane"
+    }
+  },
+  {
+    "context": "Sidebar",
+    "bindings": {
+      "down": "sidebar::SelectNext",
+      "up": "sidebar::SelectPrev",
+      "enter": "sidebar::Open"
+    }
+  },
+  {
+    "context": "Timeline",
+    "bindings": {
+      "e": "timeline::EditMessage",
+      "cmd-shift-\\": "timeline::AddReaction",
+      "cmd-shift-t": "timeline::OpenThread",
+      "cmd-shift-u": "timeline::MarkUnread",
+      "cmd-shift-down": "timeline::JumpToLatest",
+      "cmd-backspace": "timeline::DeleteMessage",
+      "cmd-shift-o": "workspace::PopOutConversation"
+    }
+  },
+  {
+    "context": "Composer",
+    "bindings": {
+      "enter": "composer::Send",
+      "shift-enter": "composer::Newline",
+      "up": "composer::EditLast",
+      "escape": "composer::Cancel",
+      "cmd-v": "composer::Paste",
+      "cmd-b": "composer::Bold",
+      "cmd-i": "composer::Italic",
+      "cmd-shift-x": "composer::Strike",
+      "cmd-e": "composer::Code",
+      "cmd-alt-shift-c": "composer::CodeBlock",
+      "cmd-shift-9": "composer::Quote",
+      "cmd-shift-8": "composer::BulletList",
+      "cmd-shift-7": "composer::NumberedList",
+      "cmd-shift-u": "composer::Link",
+      "cmd-shift-enter": "composer::SendLater",
+      "tab": "composer::AcceptCompletion"
+    }
+  },
+  {
+    "context": "Composer && send_cmd_enter",
+    "bindings": {
+      "enter": "composer::PlainEnter",
+      "cmd-enter": "composer::Send"
+    }
+  },
+
+  {
+    "context": "TextInput",
+    "bindings": {
+      "left": "text_input::Left",
+      "right": "text_input::Right",
+      "down": "text_input::Down",
+      "shift-left": "text_input::SelectLeft",
+      "shift-right": "text_input::SelectRight",
+      "shift-up": "text_input::SelectUp",
+      "shift-down": "text_input::SelectDown",
+      "backspace": "text_input::Backspace",
+      "delete": "text_input::Delete",
+      "alt-left": "text_input::WordLeft",
+      "alt-right": "text_input::WordRight",
+      "alt-shift-left": "text_input::SelectWordLeft",
+      "alt-shift-right": "text_input::SelectWordRight",
+      "alt-backspace": "text_input::DeleteWordLeft",
+      "cmd-left": "text_input::LineStart",
+      "cmd-right": "text_input::LineEnd",
+      "cmd-shift-left": "text_input::SelectLineStart",
+      "cmd-shift-right": "text_input::SelectLineEnd",
+      "cmd-up": "text_input::DocStart",
+      "cmd-down": "text_input::DocEnd",
+      "cmd-shift-up": "text_input::SelectDocStart",
+      "cmd-shift-down": "text_input::SelectDocEnd",
+      "cmd-a": "text_input::SelectAll",
+      "cmd-x": "text_input::Cut",
+      "cmd-c": "text_input::Copy",
+      "cmd-z": "text_input::Undo",
+      "cmd-shift-z": "text_input::Redo"
+    }
+  },
+  {
+    "context": "Picker",
+    "bindings": {
+      "enter": "picker::Confirm",
+      "down": "picker::SelectNext",
+      "up": "picker::SelectPrev",
+      "left": "picker::SelectLeft",
+      "right": "picker::SelectRight",
+      "escape": "picker::Dismiss"
+    }
+  },
+  {
+    "context": "ConfirmWrite",
+    "bindings": {
+      "escape": "mcp::DeclineWrite"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "escape": "workspace::ClosePanel",
+      "cmd-shift-o": "workspace::PopOutThread"
+    }
+  }
+]

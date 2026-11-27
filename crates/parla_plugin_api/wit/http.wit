@@ -1,0 +1,33 @@
+/// Outbound HTTPS. Capability: `network`, with the URL's host
+/// in the grant. HTTPS only; redirects only to granted hosts; no cookies
+/// kept; the host sets `User-Agent` and refuses `Host`, `Cookie`,
+/// `User-Agent` and `Proxy-*` headers. Loopback, link-local and private
+/// addresses are refused unless the card lists them. 4 concurrent, 120 per
+/// minute.
+interface http {
+  use types.{error};
+
+  enum method { get, head, post, put, patch, delete }
+
+  record request {
+    method: method,
+    /// At most 8 KB.
+    url: string,
+    /// At most 32 headers, each name and value together at most 8 KB.
+    headers: list<tuple<string, string>>,
+    /// At most 1 MB.
+    body: option<list<u8>>,
+    /// At most 30,000 ms.
+    timeout-ms: u32,
+  }
+
+  record response {
+    status: u16,
+    headers: list<tuple<string, string>>,
+    /// At most 4 MB and a quarter of the plugin's `memory_mb`.
+    body: list<u8>,
+  }
+
+  /// Capability: `network` (the request's host).
+  fetch: func(request: request) -> result<response, error>;
+}

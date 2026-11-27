@@ -1,0 +1,71 @@
+---
+title: Què és Parla?
+description: Un client de xat d'escriptori gratuït i de codi obert, ràpid, lleuger i pensat per al teclat.
+---
+
+Parla és un client de xat d'escriptori gratuït i de codi obert. Està escrit en
+Rust i dibuixa les seves pròpies finestres amb
+[GPUI Fast](https://github.com/longbridge/gpui-fast). Desa una
+petita memòria cau xifrada al teu ordinador i no executa cap navegador web dins de
+l'aplicació.
+
+Slack és el primer servei de xat compatible amb Parla. Parla no l'ha creat Slack i
+Slack no li dona suport.
+
+**Estat: fase inicial.** Les compilacions de macOS (14 o posterior, Apple silicon
+i Intel, autosignades) són a
+[GitHub Releases](https://github.com/oscarbc96/parla/releases). Windows i Linux es
+compilen des del codi font; per ara, macOS és la plataforma amb suport.
+
+## Per a qui és
+
+- Per a qui fa servir el xat tot el dia i vol una finestra nativa i ràpida.
+- Per a qui manté diversos espais de treball oberts i canvia sovint entre ells.
+- Per a qui prefereix el teclat, sense renunciar als menús ni al ratolí.
+- Per a qui vol els missatges desats al seu propi ordinador.
+
+## Què fa
+
+- **Va ràpid.** Parla dibuixa a la GPU. No hi ha cap navegador resident ni entorn
+  d'execució de JavaScript.
+- **Usa poca memòria.** Un procés, un fil d'interfície i una memòria cau local
+  acotada. Un espai de treball que no estàs mirant allibera els seus missatges al
+  cap d'una estona.
+- **Manté molts espais oberts.** Cada espai amb sessió iniciada segueix connectat,
+  amb la seva pròpia insígnia i una llista combinada de no llegits.
+- **Funciona amb el teclat.** Selector ràpid, paleta d'ordres, full de dreceres i
+  un mapa de tecles JSON amb noms d'acció estables.
+- **Funciona sense connexió.** Els missatges es desen en local, els esborranys es
+  conserven i el que envies sense connexió espera en una safata de sortida.
+- **Cobreix el dia a dia.** Fils, reaccions, fitxers, cerca, recordatoris,
+  missatges programats, huddles i notificacions.
+- **Pot connectar eines d'IA locals.** Parla inclou un servidor MCP desactivat per
+  defecte que només escolta al teu ordinador.
+- **Segueix sent de codi obert.** El codi és MPL-2.0, l'API de connectors i l'SDK
+  són Apache-2.0 OR MIT, i la documentació és CC-BY-4.0.
+
+## Com es connecta
+
+Parla inicia la sessió amb la teva pròpia sessió de xat. A Slack, això significa
+el testimoni i la galeta que fa servir el teu navegador. No cal crear cap app, no
+hi ha pantalla de consentiment OAuth i no hi ha cap servidor del projecte. Un sol
+inici de sessió pot cobrir tots els espais de treball que ja tenen la sessió
+iniciada en aquella sessió.
+
+És un enfocament no oficial amb riscos reals. Llegeix
+[Inicia la sessió](/parla/ca/docs/sign-in/) abans d'usar Parla amb un compte de
+feina.
+
+## Per on començar
+
+1. [Instal·la Parla](/parla/ca/docs/install/) des d'una versió, o compila'l des
+   del codi font a macOS.
+2. [Inicia la sessió](/parla/ca/docs/sign-in/) amb la teva pròpia sessió.
+3. Aprèn l'[ús diari](/parla/ca/docs/messaging/), els
+   [fitxers](/parla/ca/docs/files/), les
+   [notificacions](/parla/ca/docs/notifications/) i el
+   [mode sense connexió](/parla/ca/docs/offline/).
+4. [Configura Parla](/parla/ca/docs/settings/) i aprèn les
+   [dreceres de teclat](/parla/ca/docs/keymap/).
+5. Llegeix la [Privadesa](/parla/ca/docs/privacy/) i les
+   [Condicions](/parla/ca/docs/terms/).

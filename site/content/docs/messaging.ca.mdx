@@ -1,0 +1,270 @@
+---
+title: Ús diari
+description: Llegeix, envia i cerca missatges, segueix fils, comparteix fitxers, inicia huddles i mou-te per Parla.
+---
+
+La finestra principal de Parla té quatre parts: la barra d'espais de treball a
+l'esquerra, la barra lateral amb les converses, la línia de temps al centre i un
+panell dret per a fils, cerca, perfils i detalls.
+
+Les tecles de sota són els valors predeterminats a macOS. A Linux i Windows, usa
+`ctrl` en lloc de `cmd`. Totes les dreceres es poden canviar a
+[Paràmetres](/parla/ca/docs/settings/) o a `keymap.json`; consulta
+[Dreceres de teclat](/parla/ca/docs/keymap/).
+
+## La barra lateral
+
+La barra lateral enumera les converses en aquestes seccions:
+
+- **No llegits**, quan l'actives. Enumera totes les converses no llegides.
+- **Destacats**, quan en tens. Els destacats són una llista pròpia de Parla per a
+  aquest ordinador.
+- **Les teves pròpies seccions**, sobre Canals, en l'ordre que triïs.
+- **Canals** on participes, per nom.
+- **Missatges directes**, amb l'activitat més recent primer.
+- **Fils**, **Més tard**, **Programats** i **Recordatoris**, quan el servei els
+  admet.
+- **Esborranys**, mentre tinguis text sense enviar.
+- **Persones**, per obrir el directori de l'espai de treball.
+
+Una conversa no llegida apareix en negreta. Fes clic al títol d'una secció, o prem
+Retorn o Espai sobre ell, per plegar-la. Parla recorda les seccions plegades de
+cada espai.
+
+Fes clic dret en una conversa per obrir-ne el menú: veure detalls, destacar-la,
+canviar-ne el nivell de notificacions, silenciar-la, marcar-la com a llegida,
+moure-la a una de les teves seccions o obrir-la en una finestra nova. Els
+administradors de canals també poden editar-lo, afegir persones, sortir-ne o
+arxivar-lo des d'allà.
+
+La llista de membres d'un canal i el nombre de membres s'actualitzen a l'instant
+quan algú s'uneix o en surt, i un canal creat o al qual t'uneixes des d'un altre
+client apareix sense recarregar.
+
+El **+** al costat de Canals obre **Explora canals**, on pots cercar, unir-te o
+crear un canal. El **+** al costat de Missatges directes enumera persones.
+
+Per moure converses a les teves pròpies seccions, tria **Organitza la barra
+lateral** al menú de l'espai de treball. Arrossega converses a una secció, o
+arrossega seccions per reordenar-les, i tria **Fet**. Aquestes seccions es queden
+en aquest ordinador i no s'envien al servei.
+
+El menú de l'espai de treball, a la part superior de la barra lateral, obre
+Paràmetres, canvia el teu estat o presència, pausa les notificacions, canvia
+d'espai, tanca la sessió o treu l'espai.
+
+## Llegir i posar-se al dia
+
+Obrir una conversa avança el seu marcador de llegit. Els dies se separen amb un
+divisor, i un divisor **Nou** marca el primer missatge no llegit quan obres una
+conversa amb missatges pendents.
+
+Per marcar un missatge com a no llegit, selecciona'l i prem `cmd-shift-u`, fes clic
+dret i tria **Marca com a no llegit**, o fes clic amb Alt. El marcador de llegit
+torna a aquell missatge.
+
+Tres vistes a la part superior de la barra d'espais cobreixen tots els espais:
+
+- **Tots els no llegits** (`cmd-shift-a`).
+- **Totes les mencions** (sense tecla predeterminada; assigna
+  `workspace::AllMentions`).
+- **Tots els programats** (sense tecla predeterminada; assigna
+  `workspace::AllScheduled`).
+
+Tots els no llegits enumera les converses no llegides, primer les mencions. Pots
+marcar com a llegida una conversa o totes des d'allà. Mirar la vista no marca res
+com a llegit.
+
+## Escriure i enviar
+
+Fes clic al compositor i escriu. Per defecte, Retorn envia i Majúscules-Retorn fa
+una línia nova. Amb **Tecla d'enviament** a Comanda-Retorn a Paràmetres, Aparença,
+Retorn fa una línia nova i `cmd-enter` envia.
+
+| Tecla         | Acció                                             |
+| ------------- | ------------------------------------------------- |
+| `enter`       | Enviar                                            |
+| `shift-enter` | Línia nova                                        |
+| `up`          | Editar el teu darrer missatge                     |
+| `escape`      | Cancel·lar una edició o una resposta              |
+| `tab`         | Inserir la menció, el canal o l'emoji seleccionat |
+
+Per editar un missatge teu, selecciona'l i prem `e`. Per esborrar-lo, prem
+`cmd-backspace`. Parla pregunta abans d'esborrar. Editar i esborrar només funcionen
+en missatges que pots canviar.
+
+Parla desa el text del compositor com a esborrany de cada conversa i fil. L'esborrany
+es desa en canviar de conversa, tancar un fil o sortir, no amb un temporitzador.
+Buidar el compositor esborra l'esborrany. **Esborranys** a la barra lateral
+enumera tots els esborranys, del més recent al més antic.
+
+Quan una altra persona està escrivint, una línia sobre el compositor diu qui és.
+La teva pròpia escriptura no es mostra mai.
+
+## Mencions, emoji i format
+
+Escriu `@` per triar una persona o un grup d'usuaris, o `@here`, `@channel` o
+`@everyone` fora dels missatges directes. Escriu `#` per triar un canal, o `:` i
+dues lletres per triar un emoji. Usa les fletxes per moure't, Retorn o Tab per
+inserir, i Escape per tancar la llista.
+
+Una menció o un canal triat és una sola unitat: Retroés l'esborra sencer i s'envia
+com una menció real. Un nom que només escrius, com `@ana` sense triar-lo, s'envia
+com a text normal.
+
+La fila sobre el compositor dona format a la selecció, o insereix un parell buit
+quan no hi ha selecció. Prem la mateixa drecera una altra vegada per treure les
+marques.
+
+| Drecera           | Format          | Escriu                     |
+| ----------------- | --------------- | -------------------------- |
+| `cmd-b`           | Negreta         | `*text*`                   |
+| `cmd-i`           | Cursiva         | `_text_`                   |
+| `cmd-shift-x`     | Ratllat         | `~text~`                   |
+| `cmd-e`           | Codi            | `` `text` ``               |
+| `cmd-alt-shift-c` | Bloc de codi    | tres accents greus         |
+| `cmd-shift-9`     | Cita            | `> ` abans d'una línia     |
+| `cmd-shift-8`     | Llista amb pics | `• ` abans d'una línia     |
+| `cmd-shift-7`     | Llista numerada | `1. ` abans d'una línia    |
+| `cmd-shift-u`     | Enllaç          | una adreça web o de correu |
+
+El botó de la cara somrient obre el selector d'emoji. Té cerca difusa, una graella
+navegable amb el teclat, tons de pell i una fila **Recents**. Els emoji
+personalitzats de l'espai de treball apareixen al costat dels estàndard.
+
+Escriu `/` al principi d'un compositor buit per enumerar ordres. Parla admet
+`/remind`, `/dnd`, `/status`, `/away` i `/active` quan el servei ho fa, a més de
+`/shrug`. Una ordre que Parla no pot executar mostra "/nom no és compatible amb
+Parla" amb un enllaç per obrir la conversa al client del servei.
+
+## Reaccions i fils
+
+Les reaccions apareixen com a pastilles sota un missatge. Fes clic en una pastilla
+per afegir o treure la teva reacció, i passa el ratolí per sobre per veure qui ha
+reaccionat. Prem `cmd-shift-\` en un missatge seleccionat per obrir el selector
+d'emoji i afegir una reacció.
+
+Un missatge amb respostes mostra una línia de resum a sota. Fes-hi clic, o prem
+`cmd-shift-t` al missatge, per obrir el fil al panell dret. Prem Escape per tancar
+el panell.
+
+El compositor del fil envia respostes al fil. La capçalera del fil té una campana:
+una campana ressaltada vol dir que segueixes el fil i en reps les respostes noves.
+Segueixes un fil on has respost. Una resposta també es pot enviar a la conversa
+principal; assigna `composer::ToggleBroadcast` si vols una tecla per a això.
+
+## Cerca
+
+Prem `cmd-shift-f` per obrir la cerca al panell dret. Des d'una conversa, el camp
+comença amb `in:#nom`, així que la cerca s'hi queda; esborra-ho per cercar a tot
+arreu.
+
+Escriu per cercar. Els missatges desats en aquest dispositiu apareixen primer. Quan
+el servei pot cercar al seu servidor, els seus resultats apareixen després sota una
+etiqueta **De**. Sense connexió, Parla cerca només al dispositiu i ho indica.
+
+Els filtres funcionen com a paraules al camp:
+
+- `in:#canal` i `from:@nom`.
+- `before:` i `after:` amb una data com `2026-11-01`.
+- `has:file`, `has:link`, `has:reaction` o `has:pin`.
+
+Usa les fletxes per moure't pels resultats i Retorn per obrir-ne un. Un missatge
+obre la seva conversa desplaçada fins a ell. Una persona obre el seu perfil.
+Escape tanca el panell.
+
+## Enviar més tard, missatges programats i recordatoris
+
+Tria **Envia més tard** sota el compositor, o prem `cmd-shift-enter`, per enviar
+el text més endavant. El menú enumera els teus preajustos, per defecte demà a les
+09:00 i dilluns a les 09:00, amb la seva data i hora. **Personalitzat...** accepta
+una data (`AAAA-MM-DD`) i una hora de 24 hores (`HH:MM`). Les hores usen la zona
+horària del teu perfil, o `send_later.timezone` quan la defineixes. No es pot triar
+una hora passada ni a més de 120 dies.
+
+Si el servei pot programar missatges, els envia encara que Parla estigui tancat.
+Si no, el missatge es desa en aquest dispositiu i Parla ha d'estar obert.
+**Programats** a la barra lateral enumera tots els missatges programats de l'espai.
+Els elements del servidor es poden editar, enviar ara o esborrar. Els locals porten
+l'etiqueta "local, requereix l'app oberta". Els que fallen mostren el motiu, amb
+Torna-ho a provar i Descarta.
+
+**Recordatoris** a la barra lateral enumera els recordatoris vençuts, propers,
+recurrents i completats. Escriu què recordar i quan, i prem Retorn o **Afegeix
+recordatori**. Les hores usen expressions com `in 20 minutes`, `at 15:30`,
+`tomorrow at 09:00`, `on monday at 09:00`, `on 2026-12-01` o `every monday`.
+
+Quan el servei desa recordatoris, Parla li demana que els afegeixi, completi i
+esborri. Si no, Parla els desa en aquest ordinador i t'avisa amb una notificació
+d'escriptori quan en venç un, sempre que Parla estigui obert. Pots ajornar,
+completar, editar o esborrar un recordatori des de la llista.
+
+## Persones, perfils i estat
+
+**Persones** obre el directori de l'espai de treball. Cada targeta mostra la foto,
+el nom, el càrrec, la presència i l'hora local d'una persona quan el servei els
+comparteix. Escriu per cercar per nom o càrrec, i usa els filtres per a la teva zona
+horària o els bots.
+
+Fes clic al nom d'una persona o en una menció per obrir-ne el perfil al panell
+dret. El seu perfil mostra l'estat, l'hora local, la presència i els camps de
+contacte, amb un botó **Missatge** que obre el teu missatge directe amb aquella
+persona.
+
+El teu propi perfil és al final de la barra d'espais de treball. **Estableix un
+estat...** al menú de l'espai obre el diàleg d'estat. Tria un emoji, escriu el text
+i tria quan s'esborra: mai, 30 minuts, 1 hora, 4 hores, avui, aquesta setmana o una
+hora personalitzada. Preajustos com Concentrat, En una reunió, De camí, De baixa i
+De vacances omplen les tres coses alhora. **Posa't com a absent** i **Posa't com a
+actiu** canvien la teva presència.
+
+La presència apareix com un punt petit: ple quan algú està actiu, un anell quan està
+absent. Parla només pregunta per la presència de les persones que són a la pantalla.
+
+## Moure's per Parla
+
+- **Selector ràpid:** `cmd-k`. Escriu per filtrar canals, missatges directes,
+  grups i persones de tots els espais. Retorn obre l'element seleccionat i Escape
+  el tanca.
+- **Enrere i endavant:** `cmd-[` i `cmd-]`.
+- **Paleta d'ordres:** `cmd-shift-p`. Enumera les accions que pots executar, amb
+  les seves tecles.
+- **Enfocar el panell següent:** `cmd-f6`; l'anterior: `cmd-shift-f6`.
+- **Obrir en una finestra nova:** fes clic dret en una conversa, usa **Obre en una
+  finestra nova** del panell del fil, o prem `cmd-shift-o` amb una conversa o un
+  fil enfocat.
+- **Anar al missatge més recent:** `cmd-shift-down`.
+- **Full de dreceres:** `cmd-/`.
+
+A macOS, la barra de títol té botons d'enrere i endavant, un control de cerca i una
+campana que obre el menú de pausa de notificacions de l'espai actual.
+
+## Huddles i trucades
+
+Quan hi ha un huddle en directe en una conversa, la seva fila de la barra lateral
+mostra un punt verd i el nombre de persones. Una barra sobre la línia de temps
+enumera fins a cinc persones, quant fa que va començar el huddle i **Uneix-te**.
+
+Per defecte, Parla s'uneix amb el seu propi àudio: la barra de trucada mostra
+**Connectant...**, després el nombre de persones, amb **Silencia** i **Surt**. Si
+el micròfon no està disponible, pots seguir escoltant. Si l'àudio natiu no pot
+connectar, Parla prova la finestra de trucada a macOS, després el navegador i
+després l'app del mateix servei.
+
+**Dispositius** a la barra de trucada tria el micròfon i l'altaveu, o el valor
+predeterminat del sistema. El canvi s'aplica a la trucada en curs a l'instant. El
+vídeo i la compartició de pantalla encara no es transmeten; quan algú comença a
+compartir, la barra ofereix **Obre al navegador**.
+
+Quan algú et truca a un huddle de missatge directe, Parla mostra una notificació
+amb **Uneix-te** i **Refusa**, un avís amb els mateixos botons i un so. La trucada
+s'atura quan qui truca penja, quan acaba el huddle, quan respons en un altre
+dispositiu o després de 45 segons; una trucada perduda es converteix en una
+notificació de "Huddle perdut".
+
+Pots desactivar el so, triar el to de trucada, triar com s'uneix Parla i silenciar
+el micròfon en unir-te a Paràmetres, Trucades. Un so no sona mai mentre les
+notificacions estan pausades, durant les hores de silenci, quan les notificacions
+d'escriptori estan desactivades o quan el so està desactivat.
+
+Següent: [Fitxers](/parla/ca/docs/files/).

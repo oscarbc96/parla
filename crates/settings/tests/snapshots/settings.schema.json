@@ -1,0 +1,812 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Settings",
+  "description": "All user-visible settings. Unknown keys are tolerated (see `unknown_keys`).",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "description": "Editor pointer to the JSON schema shipped beside the file; ignored.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "theme": {
+      "$ref": "#/$defs/ThemeSelection",
+      "default": {
+        "mode": "system",
+        "light": "Parla Light",
+        "dark": "Parla Dark"
+      }
+    },
+    "ui_font_family": {
+      "type": "string",
+      "default": "Inter"
+    },
+    "ui_font_size": {
+      "type": "number",
+      "format": "float",
+      "minimum": 10.0,
+      "maximum": 24.0,
+      "default": 14.0
+    },
+    "buffer_font_family": {
+      "type": "string",
+      "default": "JetBrains Mono"
+    },
+    "locale": {
+      "$ref": "#/$defs/LocaleSetting",
+      "default": "system"
+    },
+    "density": {
+      "$ref": "#/$defs/Density",
+      "default": "compact"
+    },
+    "accent_preset": {
+      "description": "Global accent preset, applied live to both themes. Not the workspace `accent`.",
+      "$ref": "#/$defs/AccentPreset",
+      "default": "brand"
+    },
+    "send_key": {
+      "description": "Composer send key.",
+      "$ref": "#/$defs/SendKey",
+      "default": "enter"
+    },
+    "sidebar": {
+      "$ref": "#/$defs/SidebarSettings",
+      "default": {
+        "show_unreads_section": true,
+        "sort": "alphabetical"
+      }
+    },
+    "messages": {
+      "$ref": "#/$defs/MessageSettings",
+      "default": {
+        "show_avatars": true,
+        "clock": "24h",
+        "inline_images": "on_click"
+      }
+    },
+    "notifications": {
+      "$ref": "#/$defs/NotificationSettings",
+      "default": {
+        "desktop": "mentions",
+        "keywords": [],
+        "sound": "subtle",
+        "quiet_hours": null,
+        "show_preview": true
+      }
+    },
+    "performance": {
+      "$ref": "#/$defs/PerformanceSettings",
+      "default": {
+        "image_cache_mb": 32,
+        "message_window": 200,
+        "lean_after_minutes": 10
+      }
+    },
+    "send_later": {
+      "$ref": "#/$defs/SendLaterSettings",
+      "default": {
+        "presets": [
+          "tomorrow 09:00",
+          "monday 09:00"
+        ],
+        "timezone": null
+      }
+    },
+    "storage": {
+      "$ref": "#/$defs/StorageSettings",
+      "default": {
+        "cache_mb": 8,
+        "retention_days": 90,
+        "lock_after_minutes": 0
+      }
+    },
+    "gifs": {
+      "$ref": "#/$defs/GifSettings",
+      "default": {
+        "providers": [
+          "giphy",
+          "klipy"
+        ],
+        "rating": "pg-13",
+        "send_as": "link",
+        "folder": null,
+        "autoplay_in_messages": "visible"
+      }
+    },
+    "calls": {
+      "$ref": "#/$defs/CallSettings",
+      "default": {
+        "ring": true,
+        "ringtone": "parla-chime",
+        "join_with": "native",
+        "mute_on_join": true,
+        "camera_on_join": false,
+        "input_device": null,
+        "output_device": null
+      }
+    },
+    "updates": {
+      "$ref": "#/$defs/UpdateSettings",
+      "default": {
+        "check": true,
+        "skip": null
+      }
+    },
+    "mcp": {
+      "$ref": "#/$defs/McpSettings",
+      "default": {
+        "enabled": false,
+        "audit_retention_days": 90,
+        "workspaces": {}
+      }
+    },
+    "log": {
+      "$ref": "#/$defs/LogSettings",
+      "default": {
+        "include_content": false,
+        "level": "info"
+      }
+    },
+    "crash_reports": {
+      "description": "Local crash reports: `off`, `ask` or `local`. Never sent anywhere.",
+      "$ref": "#/$defs/CrashReports",
+      "default": "ask"
+    },
+    "windows": {
+      "$ref": "#/$defs/WindowSettings",
+      "default": {
+        "restore": true
+      }
+    },
+    "tray": {
+      "description": "Menu-bar (tray) icon with workspace badges; closing the window keeps\nthe app running in it. Off: closing the last window quits.",
+      "type": "boolean",
+      "default": true
+    },
+    "dock_icon": {
+      "description": "macOS Dock icon: `always`, `with_window` to hide it while the window\nis closed (the `tray` icon keeps running), or `never` for the menu bar\nonly. Ignored without `tray`.",
+      "$ref": "#/$defs/DockIcon",
+      "default": "always"
+    },
+    "launch_at_login": {
+      "description": "Register Parla as a login item. A login launch starts hidden, behind the\nmenu-bar icon, with no window open.",
+      "type": "boolean",
+      "default": false
+    },
+    "plugins": {
+      "$ref": "#/$defs/PluginsSettings",
+      "default": {
+        "auto_update": false,
+        "dev_paths": []
+      }
+    },
+    "accent": {
+      "description": "Accent colour as `#rrggbb`, meaningful in a workspace settings file:\nthe workspace rail and header use it, nothing else.",
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    }
+  },
+  "$defs": {
+    "ThemeSelection": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/ThemeMode",
+          "default": "system"
+        },
+        "light": {
+          "type": "string",
+          "default": "Parla Light"
+        },
+        "dark": {
+          "type": "string",
+          "default": "Parla Dark"
+        }
+      }
+    },
+    "ThemeMode": {
+      "type": "string",
+      "enum": [
+        "system",
+        "light",
+        "dark"
+      ]
+    },
+    "LocaleSetting": {
+      "type": "string",
+      "enum": [
+        "system",
+        "en",
+        "es",
+        "ca",
+        "en-XA"
+      ]
+    },
+    "Density": {
+      "type": "string",
+      "enum": [
+        "compact",
+        "cozy"
+      ]
+    },
+    "AccentPreset": {
+      "description": "Global accent colour preset (Appearance page); `brand` keeps the theme's own accent.",
+      "type": "string",
+      "enum": [
+        "brand",
+        "ember",
+        "amber",
+        "coral",
+        "ink"
+      ]
+    },
+    "SendKey": {
+      "description": "Which key sends from the composer. Shift-Enter always inserts a newline; a\nplain Enter does when Cmd-Enter sends, and Cmd-Enter does nothing when Enter sends.",
+      "oneOf": [
+        {
+          "description": "Enter sends; Shift-Enter makes a newline.",
+          "type": "string",
+          "const": "enter"
+        },
+        {
+          "description": "Cmd-Enter (Ctrl-Enter off macOS) sends; Enter makes a newline.",
+          "type": "string",
+          "const": "cmd_enter"
+        }
+      ]
+    },
+    "SidebarSettings": {
+      "type": "object",
+      "properties": {
+        "show_unreads_section": {
+          "type": "boolean",
+          "default": true
+        },
+        "sort": {
+          "$ref": "#/$defs/SidebarSort",
+          "default": "alphabetical"
+        },
+        "sections": {
+          "description": "The user's own sidebar sections, in order. Local to Parla (never sent to\nthe provider); the app keeps them in the workspace's file\n(`workspaces/<provider>/<id>.json`), as conversation ids are per workspace.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CustomSection"
+          }
+        }
+      }
+    },
+    "SidebarSort": {
+      "type": "string",
+      "enum": [
+        "alphabetical",
+        "recent"
+      ]
+    },
+    "CustomSection": {
+      "description": "One of the user's own sidebar sections: a name and the conversations it\nholds (provider conversation ids). Listed above Channels.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Stable within the workspace; the folded state is kept under it.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0
+        },
+        "name": {
+          "type": "string"
+        },
+        "conversations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "MessageSettings": {
+      "type": "object",
+      "properties": {
+        "show_avatars": {
+          "type": "boolean",
+          "default": true
+        },
+        "clock": {
+          "$ref": "#/$defs/Clock",
+          "default": "24h"
+        },
+        "inline_images": {
+          "$ref": "#/$defs/InlineImages",
+          "default": "on_click"
+        }
+      }
+    },
+    "Clock": {
+      "type": "string",
+      "enum": [
+        "24h",
+        "12h"
+      ]
+    },
+    "InlineImages": {
+      "type": "string",
+      "enum": [
+        "always",
+        "on_click",
+        "never"
+      ]
+    },
+    "NotificationSettings": {
+      "type": "object",
+      "properties": {
+        "desktop": {
+          "$ref": "#/$defs/DesktopNotifications",
+          "default": "mentions"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "sound": {
+          "type": "string",
+          "default": "subtle"
+        },
+        "quiet_hours": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QuietHours"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "show_preview": {
+          "description": "Show the message text in a notification. Off: only the sender and the\nchannel.",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "DesktopNotifications": {
+      "type": "string",
+      "enum": [
+        "all",
+        "mentions",
+        "none"
+      ]
+    },
+    "QuietHours": {
+      "description": "Local-time window, `HH:MM` each. It may wrap midnight.",
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "days": {
+          "description": "Days the window starts on (a window that wraps midnight belongs to the\nday it starts). Empty: every day.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Weekday"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ]
+    },
+    "Weekday": {
+      "description": "A day of the week, spelled `mon` .. `sun` in the file.",
+      "type": "string",
+      "enum": [
+        "mon",
+        "tue",
+        "wed",
+        "thu",
+        "fri",
+        "sat",
+        "sun"
+      ]
+    },
+    "PerformanceSettings": {
+      "type": "object",
+      "properties": {
+        "image_cache_mb": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 32
+        },
+        "message_window": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 200
+        },
+        "lean_after_minutes": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 10
+        }
+      }
+    },
+    "SendLaterSettings": {
+      "type": "object",
+      "properties": {
+        "presets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "tomorrow 09:00",
+            "monday 09:00"
+          ]
+        },
+        "timezone": {
+          "description": "IANA zone name overriding the profile zone for scheduling.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        }
+      }
+    },
+    "StorageSettings": {
+      "type": "object",
+      "properties": {
+        "cache_mb": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 8
+        },
+        "retention_days": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 90
+        },
+        "lock_after_minutes": {
+          "description": "Minutes without input after which Parla closes the encrypted store,\nforgets the store keys it holds in memory and shows a lock screen;\n`0` is off. Applies at once.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 0
+        }
+      }
+    },
+    "GifSettings": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "giphy",
+            "klipy"
+          ]
+        },
+        "rating": {
+          "type": "string",
+          "default": "pg-13"
+        },
+        "send_as": {
+          "$ref": "#/$defs/GifSendAs",
+          "default": "link"
+        },
+        "folder": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        },
+        "autoplay_in_messages": {
+          "$ref": "#/$defs/GifAutoplay",
+          "default": "visible"
+        }
+      }
+    },
+    "GifSendAs": {
+      "type": "string",
+      "enum": [
+        "link",
+        "upload"
+      ]
+    },
+    "GifAutoplay": {
+      "type": "string",
+      "enum": [
+        "visible",
+        "hover",
+        "never"
+      ]
+    },
+    "CallSettings": {
+      "type": "object",
+      "properties": {
+        "ring": {
+          "type": "boolean",
+          "default": true
+        },
+        "ringtone": {
+          "type": "string",
+          "default": "parla-chime"
+        },
+        "join_with": {
+          "$ref": "#/$defs/JoinWith",
+          "default": "native"
+        },
+        "mute_on_join": {
+          "type": "boolean",
+          "default": true
+        },
+        "camera_on_join": {
+          "type": "boolean",
+          "default": false
+        },
+        "input_device": {
+          "description": "Microphone for native calls, by name; `None` follows the system\ndefault. A named device that is not connected falls back to the\ndefault until it is.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        },
+        "output_device": {
+          "description": "Speaker for native calls, by name; `None` follows the system default.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        }
+      }
+    },
+    "JoinWith": {
+      "type": "string",
+      "enum": [
+        "native",
+        "window",
+        "browser",
+        "provider_app"
+      ]
+    },
+    "UpdateSettings": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "boolean",
+          "default": true
+        },
+        "skip": {
+          "description": "A release tag the user chose to skip; a newer version is still offered.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        }
+      }
+    },
+    "McpSettings": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "audit_retention_days": {
+          "description": "Days the MCP audit log keeps rows before they are pruned.",
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0,
+          "default": 90
+        },
+        "workspaces": {
+          "description": "Keyed by workspace key, `<provider>/<id>`.",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/McpWorkspaceSettings"
+          },
+          "default": {}
+        }
+      }
+    },
+    "McpWorkspaceSettings": {
+      "description": "Per-workspace MCP policy.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Whether MCP clients may see this workspace at all (off by default).",
+          "type": "boolean",
+          "default": false
+        },
+        "allow_writes": {
+          "type": "boolean",
+          "default": false
+        },
+        "confirm_writes": {
+          "type": "boolean",
+          "default": true
+        },
+        "include_dms": {
+          "type": "boolean",
+          "default": false
+        },
+        "allow_channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "deny_channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "LogSettings": {
+      "type": "object",
+      "properties": {
+        "include_content": {
+          "type": "boolean",
+          "default": false
+        },
+        "level": {
+          "description": "The most detailed lines Parla writes to its log: `error`, `info` or\n`debug`. Applies at once.",
+          "$ref": "#/$defs/LogLevel",
+          "default": "info"
+        }
+      }
+    },
+    "LogLevel": {
+      "description": "How much Parla writes to `parla.log`.",
+      "oneOf": [
+        {
+          "description": "Only failures.",
+          "type": "string",
+          "const": "error"
+        },
+        {
+          "description": "Failures, warnings and the main events (the default).",
+          "type": "string",
+          "const": "info"
+        },
+        {
+          "description": "Everything, for a bug report.",
+          "type": "string",
+          "const": "debug"
+        }
+      ]
+    },
+    "CrashReports": {
+      "description": "What happens when Parla quits unexpectedly. Reports stay on this device\nin every mode; nothing is sent.",
+      "oneOf": [
+        {
+          "description": "No report is written.",
+          "type": "string",
+          "const": "off"
+        },
+        {
+          "description": "A redacted report is written, and the next launch asks whether to\nshow or delete it (the default).",
+          "type": "string",
+          "const": "ask"
+        },
+        {
+          "description": "A redacted report is written and kept without asking.",
+          "type": "string",
+          "const": "local"
+        }
+      ]
+    },
+    "WindowSettings": {
+      "description": "Window behaviour.",
+      "type": "object",
+      "properties": {
+        "restore": {
+          "description": "Reopen the main window at its last size and position (kept on a\nvisible display).",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "DockIcon": {
+      "description": "When the Dock icon shows (macOS).",
+      "oneOf": [
+        {
+          "description": "Always, even while the window is closed and only the menu-bar icon is left.",
+          "type": "string",
+          "const": "always"
+        },
+        {
+          "description": "Only while a window is open (needs the `tray` icon to get back in).",
+          "type": "string",
+          "const": "with_window"
+        },
+        {
+          "description": "Never: menu bar only (needs the `tray` icon; without it the Dock icon stays).",
+          "type": "string",
+          "const": "never"
+        }
+      ]
+    },
+    "PluginsSettings": {
+      "description": "Plugin preferences. `app.db` holds the\ninstall state; this is only what the user prefers. Plugin ids are\n`[a-z0-9-]`, so they never collide with `auto_update` or `dev_paths`.",
+      "type": "object",
+      "properties": {
+        "auto_update": {
+          "description": "Apply updates that ask for no new permissions when Parla starts.",
+          "type": "boolean",
+          "default": false
+        },
+        "dev_paths": {
+          "description": "Folders loaded as dev plugins (dev mode).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/PluginEntry"
+      }
+    },
+    "PluginEntry": {
+      "description": "One plugin's preferences under `plugins.<id>`.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "The switch on the plugin's settings card. `true` cannot revive a\nquarantined or blocked plugin.",
+          "type": "boolean",
+          "default": true
+        },
+        "workspaces": {
+          "description": "Workspace keys (`<provider>/<id>`) the plugin runs in; absent means all.",
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "config": {
+          "description": "Values of the plugin's own `[[settings]]`. Settings of type `secret`\nlive in the keychain, never here.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

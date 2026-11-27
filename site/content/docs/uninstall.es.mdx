@@ -1,0 +1,65 @@
+---
+title: Desinstalar
+description: Elimina Parla, sus datos locales, la caché, los elementos del llavero y el elemento de inicio de tu ordenador.
+---
+
+Para eliminar Parla por completo, borra la aplicación, quita sus datos locales y
+su caché, y limpia el elemento de inicio y las credenciales guardadas.
+
+## Quitar la aplicación
+
+Cierra Parla. En macOS, mueve `Parla.app` de Aplicaciones a la Papelera. Si lo
+instalaste desde el código fuente, borra la compilación o el paquete que creaste.
+
+## Desactivar la apertura al iniciar sesión
+
+Si activaste **Abrir Parla al iniciar sesión**, desactívalo en Ajustes, General
+antes de quitar la aplicación. También puedes borrar el archivo del elemento de
+inicio `~/Library/LaunchAgents/Parla.plist`.
+
+## Borrar los datos locales y la caché
+
+Parla guarda los datos en carpetas separadas de configuración, datos y caché:
+
+| Tipo          | macOS                                 | Linux                                           | Windows                |
+| ------------- | ------------------------------------- | ----------------------------------------------- | ---------------------- |
+| Configuración | `~/.config/parla`                     | `$XDG_CONFIG_HOME/parla` o `~/.config/parla`    | `%APPDATA%\parla`      |
+| Datos         | `~/Library/Application Support/parla` | `$XDG_DATA_HOME/parla` o `~/.local/share/parla` | `%APPDATA%\parla`      |
+| Caché         | `~/Library/Caches/parla`              | `$XDG_CACHE_HOME/parla` o `~/.cache/parla`      | `%LOCALAPPDATA%\parla` |
+
+La carpeta de datos contiene las bases de datos locales, el estado de la
+comprobación de actualizaciones, los informes de fallos y, en compilaciones de
+depuración, `development_credentials.json`. También contiene los registros y, en
+macOS y Linux, el socket MCP en `run/mcp.sock`. La carpeta de caché contiene
+multimedia en caché y archivos temporales de subida. La carpeta de configuración
+contiene `settings.json`, `keymap.json`, temas, archivos de ajustes por espacio y
+complementos.
+
+Para quitar todo lo que Parla guardó en este dispositivo, borra las carpetas de
+datos y caché. Borra también la carpeta de configuración si no quieres conservar
+tus ajustes, mapa de teclas, temas o complementos. En Windows, la configuración y los
+datos usan la misma carpeta (`%APPDATA%\parla`), así que borrarla también borra
+tus ajustes.
+
+También puedes usar **Borrar todos los datos** dentro de Parla: cierra la sesión
+en todos los espacios y borra las carpetas de datos y caché, pero conserva la
+carpeta de configuración.
+
+## Elementos del llavero
+
+En las compilaciones release, Parla guarda los inicios de sesión y las claves de
+cifrado del almacén en el llavero del sistema como contraseñas de internet cuyo
+servidor empieza por `parla://`. Incluyen `parla://workspace/<id>` para los
+inicios de sesión y `parla://store/app` y `parla://store/<provider>/<id>` para
+las claves de cifrado del almacén.
+
+Después de borrar los datos de Parla, abre Acceso a Llaveros y busca `parla://`
+para quitar las entradas que queden si quieres eliminar por completo las
+credenciales guardadas.
+
+Las compilaciones de depuración guardan las credenciales en
+`development_credentials.json` dentro de la carpeta de datos en vez del llavero,
+a menos que se haya definido `PARLA_DEV_USE_KEYCHAIN=1`. Borrar la carpeta de
+datos elimina ese archivo.
+
+Siguiente: [Solución de problemas](/parla/es/docs/troubleshooting/).

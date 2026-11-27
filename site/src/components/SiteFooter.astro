@@ -1,0 +1,32 @@
+---
+import { getUi, localePath } from "@/i18n";
+import { logoMarkup } from "@/lib/logo";
+import { repoUrl } from "@/lib/seo";
+
+/**
+ * Site footer for the pages outside the docs (landing, downloads, changelog).
+ * Docs pages have their own sidebar links and never render it.
+ */
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const ui = getUi(locale);
+const link = "text-parla-muted no-underline transition-colors hover:text-parla-text";
+---
+
+<footer class="parla border-t border-parla-line-subtle bg-parla-app">
+  <div class="mx-auto flex w-full max-w-[1160px] flex-wrap items-center gap-x-5 gap-y-3 px-5 py-8 text-[13px] sm:px-6">
+    <div class="flex items-center gap-2.5">
+      <span class="size-[22px] shrink-0" set:html={logoMarkup} />
+      <span class="text-parla-muted">{ui.footer.license}</span>
+    </div>
+    <div class="ml-auto flex flex-wrap items-center gap-x-5 gap-y-2">
+      <a class={link} href={repoUrl}>{ui.footer.source}</a>
+      <a class={link} href={localePath(locale, "/docs/privacy/")}>{ui.footer.privacy}</a>
+      <a class={link} href={localePath(locale, "/llms.txt")}>{ui.footer.llms}</a>
+    </div>
+    <p class="basis-full text-xs text-parla-subtle">{ui.footer.colophon}</p>
+  </div>
+</footer>

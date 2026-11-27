@@ -1,0 +1,14 @@
+{
+  "verdict": "invalid",
+  "rule": 4,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": {
+        "list": {
+          "selectable": true
+        }
+      }
+    }
+  ]
+}

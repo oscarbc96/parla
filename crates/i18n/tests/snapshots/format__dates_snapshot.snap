@@ -1,0 +1,7 @@
+---
+source: crates/i18n/tests/format.rs
+expression: out
+---
+en: date=Nov 13, 2026 time=2:05 PM date_time=Nov 13, 2026, 2:05 PM
+es: date=13 nov 2026 time=14:05 date_time=13 nov 2026, 14:05
+ca: date=13 de nov. del 2026 time=14:05 date_time=13 de nov. del 2026, 14:05

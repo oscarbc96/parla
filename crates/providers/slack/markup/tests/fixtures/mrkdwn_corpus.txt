@@ -1,0 +1,49 @@
+*
+**
+***
+*a
+a*
+*a *b* c*
+_*~`<>
+~~~~~~~~~
+`
+``
+```
+```a```
+```a
+<
+<>
+<<<<<>>>>>
+<@>
+<@|>
+<#|x>
+<!>
+<!date^>
+<!date^x^y|z>
+<!date^99999999999999999999^{date}|late>
+<!subteam^|>
+<http://|>
+<|>
+<mailto:|>
+:
+::
+:::
+:+1::skin-tone-9:
+:+1::skin-tone-:
+:a::skin-tone-3:
+&
+&amp
+&amp;lt;
+&gt;&gt;&gt;
+>>>
+> > > >
+&gt; &gt; &gt;
+• x
+- x
+1. x
+99999999999999999999. x
+	  	• nested
+    - nested
+*bold _italic ~strike `code` strike~ italic_ bold*
+snake_case_name and 2*3*4 and a*b*c
+emoji with é and 日本語 *日本語* _é_

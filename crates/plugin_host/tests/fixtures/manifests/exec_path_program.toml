@@ -1,0 +1,12 @@
+id = "exec-plugin"
+name = "Exec"
+version = "0.1.0"
+api = "0.1"
+
+[[capabilities.exec]]
+program = "/usr/local/bin/gh"
+allow = [["pr", "view", "*"]]
+
+[[capabilities.exec]]
+program = "gh"
+allow = [["pr", "view", "*"], ["api", "-*"], []]

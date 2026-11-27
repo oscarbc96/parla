@@ -1,0 +1,23 @@
+{
+  "method": "GET",
+  "url": "https://workspace1.slack.com/ssb/redirect",
+  "request": {
+    "headers": [
+      [
+        "accept",
+        "text/html"
+      ]
+    ],
+    "query": []
+  },
+  "response": {
+    "headers": [
+      [
+        "content-type",
+        "text/html; charset=utf-8"
+      ]
+    ],
+    "mime": "text/html",
+    "status": 200
+  }
+}

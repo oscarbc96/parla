@@ -1,0 +1,28 @@
+{
+  "verdict": "invalid",
+  "rule": 3,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "column"
+    },
+    {
+      "parent": 0,
+      "id": "a",
+      "kind": {
+        "button": {
+          "label": "A"
+        }
+      }
+    },
+    {
+      "parent": 0,
+      "id": "a",
+      "kind": {
+        "button": {
+          "label": "B"
+        }
+      }
+    }
+  ]
+}

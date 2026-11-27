@@ -1,0 +1,288 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Download from "@lucide/astro/icons/download";
+import Monitor from "@lucide/astro/icons/monitor";
+import ShieldCheck from "@lucide/astro/icons/shield-check";
+import Wrench from "@lucide/astro/icons/wrench";
+import Layout from "@/layouts/Layout.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import SiteHeader from "@/components/SiteHeader.astro";
+import { absoluteUrl, repoUrl, siteName } from "@/lib/seo";
+import { getReleasePages, getStars } from "@/lib/github";
+import { dmgFileName, latestRelease, releaseChecksum, releaseHistory } from "@/lib/release";
+import { getUi, localePath } from "@/i18n";
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const ui = getUi(locale);
+const t = ui.downloads;
+const stars = await getStars();
+const release = await latestRelease();
+const history = await releaseHistory();
+const checksum = release ? await releaseChecksum(release) : undefined;
+const card = "card p-6 sm:p-[26px]";
+const heading = "text-[clamp(32px,4vw,44px)] leading-[1.1] font-extrabold tracking-[-0.03em]";
+const link = "font-semibold text-parla-link no-underline underline-offset-4 hover:underline";
+const dmgName = release ? dmgFileName(release.dmgUrl) : "";
+const verifyCommand = dmgName
+  ? `gh attestation verify ${dmgName} --repo oscarbc96/parla`
+  : "";
+const dateFormat = new Intl.DateTimeFormat(ui.changelog.dateLocale, {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+const formatDate = (date: string) => (date ? dateFormat.format(new Date(date)) : "");
+// Older releases: everything but the one the card above offers.
+const older = history.filter((entry) => entry.version !== release?.version);
+/* Install steps, mirroring the design's numbered list. */
+const steps = [t.installStep1, t.installStep2, t.installStep3, t.installStep4];
+/**
+ * The first bullet lines of the latest release notes, as plain text: the
+ * design lists two or three under "What's new". Empty when the release list is
+ * unavailable, and the note falls back to the changelog link.
+ */
+const releaseNotes = release
+  ? (await getReleasePages())
+      .flat()
+      .filter((entry) => entry.id === release.version)
+      .flatMap((entry) => (entry.content ?? "").split("\n"))
+      .map((line) => line.match(/^\s*(?:[-*+]|\d+\.)\s+(.+)$/)?.[1])
+      .filter((line): line is string => Boolean(line))
+      .map((line) => line.replace(/\*\*|__|`/g, "").trim())
+      .slice(0, 3)
+  : [];
+// Copy buttons on this page: inline, no script file (the design has a Copy
+// button next to the checksum).
+const copyScript = `for(var b of document.querySelectorAll("[data-copy]"))b.addEventListener("click",function(){var t=document.getElementById(this.dataset.copy);if(!t)return;navigator.clipboard&&navigator.clipboard.writeText(t.value||t.textContent||"");var o=this.textContent;this.textContent=this.dataset.copiedLabel||o;var s=this;setTimeout(function(){s.textContent=o},1500)})`;
+---
+
+<Layout
+  title={t.title}
+  description={t.description}
+  locale={locale}
+  path="/downloads/"
+  ogKey="downloads"
+  jsonLd={[
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: siteName, item: absoluteUrl(locale, "/") },
+        { "@type": "ListItem", position: 2, name: t.heading, item: absoluteUrl(locale, "/downloads/") },
+      ],
+    },
+  ]}
+>
+  <SiteHeader locale={locale} path="/downloads/" stars={stars} section="downloads" />
+  <main class="parla bg-parla-app text-parla-text">
+    <div class="mx-auto flex w-full max-w-[1040px] flex-col gap-7 px-5 pt-14 pb-16 sm:px-6 sm:pt-16 sm:pb-24">
+      <header>
+        <h1 class={heading}>{t.heading}</h1>
+        <p class="mt-2.5 text-base text-parla-muted">{t.lede}</p>
+      </header>
+
+      {
+        release ? (
+          <>
+            <section class="card overflow-hidden shadow-parla-md" aria-labelledby="mac-title">
+              <div class="signature" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="flex flex-col gap-6 p-5 sm:p-8">
+                <div class="flex flex-wrap items-center gap-4">
+                  <span class="flex size-[52px] shrink-0 items-center justify-center rounded-xl bg-parla-sunken text-parla-text">
+                    <Monitor size={26} aria-hidden="true" />
+                  </span>
+                  <div class="min-w-[200px] flex-1">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                      <h2 id="mac-title" class="parla-h2">{t.macTitle}</h2>
+                      <span class="chip chip-soft h-[22px]">{t.latest} · {release.version}</span>
+                      <span class="chip h-[22px] border-transparent bg-parla-success-soft text-parla-success">
+                        <ShieldCheck size={13} aria-hidden="true" />{t.signed}
+                      </span>
+                    </div>
+                    <p class="mt-1 text-sm text-parla-muted">{t.macRequirements}</p>
+                  </div>
+                  <a class="btn btn-primary btn-lg" href={release.dmgUrl}>
+                    <Download size={17} aria-hidden="true" />{t.downloadMac}
+                  </a>
+                </div>
+
+                <div>
+                  {
+                    checksum && (
+                      <div class="mb-5">
+                        <label class="text-xs font-semibold text-parla-muted" for="sha">{t.shaLabel}</label>
+                        <div class="mt-2 flex gap-2">
+                          <input
+                            id="sha"
+                            class="input font-mono text-[12.5px] text-parla-muted"
+                            readonly
+                            value={checksum}
+                          />
+                          <button class="btn" type="button" data-copy="sha" data-copied-label={t.copied}>
+                            {t.copy}
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  }
+                  <p class="text-xs font-semibold text-parla-muted">{t.attestationLabel}</p>
+                  <div class="mt-2 flex items-start gap-2">
+                    <pre id="verify" class="min-w-0 flex-1 overflow-x-auto rounded-lg border border-parla-line bg-parla-sunken p-3 font-mono text-xs leading-5 text-parla-text"><code>{verifyCommand}</code></pre>
+                    <button class="btn" type="button" data-copy="verify" data-copied-label={t.copied}>{t.copy}</button>
+                  </div>
+                  <div class="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                    {release.sumsUrl && <a class={link} href={release.sumsUrl}>{t.checksumLink}</a>}
+                    <a class={link} href={localePath(locale, "/docs/install/")}>{t.installLink}</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <script is:inline set:html={copyScript} />
+
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+              <section class={`${card} flex flex-col gap-5`} aria-labelledby="install-title">
+                <h2 id="install-title" class="parla-h3">{t.installTitle}</h2>
+                {
+                  steps.map((step, index) => (
+                    <div class="flex gap-3.5">
+                      <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-parla-accent-soft text-[13px] font-bold text-parla-accent-soft-text">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <p class="font-semibold">{step.title}</p>
+                        <p class="text-sm text-parla-muted">{step.text}</p>
+                      </div>
+                    </div>
+                  ))
+                }
+                <a class={`${link} inline-flex w-fit items-center gap-1 text-sm`} href={localePath(locale, "/docs/install/")}>
+                  {t.installLink}<ArrowRight size={13} aria-hidden="true" />
+                </a>
+              </section>
+
+              <div class="flex flex-col gap-5">
+                <section class={`${card} flex flex-col gap-2.5`} aria-labelledby="other-title">
+                  <div class="flex items-center gap-2.5">
+                    <h2 id="other-title" class="parla-h3">{t.otherPlatformsTitle}</h2>
+                    <span class="chip h-[22px]">{t.later}</span>
+                  </div>
+                  <p class="text-sm text-parla-muted">{t.otherPlatformsText}</p>
+                </section>
+
+                <section class={`${card} flex flex-col gap-2.5`} aria-labelledby="build-title">
+                  <h2 id="build-title" class="parla-h3">{t.buildTitle}</h2>
+                  <p class="text-sm text-parla-muted">{t.buildText}</p>
+                  <pre class="mt-1 overflow-hidden rounded-lg border border-parla-line bg-parla-sunken p-2.5 font-mono text-xs leading-[1.6] text-parla-text"><code>mise install
+mise run build</code></pre>
+                  <a class={`${link} inline-flex w-fit items-center gap-1 text-sm`} href={localePath(locale, "/docs/install/")}>
+                    {t.buildLink}<ArrowRight size={13} aria-hidden="true" />
+                  </a>
+                </section>
+              </div>
+            </div>
+
+            <section class={`${card} flex flex-col gap-3`} aria-labelledby="notes-title">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h2 id="notes-title" class="parla-h3">{t.whatsNew.replace("{version}", release.version)}</h2>
+                <span class="text-xs text-parla-subtle">{formatDate(release.date)}</span>
+              </div>
+              <p class="text-sm text-parla-muted">{t.notesText}</p>
+              {
+                releaseNotes.length > 0 && (
+                  <ul class="list-disc ps-5 text-sm leading-[1.8] text-parla-muted">
+                    {releaseNotes.map((note) => (
+                      <li>{note}</li>
+                    ))}
+                  </ul>
+                )
+              }
+              <a class={`${link} w-fit text-sm`} href={localePath(locale, "/changelog/")}>{t.fullChangelog}</a>
+            </section>
+          </>
+        ) : (
+          <>
+            <section class="card overflow-hidden" data-testid="no-release" aria-labelledby="no-release-title">
+              <div class="signature" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="p-6 sm:p-[26px]">
+                <h2 id="no-release-title" class="parla-h2">{t.noRelease}</h2>
+                <p class="mt-2 text-sm text-parla-muted">{t.noReleaseText}</p>
+                <div class="mt-4 flex flex-wrap gap-2.5">
+                  <a class="btn btn-primary btn-lg" href={localePath(locale, "/docs/install/")}>
+                    <Wrench size={16} aria-hidden="true" />{t.buildLink}
+                  </a>
+                  <a class="btn btn-lg" href={`${repoUrl}/releases`}>{t.releasesLink}</a>
+                </div>
+              </div>
+            </section>
+
+            <section class={card} aria-labelledby="build-title">
+              <Wrench size={22} class="text-parla-muted" aria-hidden="true" />
+              <h2 id="build-title" class="parla-h3 mt-3">{t.buildTitle}</h2>
+              <p class="mt-2 text-sm text-parla-muted">{t.buildText}</p>
+              <pre class="mt-3 overflow-hidden rounded-lg border border-parla-line bg-parla-sunken p-2.5 font-mono text-xs leading-[1.6] text-parla-text"><code>mise install
+mise run build</code></pre>
+              <a class={`${link} mt-3 inline-block text-sm`} href={localePath(locale, "/docs/install/")}>{t.buildLink}</a>
+            </section>
+          </>
+        )
+      }
+
+      {
+        older.length > 0 && (
+          <section class="flex flex-col gap-3" aria-labelledby="older-title">
+            <h2 id="older-title" class="parla-h3">{t.olderTitle}</h2>
+            <div class="card overflow-x-auto">
+              <table class="w-full border-collapse text-sm">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-b border-parla-line px-3.5 py-2.5 text-start text-xs font-semibold text-parla-subtle">{t.tableVersion}</th>
+                    <th scope="col" class="border-b border-parla-line px-3.5 py-2.5 text-start text-xs font-semibold text-parla-subtle">{t.tableDate}</th>
+                    <th scope="col" class="border-b border-parla-line px-3.5 py-2.5 text-start text-xs font-semibold text-parla-subtle">{t.tableDownload}</th>
+                    <th scope="col" class="border-b border-parla-line px-3.5 py-2.5 text-start text-xs font-semibold text-parla-subtle">{t.tableChecksum}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {older.map((entry) => (
+                    <tr class="border-b border-parla-line-subtle last:border-0">
+                      <td class="px-3.5 py-3 font-mono text-[13px]">{entry.version}</td>
+                      <td class="px-3.5 py-3 text-parla-muted">{formatDate(entry.date)}</td>
+                      <td class="px-3.5 py-3">
+                        {entry.dmgUrl ? (
+                          <a class={link} href={entry.dmgUrl}>Parla.dmg</a>
+                        ) : entry.url ? (
+                          <a class={link} href={entry.url}>{t.releasesLink}</a>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td class="px-3.5 py-3">
+                        {entry.sumsUrl ? (
+                          <a class={link} href={entry.sumsUrl}>SHA256SUMS</a>
+                        ) : entry.url ? (
+                          <a class={link} href={entry.url}>SHA256SUMS</a>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <a class={`${link} w-fit text-sm`} href={`${repoUrl}/releases`}>{t.allReleases}</a>
+          </section>
+        )
+      }
+    </div>
+  </main>
+  <SiteFooter locale={locale} />
+</Layout>

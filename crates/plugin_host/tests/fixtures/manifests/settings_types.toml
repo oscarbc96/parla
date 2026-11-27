@@ -1,0 +1,36 @@
+id = "settings-plugin"
+name = "Settings"
+version = "0.1.0"
+api = "0.1"
+
+[[settings]]
+key = "enabled"
+type = "boolean"
+default = true
+title = "Enabled"
+
+[[settings]]
+key = "max_lines"
+type = "integer"
+default = 20
+min = 5
+max = 200
+title = { key = "setting-max-lines" }
+
+[[settings]]
+key = "greeting"
+type = "string"
+default = "hi"
+title = "Greeting"
+
+[[settings]]
+key = "size"
+type = "enum"
+options = ["small", "large"]
+default = "small"
+title = "Size"
+
+[[settings]]
+key = "api_key"
+type = "secret"
+title = "API key"

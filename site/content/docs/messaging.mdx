@@ -1,0 +1,256 @@
+---
+title: Daily use
+description: Read, send and find messages, follow threads, share files, start huddles and move around Parla.
+---
+
+Parla's main window has four parts: the workspace rail on the left, the sidebar
+with your conversations, the timeline in the middle and a right panel for
+threads, search, profiles and details.
+
+The keys below are the macOS defaults. On Linux and Windows, use `ctrl` in
+place of `cmd`. Every shortcut can be changed in [Settings](/parla/docs/settings/)
+or `keymap.json`; see [Keyboard shortcuts](/parla/docs/keymap/).
+
+## The sidebar
+
+The sidebar lists your conversations in these sections:
+
+- **Unreads**, when you turn it on. It lists every unread conversation.
+- **Starred**, when you have any. Stars are Parla's own list for this computer.
+- **Your own sections**, above Channels, in the order you put them.
+- **Channels** you are a member of, by name.
+- **Direct messages**, with the most recent activity first.
+- **Threads**, **Later**, **Scheduled** and **Reminders**, when supported.
+- **Drafts**, while you have unsaved text.
+- **People**, to open the workspace directory.
+
+An unread conversation is bold. Click a section title, or press Enter or Space
+on it, to fold it. Parla remembers folded sections per workspace.
+
+Right-click a conversation for its menu: view details, star it, change its
+notification level, mute it, mark it read, move it to one of your sections or
+open it in a new window. Channel admins can also edit, add people, leave or
+archive a channel there.
+
+A channel's member list and member count update live as people join or leave it,
+and a channel created or joined from another client appears without a reload.
+
+The **+** after Channels opens **Browse channels**, where you can search, join
+or create a channel. The **+** after Direct messages lists people.
+
+To move conversations into your own sections, choose **Organise sidebar** from
+the workspace menu. Drag conversations onto a section, or drag sections to
+reorder them, then choose **Done**. These sections stay on this computer and are
+not sent to the service.
+
+The workspace menu at the top of the sidebar opens Settings, changes your status
+or presence, pauses notifications, switches workspace, signs out or removes the
+workspace.
+
+## Read and catch up
+
+Opening a conversation moves its read marker forward. Days are separated by a
+divider, and a **New** divider marks the first unread message when you open a
+conversation with unreads.
+
+To mark a message unread, select it and press `cmd-shift-u`, right-click it and
+choose **Mark unread**, or alt-click it. The read marker moves back to that
+message.
+
+Three views at the top of the workspace rail cover every workspace:
+
+- **All unreads** (`cmd-shift-a`).
+- **All mentions** (no default key; bind `workspace::AllMentions`).
+- **All scheduled** (no default key; bind `workspace::AllScheduled`).
+
+All unreads lists unread conversations, mentions first. You can mark one
+conversation or all of them read from there. Looking at the view itself marks
+nothing read.
+
+## Write and send
+
+Click the composer and type. By default, Enter sends and Shift-Enter makes a new
+line. With **Send key** set to Command-Enter in Settings, Appearance, Enter
+makes a new line and `cmd-enter` sends.
+
+| Key           | Action                                        |
+| ------------- | --------------------------------------------- |
+| `enter`       | Send                                          |
+| `shift-enter` | New line                                      |
+| `up`          | Edit your last message                        |
+| `escape`      | Cancel an edit or a reply                     |
+| `tab`         | Insert the selected mention, channel or emoji |
+
+To edit your own message, select it and press `e`. To delete it, press
+`cmd-backspace`. Parla asks before deleting. Edit and delete only work on
+messages you are allowed to change.
+
+Parla keeps the text in a composer as a draft for each conversation and thread.
+Drafts are saved when you switch conversation, close a thread or quit. Clearing
+the composer deletes the draft. **Drafts** in the sidebar lists every draft,
+newest first.
+
+When someone else is typing, a line above the composer says who. Your own typing
+never shows.
+
+## Mentions, emoji and formatting
+
+Type `@` to pick a person or user group, or `@here`, `@channel` or `@everyone`
+outside direct messages. Type `#` to pick a channel, or `:` and two letters to
+pick an emoji. Use the arrow keys to move, Enter or Tab to insert, and Escape to
+close the list.
+
+A picked mention or channel is one unit: Backspace deletes all of it, and it is
+sent as a real mention. A name you only type, such as `@ana` without picking it,
+is sent as plain text.
+
+The row above the composer formats the selection, or inserts an empty pair when
+nothing is selected. Press the same shortcut again to remove the markers.
+
+| Shortcut          | Format        | Writes                |
+| ----------------- | ------------- | --------------------- |
+| `cmd-b`           | Bold          | `*text*`              |
+| `cmd-i`           | Italic        | `_text_`              |
+| `cmd-shift-x`     | Strikethrough | `~text~`              |
+| `cmd-e`           | Code          | `` `text` ``          |
+| `cmd-alt-shift-c` | Code block    | three backticks       |
+| `cmd-shift-9`     | Quote         | `> ` before a line    |
+| `cmd-shift-8`     | Bulleted list | `• ` before a line    |
+| `cmd-shift-7`     | Numbered list | `1. ` before a line   |
+| `cmd-shift-u`     | Link          | a web or mail address |
+
+The smiley button opens the emoji picker. It has fuzzy search, a keyboard grid,
+skin tones and a **Recent** row. Custom emoji from the workspace appear next to
+the standard ones.
+
+Type `/` at the start of an empty composer to list commands. Parla supports
+`/remind`, `/dnd`, `/status`, `/away` and `/active` when the service does, plus
+`/shrug`. A command Parla cannot run shows "/name is not supported in Parla"
+with a link to open the conversation in the service's own client.
+
+## Reactions and threads
+
+Reactions appear as pills under a message. Click a pill to add or remove your
+own reaction, and hover it to see who reacted. Press `cmd-shift-\` on a selected
+message to open the emoji picker and add a reaction.
+
+A message with replies shows a summary line under it. Click it, or press
+`cmd-shift-t` on the message, to open the thread in the right panel. Press
+Escape to close the panel.
+
+The thread composer sends replies to the thread. The thread header has a bell:
+a highlighted bell means you follow the thread and get its new replies. You
+follow a thread you replied in. A reply can also be sent to the main
+conversation; bind `composer::ToggleBroadcast` if you want a key for that.
+
+## Search
+
+Press `cmd-shift-f` to open search in the right panel. From a conversation the
+field starts with `in:#name`, so the search stays there; delete that to search
+everywhere.
+
+Type to search. Messages stored on this device appear first. When the service
+can search on its server, its results follow under a **From** label. Without a
+connection, Parla searches only the device and says so.
+
+Filters work as words in the field:
+
+- `in:#channel` and `from:@name`.
+- `before:` and `after:` with a date such as `2026-11-01`.
+- `has:file`, `has:link`, `has:reaction` or `has:pin`.
+
+Use the arrow keys to move through results and Enter to open one. A message
+opens its conversation scrolled to it. A person opens their profile. Escape
+closes the panel.
+
+## Send later, scheduled messages and reminders
+
+Choose **Send later** under the composer, or press `cmd-shift-enter`, to send
+the text at a later time. The menu lists your presets, by default tomorrow 09:00
+and Monday 09:00, with their date and time. **Custom...** accepts a date
+(`YYYY-MM-DD`) and a 24-hour time (`HH:MM`). Times use your profile's time zone,
+or `send_later.timezone` when you set one. A time in the past, or more than 120
+days ahead, cannot be chosen.
+
+If the service can schedule messages, it sends them even when Parla is closed.
+Otherwise the message is kept on this device and Parla must be running.
+**Scheduled** in the sidebar lists every scheduled message of the workspace.
+Server items can be edited, sent now or deleted. Local items are tagged "local,
+needs app open". Failed items show why, with Retry and Discard.
+
+**Reminders** in the sidebar lists overdue, upcoming, recurring and completed
+reminders. Write what to remember and when, then press Enter or **Add
+reminder**. Times use words such as `in 20 minutes`, `at 15:30`,
+`tomorrow at 09:00`, `on monday at 09:00`, `on 2026-12-01` or `every monday`.
+
+When the service keeps reminders, Parla asks it to add, complete and delete
+them. Otherwise Parla keeps them on this computer and alerts you with a desktop
+notification when one is due, as long as Parla is running. You can snooze,
+complete, edit or delete a reminder from the list.
+
+## People, profiles and status
+
+**People** opens the workspace directory. Each card shows a person's picture,
+name, title, presence and local time when the service shares them. Type to
+search by name or title, and use the filter chips for your time zone or bots.
+
+Click a person's name or a mention to open their profile in the right panel.
+Their profile shows their status, local time, presence and contact fields, with
+a **Message** button that opens your direct message with them.
+
+Your own profile is at the bottom of the workspace rail. **Set a status...** in
+the workspace menu opens the status dialog. Pick an emoji, write the text and
+choose when it clears: never, 30 minutes, 1 hour, 4 hours, today, this week or a
+custom time. Presets such as Focusing, In a meeting, Commuting, Out sick and On
+holiday fill all three at once. **Set yourself as away** and **Set yourself as
+active** switch your presence.
+
+Presence appears as a small dot: filled when someone is active, a ring when they
+are away. Parla asks about presence only for the people on screen.
+
+## Move around
+
+- **Quick switcher:** `cmd-k`. Type to filter channels, direct messages, groups
+  and people in every workspace. Enter opens the selected item and Escape
+  closes.
+- **Back and forward:** `cmd-[` and `cmd-]`.
+- **Command palette:** `cmd-shift-p`. It lists the actions you can run, with
+  their keys.
+- **Focus next pane:** `cmd-f6`; previous pane: `cmd-shift-f6`.
+- **Open in a new window:** right-click a conversation, use the thread panel's
+  **Open in new window**, or press `cmd-shift-o` with a conversation or thread
+  in focus.
+- **Jump to the latest message:** `cmd-shift-down`.
+- **Shortcuts sheet:** `cmd-/`.
+
+On macOS the titlebar has back and forward buttons, a search control and a bell
+that opens the pause-notifications menu for the current workspace.
+
+## Huddles and calls
+
+When a huddle is live in a conversation, its sidebar row shows a green dot and
+the number of people in it. A bar above the timeline lists up to five people,
+how long ago the huddle started, and **Join**.
+
+By default Parla joins with its own audio: the call bar shows **Connecting...**,
+then the number of people, with **Mute** and **Leave**. If the microphone is
+unavailable you can still listen. If native audio cannot connect, Parla tries
+the call window on macOS, then the browser, then the service's own app.
+
+**Devices** in the call bar picks the microphone and speaker, or the system
+default. The change applies to the running call at once. Video and screen
+sharing are not carried yet; when someone starts sharing, the bar offers **Open
+in browser**.
+
+When someone rings you in a direct-message huddle, Parla shows a notification
+with **Join** and **Decline**, a banner with the same buttons and a chime. The
+ring stops when the caller hangs up, when the huddle ends, when you answer
+elsewhere, or after 45 seconds; a missed ring becomes a "Missed huddle"
+notification.
+
+You can turn ringing off, choose the ringtone, choose how Parla joins and mute
+the microphone on join in Settings, Calls. A ring never sounds while
+notifications are paused, during quiet hours, when desktop notifications are
+off, or when ringing is turned off.
+
+Next: [Files](/parla/docs/files/).

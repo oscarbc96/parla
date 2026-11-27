@@ -1,0 +1,10 @@
+{
+  "verdict": "invalid",
+  "rule": 1,
+  "nodes": [
+    {
+      "parent": 0,
+      "kind": "column"
+    }
+  ]
+}

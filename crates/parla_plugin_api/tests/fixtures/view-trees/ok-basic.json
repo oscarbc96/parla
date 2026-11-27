@@ -1,0 +1,40 @@
+{
+  "verdict": "ok",
+  "size": 101,
+  "nodes": [
+    {
+      "parent": null,
+      "kind": "column"
+    },
+    {
+      "parent": 0,
+      "kind": {
+        "heading": "Standup"
+      }
+    },
+    {
+      "parent": 0,
+      "kind": "row"
+    },
+    {
+      "parent": 2,
+      "kind": {
+        "text": [
+          {
+            "text": "Ready?"
+          }
+        ]
+      }
+    },
+    {
+      "parent": 2,
+      "id": "go",
+      "kind": {
+        "button": {
+          "label": "Go",
+          "look": "primary"
+        }
+      }
+    }
+  ]
+}

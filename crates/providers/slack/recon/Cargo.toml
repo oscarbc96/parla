@@ -1,0 +1,17 @@
+[package]
+name = "slack_recon"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "slack_recon"
+path = "src/main.rs"
+
+[dependencies]
+recon = { path = "../../../recon" }
+slack_redact = { path = "../redact_rules" }
+
+[dev-dependencies]
+tempfile.workspace = true

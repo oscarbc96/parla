@@ -1,0 +1,21 @@
+Third-party licenses
+====================
+
+This file lists the licenses of third-party software included in Parla.
+
+{{#each overview}}
+{{name}}: {{count}}
+{{/each}}
+
+{{#each licenses}}
+--------------------------------------------------------------------------------
+{{name}}
+{{#if id}}SPDX: {{id}}
+{{/if}}Used by:
+{{#each used_by}}
+- {{crate.name}} {{crate.version}}{{#if crate.repository}} ({{crate.repository}}){{/if}}
+{{/each}}
+
+{{text}}
+
+{{/each}}

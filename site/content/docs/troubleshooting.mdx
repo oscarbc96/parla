@@ -1,0 +1,142 @@
+---
+title: Troubleshooting
+description: Fix common problems with sign-in, notifications, the cache, search, huddles and updates.
+---
+
+## Parla shows no notifications
+
+Desktop notifications on macOS need the app bundle. Build and run Parla with
+`mise run run` or `mise run bundle`, not the plain binary. See
+[Install](/parla/docs/install/).
+
+Also check that desktop notifications are not set to **Nothing**, that the
+conversation is not muted, that quiet hours are not active and that the
+workspace is not paused. A message in the conversation you are already looking
+at does not notify.
+
+## I cannot sign in
+
+If your identity provider refuses the embedded sign-in window, use **Paste token
+and cookie** instead. See [Sign in](/parla/docs/sign-in/).
+
+If Parla says no workspace was found, sign in to the workspace in the window
+until its page opens, then try again. If a workspace needs SSO or two-factor,
+finish that step in the window and keep the row ticked.
+
+## A workspace stays empty or says it is still connecting
+
+Parla shows the reason in a banner instead of an empty sidebar. Wait for the
+first load to finish. Big workspaces load the member list in parts. If the
+server does not answer within 20 seconds, an error bar appears with **Retry**.
+
+If the problem continues, open the logs folder from Settings, Advanced and read
+`parla.log`. Tokens, cookies and message text are removed from it, so it is safe
+to attach to a bug report.
+
+## My session expired
+
+Parla shows a banner naming the workspace and offers **Sign in again**. Cached
+messages stay readable, but you cannot send until you sign in. On macOS you also
+get one notification per expiry.
+
+Signing in again refreshes the saved session. If you signed out of every
+workspace, Parla returns to the first-run flow.
+
+## Messages stay queued or say they were not sent
+
+Queued messages wait in an outbox and go out in order when the connection
+returns. **Retry now** in the offline banner tries at once.
+
+A message that failed with **May have been sent. Check before retrying.** may
+have reached the conversation. Check it first, then choose **Retry**, **Delete**
+or **Copy text**.
+
+## The cache cannot be opened
+
+Parla shows a banner when a workspace's local cache is unreadable. Choose
+**Rebuild cache**. Messages load again from the service, but queued messages and
+drafts saved on this device cannot be recovered. Parla never rebuilds a cache on
+its own.
+
+## The disk is nearly full
+
+When less than 1 GiB is free, a **Disk nearly full** banner appears. Choose
+**Manage storage** to open Settings, Privacy and storage, then clear the cache or
+reduce the cache limit and retention. Space that macOS can free on its own does
+not count.
+
+## Search misses old messages
+
+Search uses the messages stored on this device. Messages that were pruned, or
+that you have not scrolled back to load, are not in the local index. Scroll back
+in the conversation to load older messages, or increase **Keep messages for** in
+Settings, Privacy and storage. Search uses the server too when connected and the
+service supports it.
+
+## A huddle has no sound
+
+Open **Devices** in the call bar and pick the right microphone and speaker, or
+the system default. If the microphone is unavailable you can still listen. If
+Parla audio cannot connect, Parla tries the call window on macOS, then the
+browser, then the service's own app.
+
+Video and screen sharing are not carried by Parla yet. When someone starts
+sharing, use **Open in browser**.
+
+## An update fails
+
+Parla leaves the installed app untouched and says which step failed. Choose
+**Try again**, or **Download** to get the release by hand. Parla never installs a
+package whose signature does not match. See [Updates](/parla/docs/updates/).
+
+## Where are the logs and diagnostics?
+
+Open Settings, Advanced, then **Open logs folder** or **Export...**. The export
+writes one redacted text file with the version, operating system, settings,
+recent log lines and performance counters. It never contains message text,
+tokens, cookies, email addresses or workspace hosts. Read it before sharing it.
+
+## Frequently asked questions
+
+### Is Parla made by Slack?
+
+No. Parla is an independent, open-source project. It is not created by,
+affiliated with or supported by Slack Technologies, LLC, and Slack does not
+support it.
+
+### Does Parla send my messages to the project?
+
+No. Parla talks to the chat service with your session. The project runs no
+servers for Parla and receives no message data. See
+[Privacy](/parla/docs/privacy/).
+
+### Do I need to create an app or ask an admin?
+
+No. Parla uses your own web session, so there is no app to create and no admin
+approval step. Your employer's policy may still apply; ask before using a work
+account.
+
+### Can I use several workspaces?
+
+Yes. Every signed-in workspace stays connected, with its own badge, and you can
+switch with the rail, `cmd-1` to `cmd-9` or the quick switcher.
+
+### Does Parla support Windows and Linux?
+
+The code targets macOS, Windows and Linux. CI builds macOS and Linux, and
+compile-checks the Windows-only code. macOS builds are on GitHub Releases; there
+are no Windows or Linux installers, so build those from source. macOS is the
+supported platform for now, and some features depend on macOS.
+
+### Does Parla support video calls?
+
+Parla carries huddle audio. Video and screen sharing open in the browser for
+now.
+
+### Is my local data encrypted?
+
+Each workspace's local database is encrypted, and its key is in the operating
+system keychain. Cached images and other files may be stored unencrypted, so keep
+full-disk encryption on. See [Privacy](/parla/docs/privacy/).
+
+Next: [Privacy](/parla/docs/privacy/).

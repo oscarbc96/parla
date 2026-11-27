@@ -1,0 +1,3 @@
+# Every workflow runs on GitHub-hosted runners (ubuntu-*, macos-*, windows-*),
+# so there are no custom runner labels for actionlint to accept.
+{}

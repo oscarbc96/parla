@@ -1,0 +1,173 @@
+amends "package://github.com/jdx/hk/releases/download/v2.12.0/hk@2.12.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.12.0/hk@2.12.0#/Builtins.pkl"
+
+// Git hooks and local checks. Install once per clone: `hk install --mise`.
+// Run by hand: `hk check` (changed files), `hk check --all`, `hk fix`.
+// Builtins as shipped; repo specifics live in `exclude` and `env` below.
+
+fail_fast = false
+
+// Shellcheck warnings block; style notes do not (actionlint shellchecks the
+// workflow `run:` blocks with the same setting).
+env {
+  ["SHELLCHECK_OPTS"] = "--severity=warning"
+}
+
+exclude = List(
+  "site/node_modules/**",
+  "site/dist/**",
+  "site/.turbo/**",
+  "target/**",
+  // Verbatim upstream texts.
+  "LICENSE",
+  "CODE_OF_CONDUCT.md",
+)
+
+local steps_all = new Mapping<String, Step> {
+  ["newlines"] = Builtins.newlines
+  ["trailing_whitespace"] = Builtins.trailing_whitespace
+  ["mixed_line_ending"] = Builtins.mixed_line_ending
+  ["check_merge_conflict"] = Builtins.check_merge_conflict
+  // Every step runs only on files it can judge (mapping in scripts/changes.ts,
+  // pinned by scripts/repo-config.test.ts).
+  ["cargo_fmt"] = (Builtins.cargo_fmt) { glob = List("**/*.rs", "Cargo.toml", "Cargo.lock") }
+  ["cargo_clippy"] = (Builtins.cargo_clippy) { glob = List("**/*.rs", "Cargo.toml", "Cargo.lock") }
+  // No Biome: the site is Bun only. Its package.json defines `lint` (check) and
+  // `format` (fix) scripts. No builtin does this.
+  ["site"] {
+    glob = "site/**"
+    // `site:lint` builds first (turbo's lint task depends on build).
+    check = "mise run site:lint"
+    fix = "mise run site:format"
+  }
+  // Every locale changes with its English page, meta or UI strings. The
+  // escape hatch for a staged check is TRANSLATIONS_UNCHANGED="<reason>".
+  ["site_translations"] {
+    glob = List("site/**", "i18n/**", "crates/**/i18n/**")
+    check = "mise run site:check-translations -- --staged"
+  }
+  // Site screenshots are rendered from visual baselines: a changed baseline
+  // needs `mise run site:shots`. No builtin does this.
+  ["site_shots"] {
+    glob = List("site/public/shots/**", "crates/ui_testing/baselines/**", "scripts/site-shots*")
+    check = "mise run site:check-shots"
+  }
+  // Redacted captures and fixtures must be clean (secrets, real IDs, PII). Skipped by
+  // hk when no matching file is staged or listed. No builtin does this.
+  ["recon_check"] {
+    glob = List("docs/providers/*/web-client/**", "crates/providers/**/tests/fixtures/**")
+    check = "mise run recon:check -- {{files}}"
+  }
+  // Added UI lines must use design tokens: no colour literals, no px(N) outside the
+  // scale (scripts/design-check.ts, scripts/design-check.test.ts). Reads the
+  // staged diff. No builtin does this.
+  ["design"] {
+    glob = List("crates/components/src/**/*.rs", "crates/parla/src/**/*.rs")
+    check = "mise run lint:design"
+  }
+  // renovate.json passes Renovate's validator (strict: no pending migrations).
+  ["renovate"] {
+    glob = List("renovate.json")
+    check = "mise run lint:renovate"
+  }
+  // Golden images stay small and are real PNG files.
+  ["visual_baselines"] {
+    glob = "crates/ui_testing/baselines/**"
+    check = """
+      bad=0
+      for f in $(find crates/ui_testing/baselines -type f ! -name .gitkeep); do
+        case "$f" in *.png) ;; *) echo "$f is not a .png"; bad=1; continue;; esac
+        [ "$(head -c 8 "$f" | od -An -tx1 | tr -d ' \n')" = 89504e470d0a1a0a ] || { echo "$f is not a PNG"; bad=1; }
+        [ "$(wc -c < "$f")" -le 204800 ] || { echo "$f is over 200 KB"; bad=1; }
+      done
+      for d in crates/ui_testing/baselines/*/; do
+        total=$(find "$d" -type f -exec cat {} + | wc -c)
+        [ "$total" -le 37748736 ] || { echo "$d baselines are over 36 MB"; bad=1; }
+      done
+      exit $bad
+      """
+  }
+  ["taplo"] = (Builtins.taplo) { glob = List("**/*.toml") }
+  ["actionlint"] = (Builtins.actionlint) { glob = List(".github/workflows/*.yml", ".github/workflows/*.yaml") }
+  // Workflow security: pinned SHAs, least privilege, no dangerous triggers,
+  // no template injection, no cache poisoning (.github/zizmor.yml). Offline,
+  // so lint needs no token.
+  ["zizmor"] {
+    glob = List(".github/**/*.yml", ".github/**/*.yaml")
+    check = "zizmor --offline --format plain .github"
+  }
+  ["mise"] = (Builtins.mise) { glob = List("mise.toml", ".mise.toml", ".config/mise/**") }
+  ["shellcheck"] = Builtins.shellcheck
+  // JSON syntax only (the builtin also enforces jq's formatting, which the repo's
+  // formatters do not share). Captured fixtures are checked by recon_check; the
+  // keymaps, default settings and turbo.json are JSON with comments.
+  ["jq"] {
+    glob = List("**/*.json")
+    exclude = List("crates/**/tests/fixtures/**", "site/tests/fixtures/**", "docs/providers/**", "assets/keymaps/*.json", "assets/settings/default.json", "site/turbo.json")
+    check = "jq empty {{files}}"
+  }
+  // Vendor agent paths must be symlinks into .agents/.
+  // No builtin does this.
+  ["agents_symlinks"] {
+    check = """
+      bad=0
+      for p in CLAUDE.md .claude/skills .claude/agents; do
+        if [ -e "$p" ] && [ ! -L "$p" ]; then echo "$p must be a symlink"; bad=1; fi
+      done
+      if [ -d .claude ]; then
+        for f in .claude/* .claude/.[!.]*; do
+          [ -e "$f" ] || [ -L "$f" ] || continue
+          # Claude Code creates real worktrees here; they are gitignored.
+          [ "$f" = .claude/worktrees ] && continue
+          [ -L "$f" ] || { echo "$f must be a symlink"; bad=1; }
+        done
+      fi
+      exit $bad
+      """
+  }
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ...steps_all
+      ["check_added_large_files"] = Builtins.check_added_large_files
+      ["gitleaks"] = (Builtins.gitleaks) { scan = "staged" }
+    }
+  }
+  // Conventional Commit subject, the same rule as the PR title check
+  // (scripts/commit-msg.ts, scripts/commit-msg.test.ts). No builtin does this.
+  ["commit-msg"] {
+    steps {
+      ["conventional_commit"] { check = "bun scripts/commit-msg.ts {{commit_msg_file}}" }
+    }
+  }
+  // Both steps run only for pushed branches that carry main's history
+  // (scripts/push-refs.ts): tags, deletions and unrelated branches (no common
+  // history with main) are skipped, so no push needs the hooks disabled.
+  ["pre-push"] {
+    steps {
+      // Pushed commits and messages must not contain a term from the private
+      // list outside the repo (scripts/denylist-check.sh); counts only.
+      ["denylist"] { check = "bun scripts/push-refs.ts '{{hook_stdin}}' -- scripts/denylist-check.sh origin/main {sha}" }
+      // No builtin runs the repo test tasks. One mapping (scripts/changes.ts)
+      // runs only what the pushed commits touch: `test` for Rust changes,
+      // `site:verify` for site changes, `test:repo` for tooling and workflow
+      // changes; a docs-only push prints a notice and runs nothing.
+      ["changed_tests"] { check = "bun scripts/push-refs.ts '{{hook_stdin}}' -- bun scripts/changes.ts --base origin/main --head {sha} --run" }
+    }
+  }
+  ["check"] {
+    steps {
+      ...steps_all
+    }
+  }
+  ["fix"] {
+    fix = true
+    steps {
+      ...steps_all
+    }
+  }
+}

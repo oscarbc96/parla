@@ -1,0 +1,78 @@
+---
+title: Privadesa
+description: Parla desa les teves dades al teu dispositiu, no envia telemetria i et deixa desactivar les comprovacions d'actualitzacions.
+---
+
+**No l'ha creat Slack Technologies, LLC, no hi està afiliat ni compta amb el seu
+suport.**
+
+Parla és un client d'escriptori. El projecte no executa servidors per a Parla i no
+rep cap de les teves dades.
+
+## Peticions de xarxa
+
+Parla fa peticions de xarxa només per a les funcions que uses:
+
+- **El servei de xat i els seus hosts de fitxers.** Parla usa la teva sessió per
+  iniciar la sessió, carregar i enviar missatges, fitxers i dades relacionades. Una
+  finestra de trucada es carrega als dominis del servei quan t'uneixes a una trucada
+  o un huddle.
+- **Comprovació d'actualitzacions.** Parla pot consultar GitHub Releases per veure
+  si hi ha una versió nova, com a màxim una vegada al dia i quan tries **Comprova si
+  hi ha actualitzacions**. Desactiva les comprovacions automàtiques amb
+  `updates.check = false`. La comprovació és una petició a l'API de GitHub sense
+  galetes ni dades de compte.
+- **Baixada d'actualitzacions.** Només quan tries **Actualitza** a macOS, Parla
+  baixa la versió des de GitHub. La baixada es rebutja si la seva signatura no
+  coincideix amb la clau inclosa a Parla.
+- **Funcions que actives.** Els connectors o funcions que usen la xarxa, com un
+  proveïdor de GIF, estan desactivats per defecte. Quan n'actives un, les dades van
+  on indiqui aquella funció.
+
+## Dades locals
+
+- **Al teu dispositiu.** Els missatges, fitxers, memòries cau i paràmetres viuen en
+  un magatzem local. El testimoni i la galeta de la teva sessió només són al clauer
+  del sistema operatiu. Les compilacions de depuració els desen sense xifrar a
+  `<data_dir>/development_credentials.json`.
+- **Registres.** Els registres es queden al teu dispositiu. El registre de
+  diagnòstic no conté text de missatges. `log.include_content` afegeix text de
+  missatges només al registre d'auditoria de MCP.
+- **Informes de fallades.** Si Parla es tanca inesperadament, pot desar un informe
+  censurat al teu dispositiu. Els informes de fallades no s'envien mai. El paràmetre
+  `crash_reports` els desactiva, els desa sense preguntar, o pregunta al següent
+  inici si mostrar-los o esborrar-los.
+- **Bloqueig per inactivitat.** Amb `storage.lock_after_minutes` actiu, Parla tanca
+  el seu magatzem xifrat, treu de la memòria les claus del magatzem després d'aquell
+  temps sense entrada i cobreix les seves finestres fins que el desbloqueges.
+- **Sense telemetria.** Parla no recull anàlisi ni dades d'ús, i no les envia enlloc.
+
+## Servidor MCP local
+
+El servidor MCP està desactivat per defecte i és només local. No escolta mai a la
+xarxa. Quan l'actives, les eines d'IA locals poden llegir els espais que comparteixes
+i escriure-hi només amb el teu permís. El seu registre d'auditoria es queda al teu
+dispositiu, xifrat amb les teves altres dades locals, i només conté text de
+missatges si actives `log.include_content`. Consulta
+[Paràmetres](/parla/ca/docs/settings/#ia-i-mcp).
+
+## Eliminació
+
+Treure un espai de treball esborra la seva base de dades local, les seves entrades
+del clauer i les seves memòries cau. **Esborra totes les dades** elimina les dades i
+la memòria cau que Parla desa en aquest dispositiu, però conserva els teus
+paràmetres. El projecte no desa res.
+
+Consulta [Desinstal·lar](/parla/ca/docs/uninstall/) per veure totes les carpetes i
+elements del clauer.
+
+## Edat i suport
+
+Parla és per a usuaris de 16 anys o més. El suport és de millor esforç a través de
+les incidències de GitHub.
+
+La política completa és a
+[PRIVACY.md](https://github.com/oscarbc96/parla/blob/main/PRIVACY.md) al
+repositori.
+
+Següent: [Condicions](/parla/ca/docs/terms/).

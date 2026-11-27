@@ -1,0 +1,94 @@
+#!/bin/sh
+#MISE description="Create the self-signed release signing certificate (owner, once): release:self-signed-cert -- <out-dir>"
+set -eu
+set +x
+umask 077
+
+if [ "${1:-}" = "--" ]; then
+  shift
+fi
+if [ "$#" -ne 1 ]; then
+  echo "usage: mise run release:self-signed-cert -- <out-dir>" >&2
+  exit 2
+fi
+
+created=0
+if [ ! -d "$1" ]; then
+  created=1
+fi
+mkdir -p "$1"
+out_dir=$(CDPATH='' cd -P "$1" && pwd -P)
+
+if repository=$(git rev-parse --show-toplevel 2>/dev/null); then
+  repository=$(CDPATH='' cd -P "$repository" && pwd -P)
+  case "$out_dir" in
+    "$repository" | "$repository"/*)
+      if [ "$created" -eq 1 ] && [ -z "$(ls -A "$out_dir")" ]; then
+        rmdir "$out_dir"
+      fi
+      echo "refusing an out-dir inside the git repository: $out_dir" >&2
+      exit 1
+      ;;
+  esac
+fi
+
+if [ -e "$out_dir/parla-release.p12" ] || [ -L "$out_dir/parla-release.p12" ]; then
+  echo "refusing to overwrite $out_dir/parla-release.p12" >&2
+  exit 1
+fi
+
+# Apple's LibreSSL writes PKCS#12 files the macOS keychain imports.
+if [ -x /usr/bin/openssl ]; then
+  OPENSSL=/usr/bin/openssl
+elif command -v openssl >/dev/null 2>&1; then
+  OPENSSL=$(command -v openssl)
+else
+  echo "openssl is required" >&2
+  exit 1
+fi
+
+mkdir -p "$out_dir"
+chmod 700 "$out_dir"
+
+tmp=$(mktemp -d "${TMPDIR:-/tmp}/parla-release-self-signed.XXXXXX")
+trap 'rm -rf "$tmp"' EXIT
+trap 'exit 1' HUP INT TERM
+
+cat > "$tmp/openssl.cnf" <<'CNF'
+[req]
+distinguished_name = dn
+x509_extensions = ext
+prompt = no
+[dn]
+CN = Parla Release (self-signed)
+[ext]
+basicConstraints = critical,CA:false
+keyUsage = critical,digitalSignature
+extendedKeyUsage = critical,codeSigning
+CNF
+
+password=$("$OPENSSL" rand -hex 24)
+printf '%s' "$password" > "$tmp/password.txt"
+
+"$OPENSSL" req -x509 -newkey rsa:2048 -nodes -days 3650 \
+  -config "$tmp/openssl.cnf" -keyout "$tmp/key.pem" -out "$tmp/cert.pem" 2>/dev/null
+"$OPENSSL" pkcs12 -export -inkey "$tmp/key.pem" -in "$tmp/cert.pem" \
+  -out "$tmp/parla-release.p12" -passout "file:$tmp/password.txt"
+"$OPENSSL" base64 -in "$tmp/parla-release.p12" | tr -d '\r\n' > "$tmp/parla-release.p12.b64"
+
+mv "$tmp/parla-release.p12" "$out_dir/parla-release.p12"
+mv "$tmp/parla-release.p12.b64" "$out_dir/parla-release.p12.b64"
+mv "$tmp/password.txt" "$out_dir/password.txt"
+mv "$tmp/cert.pem" "$out_dir/parla-release.cer.pem"
+chmod 600 \
+  "$out_dir/parla-release.p12" \
+  "$out_dir/parla-release.p12.b64" \
+  "$out_dir/password.txt" \
+  "$out_dir/parla-release.cer.pem"
+
+fingerprint=$("$OPENSSL" x509 -in "$out_dir/parla-release.cer.pem" -noout -fingerprint -sha1 \
+  | sed 's/^[^=]*=//; s/://g' | tr '[:lower:]' '[:upper:]')
+printf 'Certificate SHA-1 fingerprint: %s\n' "$fingerprint"
+printf 'gh secret set MACOS_SELF_SIGNED_P12 --env release < %s/parla-release.p12.b64\n' "$out_dir"
+printf 'gh secret set MACOS_SELF_SIGNED_PASSWORD --env release < %s/password.txt\n' "$out_dir"
+printf 'Store %s in your password manager and delete it from disk.\n' "$out_dir"

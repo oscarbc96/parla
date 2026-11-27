@@ -1,0 +1,63 @@
+{
+  "data": {
+    "json": {
+      "cache_ts": 1794526180,
+      "event_ts": "1794526180.315900",
+      "type": "user_change",
+      "user": {
+        "color": "a2a5dc",
+        "deleted": false,
+        "id": "U0000001",
+        "is_admin": false,
+        "is_app_user": false,
+        "is_bot": false,
+        "is_email_confirmed": true,
+        "is_owner": false,
+        "is_primary_owner": false,
+        "is_restricted": false,
+        "is_ultra_restricted": false,
+        "locale": "es-ES",
+        "name": "Name 29",
+        "profile": {
+          "avatar_hash": "Avatar 1",
+          "display_name": "Name 30",
+          "display_name_normalized": "Name 30",
+          "email": "user1@example.test",
+          "fields": {},
+          "first_name": "Name 30",
+          "huddle_state": "default_unset",
+          "huddle_state_expiration_ts": 1794527500,
+          "image_192": "https://files.example.test/image/35",
+          "image_24": "https://files.example.test/image/36",
+          "image_32": "https://files.example.test/image/37",
+          "image_48": "https://files.example.test/image/38",
+          "image_512": "https://files.example.test/image/39",
+          "image_72": "https://files.example.test/image/40",
+          "last_name": "",
+          "phone": "",
+          "real_name": "Name 30",
+          "real_name_normalized": "Name 30",
+          "skype": "",
+          "status_clear_on_focus_end": false,
+          "status_emoji": "",
+          "status_emoji_display_info": [],
+          "status_expiration": 0,
+          "status_text": "",
+          "status_text_canonical": "",
+          "team": "T0000001",
+          "title": ""
+        },
+        "real_name": "Name 30",
+        "team_id": "T0000001",
+        "tz": "Europe/Amsterdam",
+        "tz_label": "Central European Time",
+        "tz_offset": 3600,
+        "updated": 1794526180,
+        "who_can_share_contact_card": "EVERYONE"
+      }
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?frt=REDACTED&token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794521867%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000001-1&batch_presence_aware=1"
+}

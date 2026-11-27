@@ -1,0 +1,106 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "blocks",
+          "[{\"elements\":[{\"elements\":[{\"text\":\"lorem\",\"type\":\"text\"}],\"type\":\"rich_text_section\"}],\"type\":\"rich_text\"}]"
+        ],
+        [
+          "client_msg_id",
+          "87f6f381-cc13-4c44-ade9-ae0481fb5e83"
+        ],
+        [
+          "attachments",
+          ""
+        ],
+        [
+          "destinations",
+          "[{\"channel_id\":\"D0000006\"}]"
+        ],
+        [
+          "file_ids",
+          "[]"
+        ],
+        [
+          "is_from_composer",
+          "false"
+        ],
+        [
+          "_x_reason",
+          "MessageInput:updateDraft"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "draft": {
+          "blocks": [
+            {
+              "block_id": "Wj6k9",
+              "elements": [
+                {
+                  "elements": [
+                    {
+                      "text": "lorem",
+                      "type": "text"
+                    }
+                  ],
+                  "type": "rich_text_section"
+                }
+              ],
+              "type": "rich_text"
+            }
+          ],
+          "client_msg_id": "87f6f381-cc13-4c44-ade9-ae0481fb5e83",
+          "date_created": 1794525938,
+          "date_scheduled": 0,
+          "destinations": [
+            {
+              "channel_id": "D0000006",
+              "user_ids": [
+                "U0000003"
+              ]
+            }
+          ],
+          "file_ids": [],
+          "id": "Dr0000000001",
+          "is_deleted": false,
+          "is_from_composer": false,
+          "is_sent": false,
+          "last_updated_client": "Chrome",
+          "last_updated_ts": "1794525938.850180",
+          "team_id": "T0000001",
+          "user_id": "U0000001"
+        },
+        "files": [],
+        "ok": true
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/drafts.create?_x_id=9aeb8a04-1794525938.735&_x_gantry=true&_x_desktop_ia=4&_x_csid=56f7ypXsQqM&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=cf&_x_num_retries=0"
+}

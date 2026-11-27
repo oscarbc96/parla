@@ -1,0 +1,41 @@
+[package]
+name = "store_sqlite"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+test-support = []
+
+[dependencies]
+domain = { path = "../domain" }
+store = { path = "../store" }
+settings = { path = "../settings", default-features = false }
+futures.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+zeroize.workspace = true
+getrandom = "0.4.3"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = ["Win32_Foundation", "Win32_Storage_FileSystem"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+rusqlite = { version = "0.43.0", features = ["bundled-sqlcipher"] }
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+rusqlite = { version = "0.43.0", features = ["bundled-sqlcipher-vendored-openssl"] }
+
+[dev-dependencies]
+store_sqlite = { path = ".", features = ["test-support"] }
+store = { path = "../store", features = ["test-support"] }
+domain = { path = "../domain", features = ["test-support"] }
+tempfile.workspace = true
+tokio.workspace = true

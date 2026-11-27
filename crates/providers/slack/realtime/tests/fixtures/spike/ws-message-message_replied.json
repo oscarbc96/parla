@@ -1,0 +1,76 @@
+{
+  "data": {
+    "json": {
+      "channel": "C0000001",
+      "event_ts": "1794525688.279100",
+      "hidden": true,
+      "message": {
+        "app_id": "A0000001",
+        "attachments": [
+          {
+            "actions": [
+              {
+                "id": "1",
+                "name": "Name 1",
+                "style": "",
+                "text": "lorem",
+                "type": "button",
+                "value": "lorem ipsum dolor sit amet consectetur elit"
+              }
+            ],
+            "callback_id": "pr-opened-interaction",
+            "color": "36a64f",
+            "fallback": "lorem ipsum dolor sit amet consectetur",
+            "footer": "lorem",
+            "footer_icon": "https://example.com/3",
+            "id": 1,
+            "mrkdwn_in": [
+              "text"
+            ],
+            "pretext": "lorem ipsum dolor sit amet",
+            "text": "lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem ipsum dolor sit amet consectetur elit sed lorem",
+            "title": "lorem ipsum dolor sit amet consectetur elit sed",
+            "ts": 1794525533
+          }
+        ],
+        "bot_id": "B0000001",
+        "bot_profile": {
+          "app_id": "A0000001",
+          "deleted": false,
+          "icons": {
+            "image_36": "https://files.example.test/image/1",
+            "image_48": "https://files.example.test/image/2",
+            "image_72": "https://files.example.test/image/3"
+          },
+          "id": "B0000001",
+          "name": "Name 2",
+          "team_id": "T0000001",
+          "updated": 1787155667,
+          "user_id": "U0000010"
+        },
+        "is_locked": false,
+        "latest_reply": "1794525688.920499",
+        "metadata": {
+          "event_type": "github_notification"
+        },
+        "reply_count": 1,
+        "reply_users": [
+          "U0000010"
+        ],
+        "reply_users_count": 1,
+        "team": "T0000001",
+        "text": "",
+        "thread_ts": "1794525536.639029",
+        "ts": "1794525536.639029",
+        "type": "message",
+        "user": "U0000010"
+      },
+      "subtype": "message_replied",
+      "ts": "1794525536.639029",
+      "type": "message"
+    }
+  },
+  "direction": "receive",
+  "opcode": 1,
+  "url": "wss://wss-primary.slack.com/?frt=REDACTED&token=REDACTED&sync_desync=1&slack_client=desktop&start_args=%3Fagent%3Dclient%26org_wide_aware%3Dtrue%26agent_version%3D1794521867%26eac_cache_ts%3Dtrue%26cache_ts%3D0%26name_tagging%3Dtrue%26only_self_subteams%3Dtrue%26connect_only%3Dtrue%26ms_latest%3Dtrue&no_query_on_subscribe=1&flannel=3&lazy_channels=1&gateway_server=T0000001-1&batch_presence_aware=1"
+}

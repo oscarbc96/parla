@@ -1,0 +1,119 @@
+---
+title: Install
+description: Install a Parla release on macOS, or build it from source, and know what to expect on first launch.
+---
+
+Parla ships as a self-signed macOS build on
+[GitHub Releases](https://github.com/oscarbc96/parla/releases), or you can build
+it from source on macOS 14 or later, on Apple silicon or Intel.
+
+## Install a release
+
+1. Download the latest `.dmg` from
+   [GitHub Releases](https://github.com/oscarbc96/parla/releases). One universal
+   dmg covers Apple silicon and Intel.
+2. Open the `.dmg` and drag Parla to Applications.
+3. Open Parla once and allow it.
+
+The bundle is self-signed, so macOS blocks the first launch. On macOS 15 or
+later, open Parla once (macOS blocks it), then go to System Settings > Privacy &
+Security, scroll to Security, click **Open Anyway** next to the Parla message,
+confirm and enter your password. On macOS 14, Control-click (right-click) Parla
+in Applications and choose **Open**, then **Open**. This is only needed the
+first time.
+
+## Build from source
+
+Build it on macOS 14 or later, on Apple silicon or Intel.
+
+### Requirements
+
+- macOS 14 or later.
+- [mise](https://mise.jdx.dev) for the Rust toolchain and project tasks.
+- Full Xcode with the Metal toolchain
+  (`xcodebuild -downloadComponent MetalToolchain`). The Command Line Tools
+  alone are not enough.
+- Git.
+
+### Build and run
+
+1. Install mise if you do not have it.
+
+   ```sh
+   curl https://mise.run | sh
+   ```
+
+2. Clone the repository.
+
+   ```sh
+   git clone https://github.com/oscarbc96/parla.git
+   cd parla
+   ```
+
+3. Install the pinned tools.
+
+   ```sh
+   mise install
+   ```
+
+4. Optional: create a local signing identity once, so macOS stops asking for
+   your password after every rebuild.
+
+   ```sh
+   mise run dev:cert
+   ```
+
+   macOS asks for your login password once. This adds a self-signed
+   "Parla Dev (local)" certificate and trusts it for code signing only.
+
+5. Build and run.
+
+   ```sh
+   mise run run
+   ```
+
+The first build compiles GPUI and the rest of the Rust workspace, so it takes a
+while. Later builds reuse the cache.
+
+To make a release-style app bundle, run `mise run bundle` and open
+`target/release/Parla.app`. `mise run bundle:run` starts that bundle with its
+logs in the terminal. Desktop notifications need the app bundle.
+
+The bundle is self-signed, so macOS blocks the first launch. On macOS 15 or
+later, open Parla once (macOS blocks it), then go to System Settings > Privacy &
+Security, scroll to Security, click **Open Anyway** next to the Parla message,
+confirm and enter your password. On macOS 14, Control-click (right-click) Parla
+in Applications and choose **Open**, then **Open**. This is only needed the
+first time.
+
+## Credentials on a development build
+
+Debug builds keep saved sign-ins and store keys in
+`development_credentials.json` in Parla's data folder, not in the macOS
+keychain. The file is readable only by your user (mode 0600) and is not
+encrypted. It is deleted entry by entry when you sign out. Release builds always
+use the keychain.
+
+To use the keychain in a debug build instead, set `PARLA_DEV_USE_KEYCHAIN=1` and
+run `mise run dev:cert` once. Sign in again; an existing keychain session is not
+copied into the development build.
+
+The first time Parla reads a keychain item, macOS may ask for your password.
+Choose **Always Allow** so it does not ask again for that item.
+
+## First launch
+
+With no workspace yet, Parla opens a short setup flow: welcome, choose a service,
+sign in, first sync and a tour. The first sync opens the encrypted local store
+and loads channels, people and recent messages. **Open Parla** turns on when the
+workspace is ready.
+
+Next: [Sign in](/parla/docs/sign-in/).
+
+## Windows and Linux
+
+Parla targets macOS, Windows and Linux in source and CI. macOS builds are on
+GitHub Releases; there are no Windows or Linux installers yet, so build those
+from source. macOS is the supported platform for now. Windows and Linux builds
+may work, but some features depend on macOS, and notifications and media
+playback can differ.

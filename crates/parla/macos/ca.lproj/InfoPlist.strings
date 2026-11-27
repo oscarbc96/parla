@@ -1,0 +1,4 @@
+/* Localised bundle strings (the app name is never translated). */
+"CFBundleDisplayName" = "Parla";
+"NSMicrophoneUsageDescription" = "Parla utilitza el micròfon perquè puguis parlar a les trucades.";
+"NSCameraUsageDescription" = "Parla utilitza la càmera perquè puguis compartir vídeo a les trucades.";

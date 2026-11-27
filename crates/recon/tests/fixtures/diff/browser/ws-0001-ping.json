@@ -1,0 +1,1 @@
+{"direction":"send","opcode":1,"url":"wss://ws.example.test/","data":{"json":{"type":"ping"}}}

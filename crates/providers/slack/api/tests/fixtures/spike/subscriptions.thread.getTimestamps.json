@@ -1,0 +1,127 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "mode",
+          "all_subscriptions"
+        ],
+        [
+          "limit",
+          "8"
+        ],
+        [
+          "priority_mode",
+          "all"
+        ],
+        [
+          "fetch_threads_state",
+          "false"
+        ],
+        [
+          "_x_reason",
+          "threads-view-metadata-refresh"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "ok": true,
+        "response_metadata": {
+          "next_cursor": "YWxsX3N1YnNjcmlwdGlvbnNfdjE6cmVhZHwxNzAwMDAwMDAwMDAwMDAwfDE3MDAwMDAwMDEwMDAwMDB8MTAwMDAwMDAwMDAwMXwxMDAwMDAwMDAwMDAyfDE3MDAwMDAwMDIwMDAwMDB8MTAwMDAwMDAwMDAwM3wxMDAwMDAwMDAwMDAzfGFsbA=="
+        },
+        "subscriptions": [
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794506652,
+            "last_read": "1794508024.488979",
+            "latest": "1794508024.488979",
+            "priority": false,
+            "timestamp": "1794500969.628009"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794403654,
+            "last_read": "1794407734.996829",
+            "latest": "1794407734.996829",
+            "priority": false,
+            "timestamp": "1794403413.988969"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794406231,
+            "last_read": "1794406683.461229",
+            "latest": "1794406683.461229",
+            "priority": false,
+            "timestamp": "1794405742.105829"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794406194,
+            "last_read": "1794406514.142759",
+            "latest": "1794406514.142759",
+            "priority": false,
+            "timestamp": "1794405777.935859"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794405114,
+            "last_read": "1794405324.610419",
+            "latest": "1794405324.610419",
+            "priority": false,
+            "timestamp": "1794404793.261159"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794396876,
+            "last_read": "1794396876.495969",
+            "latest": "1794396876.495969",
+            "priority": false,
+            "timestamp": "1794395804.171909"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794299769,
+            "last_read": "1794345335.500989",
+            "latest": "1794345335.500989",
+            "priority": false,
+            "timestamp": "1794244683.013369"
+          },
+          {
+            "channel_id": "D0000007",
+            "date_created": 1794317127,
+            "last_read": "1794322084.394559",
+            "latest": "1794322084.394559",
+            "priority": false,
+            "timestamp": "1794315878.886539"
+          }
+        ]
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/subscriptions.thread.getTimestamps?_x_id=9aeb8a04-1794525645.086&_x_gantry=true&_x_desktop_ia=4&_x_csid=FT7MR33vSRg&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=66&_x_num_retries=0"
+}

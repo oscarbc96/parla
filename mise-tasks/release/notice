@@ -1,0 +1,13 @@
+#!/bin/sh
+#MISE description="Generate the bundled NOTICE: project notice followed by third-party licences"
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+mkdir -p target/release-assets
+out=target/release-assets/NOTICE
+cat NOTICE > "$out"
+# Keep the project and asset attributions at the top, then the crate licences.
+printf '\n\n' >> "$out"
+cargo about generate about.hbs >> "$out"
+echo "wrote $out"

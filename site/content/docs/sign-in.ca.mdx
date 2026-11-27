@@ -1,0 +1,160 @@
+---
+title: Inicia la sessió
+description: Com fa servir Parla la teva pròpia sessió de xat, com afegir espais de treball i quins riscos acceptes.
+---
+
+Parla inicia la sessió amb la teva pròpia sessió web del servei de xat. A Slack,
+fa servir el testimoni i la galeta que el teu navegador envia al client web de
+Slack. No cal crear cap app, no hi ha pantalla de consentiment OAuth, no hi ha
+testimoni de bot i no hi ha cap servidor del projecte.
+
+Funciona perquè la sessió ja té el teu accés complet. No hi ha cap llista de
+permisos per aprovar ni cap app que un administrador de l'espai de treball hagi
+d'instal·lar.
+
+## Primer arrencament
+
+Sense cap espai de treball, la finestra principal et guia per la configuració. Un
+indicador a la part superior mostra en quin pas ets.
+
+1. **Benvinguda** explica què és Parla. Tria **Comença**.
+2. **Tria proveïdor** mostra els serveis de xat amb què Parla pot iniciar sessió.
+   Tria'n un i prem **Continua**.
+3. **Inicia la sessió** mostra les opcions d'inici de sessió del mateix servei.
+4. **Primera sincronització** mostra com es prepara el nou espai de treball:
+   s'obre el magatzem local xifrat, arriben els canals i les persones i després
+   els missatges recents. **Obre Parla** s'activa quan l'espai està llest, o quan
+   ha fallat i la finestra principal ofereix **Torna-ho a provar**.
+5. **Recorregut** assenyala la barra lateral i la barra d'espais de treball i
+   anomena les dreceres del selector ràpid i del full de dreceres. Tria
+   **Omet el recorregut**, el botó de tancar o Escape per acabar-lo. Només es
+   mostra una vegada.
+
+Un selector d'**Idioma** a la benvinguda i a la pantalla del proveïdor canvia
+l'idioma de l'aplicació a l'instant, sense reiniciar. És el mateix paràmetre que
+**Idioma de la interfície** a Paràmetres, General.
+
+Cada pas hi entra lliscant horitzontalment sobre l'anterior, amb la durada del
+moviment del tema. Amb **Reduir el moviment** activat al sistema, els passos
+canvien a l'instant, sense animació. Escape torna enrere un pas; a la pàgina de
+benvinguda tanca la configuració inicial, i mentre s'està iniciant la sessió no
+fa res.
+
+## Inicia la sessió amb una finestra del navegador
+
+És el flux predeterminat.
+
+1. Tria **Inicia la sessió amb la finestra del navegador**. Parla obre una finestra
+   d'inici de sessió nativa a la pàgina del servei.
+2. Inicia la sessió amb normalitat, també amb SSO si el fas servir. Pots iniciar
+   la sessió en diversos espais de treball a la mateixa finestra.
+3. Parla mostra els espais de treball que la sessió pot obrir. Els que ja són a
+   Parla s'actualitzen en segon pla; els nous es marquen per tu.
+4. Tria **Afegeix N espais de treball**. Parla els afegeix d'un en un i mostra el
+   progrés de cada fila. Si un espai necessita que tornis a iniciar la sessió,
+   acaba aquell pas o omet-lo.
+5. Quan els espais estan afegits, la finestra es tanca i Parla els obre.
+
+Parla no automatitza el formulari d'inici de sessió. Escrius les teves pròpies
+credencials. La finestra només serveix per al teu inici de sessió interactiu al
+servei real.
+
+Per afegir un altre espai més endavant, usa el **+** de la barra d'espais de
+treball. L'inici de sessió s'obre a la seva pròpia finestra, així que la finestra
+principal segueix funcionant.
+
+Si el teu proveïdor d'identitat refusa l'inici de sessió dins d'una finestra
+integrada, usa el flux manual de sota.
+
+## Enganxa un testimoni i una galeta
+
+Fes-lo servir si prefereixes no iniciar la sessió a través de la finestra de Parla
+o si la finestra integrada està bloquejada. Els passos exactes depenen del servei;
+a Slack:
+
+1. En un navegador normal, inicia la sessió al client web de Slack.
+2. Obre la consola de les eines de desenvolupament del navegador, executa
+   `copy(localStorage.getItem("localConfig_v2"))` i desa el text copiat. Enumera
+   tots els espais de treball amb la sessió iniciada, cadascun amb el seu testimoni
+   i la seva URL.
+3. Obre el panell Aplicació o Emmagatzematge, busca les galetes del domini de Slack
+   i copia el valor de la galeta `d`. Comença per `xoxd-`. Com que és `HttpOnly`,
+   copia-la des del panell de galetes, no des de la consola.
+4. A Parla tria **Enganxa testimoni i galeta**, marca la casella de consentiment i
+   enganxa la galeta i la sortida de la consola.
+5. Parla comprova cada espai amb el servei abans de desar-lo, mostra què ha
+   verificat i fa servir el mateix emmagatzematge del clauer.
+
+Els camps són camps de text normals. Els camps de galeta i testimoni mostren punts
+i refusen copiar i retallar. Tab es mou entre camps i Retorn inicia la sessió.
+
+## Afegir, actualitzar i treure espais de treball
+
+- **Afegir:** usa el **+** de la barra d'espais de treball.
+- **Canviar:** fes clic en un espai, prem `cmd-1` a `cmd-9` (`ctrl-1` a `ctrl-9` a
+  Linux i Windows) o prem `cmd-shift-]` i `cmd-shift-[` per al següent i
+  l'anterior.
+- **Treure:** fes clic dret a l'espai de la barra i tria **Treu aquest espai de
+  treball de Parla**. Parla pregunta primer i després esborra les dades locals i
+  l'inici de sessió desat d'aquell espai. No s'esborra res al servidor.
+- **Tancar la sessió:** obre Paràmetres, Espais de treball, i tria **Tanca la
+  sessió** al costat d'un espai.
+
+## Quan caduca la sessió
+
+Una sessió deixa de funcionar quan caduca la galeta o quan tanques la sessió a
+tot arreu. Parla marca l'espai com a caducat, manté els missatges en memòria cau
+llegibles i deixa el compositor en només lectura fins que tornis a iniciar la
+sessió.
+
+Un avís ofereix **Inicia la sessió de nou**. A macOS, Parla també mostra una
+notificació titulada "Inicia la sessió a l'espai de treball de nou" per cada caducitat; fes-hi
+clic per portar Parla al davant i obrir la finestra d'inici de sessió. Parla no pot
+renovar la sessió per si sol.
+
+## Riscos que acceptes
+
+Llegeix això abans d'iniciar la sessió.
+
+- **Endpoints no documentats.** Parla crida els endpoints que fa servir el client
+  web del servei. No estan documentats ni versionats i poden canviar sense avís.
+  L'inici de sessió, les actualitzacions en temps real o una funció poden deixar de
+  funcionar per a tothom alhora.
+- **Accés complet al compte.** El testimoni i la galeta són una sessió completa del
+  compte. Qualsevol que els obtingui pot actuar com tu. No estan limitats a Parla,
+  a un espai de treball ni a un dispositiu.
+- **Política de l'empresa.** Extreure una sessió pot incomplir la política de TI de
+  la teva empresa o les condicions que s'apliquen al teu espai de treball.
+  Pregunta abans d'usar Parla amb un compte de feina.
+- **Condicions.** Aquest enfocament pot no encaixar amb les condicions de l'API i la
+  política per a desenvolupadors del servei. Parla segueix sent gratuït, no oficial
+  i no comercial, i divulga el risc en lloc d'amagar-lo. Aquesta pàgina no és
+  assessorament legal.
+
+## On són els secrets
+
+A les compilacions release, els testimonis i les galetes van al clauer del sistema
+operatiu, per espai de treball. No s'escriuen mai als fitxers de paràmetres, al
+magatzem local de missatges ni als registres. La sortida de depuració i de pantalla
+els oculta, i els informes de fallades eliminen els valors que semblen testimonis.
+
+Parla llegeix cada element del clauer una vegada per sessió i el manté a la
+memòria, així que macOS pregunta com a màxim una vegada per element. Tria
+**Permetre sempre** i deixarà de preguntar. Si compiles Parla tu mateix, executa
+`mise run dev:cert` una vegada perquè les recompilacions mantinguin la mateixa
+signatura; consulta [Instal·lació](/parla/ca/docs/install/).
+
+Les compilacions de depuració són l'excepció: desen els secrets en un fitxer sense
+xifrar, llegible només pel teu usuari, a la carpeta de dades, en lloc del clauer.
+Consulta [Instal·lació](/parla/ca/docs/install/) per als detalls i
+`PARLA_DEV_USE_KEYCHAIN`.
+
+## Teclat
+
+Tots els controls de les pantalles d'inici de sessió s'assoleixen amb el teclat i
+mostren un anell de focus. Tab i Majúscules-Tab es mouen pels controls. Retorn o
+Espai premen el botó enfocat o marquen la casella de consentiment, i Retorn en un
+camp envia el formulari. Escape torna des del formulari d'enganxar o cancel·la la
+llista d'espais.
+
+Següent: [Ús diari](/parla/ca/docs/messaging/).

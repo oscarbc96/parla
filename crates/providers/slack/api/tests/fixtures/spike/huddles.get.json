@@ -1,0 +1,74 @@
+{
+  "method": "POST",
+  "request": {
+    "body": {
+      "form": [
+        [
+          "token",
+          "REDACTED"
+        ],
+        [
+          "huddle_id",
+          "R0000010"
+        ],
+        [
+          "_x_reason",
+          "get-huddle-thread"
+        ],
+        [
+          "_x_mode",
+          "online"
+        ],
+        [
+          "_x_app_name",
+          "client"
+        ],
+        [
+          "_x_sonic",
+          "true"
+        ]
+      ]
+    },
+    "headers": [],
+    "query": []
+  },
+  "response": {
+    "body": {
+      "json": {
+        "huddle": {
+          "attached_file_ids": [],
+          "background_id": "GARDEN_OFFICE",
+          "channels": [
+            "C0000005"
+          ],
+          "created_by": "U0000001",
+          "date_end": 0,
+          "date_start": 1794526177,
+          "external_unique_id": "126b28be-4c0f-446c-bd8a-685306c32713",
+          "has_ended": false,
+          "huddle_link": "https://app.slack.com/huddle/T0000001/C0000005",
+          "id": "R0000010",
+          "last_invite_status_by_user": {},
+          "locale": "en-GB",
+          "name": "",
+          "participant_history": [],
+          "participants": [],
+          "pending_invitees": {},
+          "prototypes": {
+            "is_prewarmed": false,
+            "is_scheduled": false
+          },
+          "recording": {
+            "can_record_summary": "unavailable"
+          },
+          "thread_root_ts": "1794526178.065219"
+        },
+        "ok": true
+      }
+    },
+    "headers": [],
+    "mime": "application/json",
+    "status": 200
+  },
+  "url": "https://workspace.slack.com/api/huddles.get?_x_id=9aeb8a04-1794526178.180&_x_gantry=true&_x_desktop_ia=4&_x_csid=y1DBQLYWuFo&slack_route=T0000001&_x_version_ts=1794521867&_x_foreground=true&_x_frontend_build_type=next-8e48c84f87f5&fp=cf&_x_num_retries=0"
+}

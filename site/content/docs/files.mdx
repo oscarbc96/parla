@@ -1,0 +1,115 @@
+---
+title: Files
+description: Preview, open, download and upload files, read snippets and watch clips in Parla.
+---
+
+## Previews
+
+Files shared in a conversation appear as cards under the message:
+
+- **Images** show inline, fitted to a box.
+- **PDFs** show the thumbnail the service supplies. Parla does not render PDF
+  pages itself.
+- **Snippets** show the file name, language, line numbers and the first lines.
+- **Clips** are video or audio files with a poster, name, size and duration.
+- **Other files** show an icon, name and size.
+- Deleted files show a placeholder.
+
+The **Inline images** setting in Settings, General controls when images load:
+**Always**, **On click** or **Never**. The default is **On click**. Images over
+10 MB are not loaded inline, and animated images play only while visible.
+
+## Open a file
+
+Click an image to open it in the media viewer. The viewer shows the file name,
+who sent it, when and its size.
+
+- Use **Previous** and **Next**, the Left and Right arrow keys, or the
+  thumbnails to step through the loaded images of the conversation.
+- Zoom with `+` and `-`, use `0` for actual size and `F` to fit the window.
+  Drag or scroll to pan when the image is larger than the window.
+- **Copy image**, **Download**, **Open in default app** and **Open in channel**
+  are in the toolbar. Escape closes the viewer.
+
+Click a code or text file, or **Open in viewer** on a snippet card, to open the
+code viewer. It shows the file name, who sent it, where and when, with line
+numbers, wrapping, copy and download. `cmd-f` opens find inside the file;
+Escape closes find, and a second Escape closes the window.
+
+Snippets show a preview of at most 400 lines or 64 KB. When the preview is only
+part of the file, the card says so, **Copy preview** copies only the visible
+lines, and **Download** saves the whole file.
+
+## Clips
+
+On macOS, **Play** downloads the clip into the cache and plays it with the
+system decoder. Parla never starts a clip by itself. Click the card again to
+pause and resume without taking the keyboard away from the composer.
+
+The card shows pause and resume, a seek bar, speed (1x, 1.5x and 2x), mute and
+volume, and captions when the service supplies them. With the card focused,
+Space plays or pauses, Left and Right move 5 seconds, and `m` mutes. A clip
+pauses when it scrolls out of view or the window loses focus.
+
+On Windows and Linux, and on macOS when playback is not possible, the card shows
+the poster and **Open in browser**.
+
+## Downloads
+
+**Download** saves the file to your downloads folder under a unique name, so
+nothing is overwritten. A toast confirms the save and offers **Show in folder**.
+
+**Open in default app** saves the file first, then opens only PNG, JPEG, GIF,
+WebP, HEIC and PDF files whose name and type agree. Any other file is only
+saved. Downloaded files carry the system's mark for files from the internet, so
+the operating system asks before opening or running them.
+
+## Uploads
+
+Attach files in three ways:
+
+- Drag files from your file manager onto the timeline.
+- Paste files or an image from the clipboard into the composer with `cmd-v`
+  (`ctrl-v` on Linux and Windows).
+- Use the **Attach files** button in the composer.
+
+Files do not upload until you press **Send**. They sit in the composer as chips
+with a thumbnail or type badge, the name and the size, and each has a remove
+button. Your text becomes the comment on the files and may be empty. The thread
+composer works the same way.
+
+When you send, each chip shows **Uploading** with its size and a **Cancel**
+button. **Send** waits for the uploads to finish. If an upload fails, the chip
+turns red with the reason and offers **Retry** and **Remove**. Uploads need a
+connection and are not queued: sending while offline shows an error and keeps
+the files attached.
+
+Files larger than 1 GB are refused, and directories are refused too. Other
+files in the same drop still upload.
+
+## Long pastes become snippets
+
+Pasting more than 20 lines or more than 2,000 characters into the composer does
+not fill the draft. Parla offers to share the text as a snippet instead: give it
+a title, check the language it guessed, and choose **Share as snippet**. The
+text is attached as a file chip and sent like any other file.
+
+Choose **Paste as text** or press Escape to put the text in the draft instead. A
+paste over 1 MB is never a snippet; Parla offers to attach it as an ordinary
+text file.
+
+## The Files tab
+
+The **Files** tab under a conversation header lists the files shared in that
+conversation, newest first, including thread replies. Each row shows the file
+type, name, size, who shared it and when.
+
+Click a row, or move with the arrow keys and press Enter or Space, to open it:
+images and PDFs in the media viewer, snippets and code files in the code viewer,
+and other files as downloads. The list loads in pages as you scroll, up to 500
+files. **Messages** goes back to the conversation.
+
+The tab lists the files of messages Parla has stored, so older files appear once
+their messages have been loaded.
+
+Next: [Notifications](/parla/docs/notifications/).

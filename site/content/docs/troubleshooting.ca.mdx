@@ -1,0 +1,149 @@
+---
+title: Solució de problemes
+description: Soluciona problemes habituals d'inici de sessió, notificacions, memòria cau, cerca, huddles i actualitzacions.
+---
+
+## Parla no mostra notificacions
+
+Les notificacions d'escriptori a macOS necessiten el paquet de l'aplicació. Compila
+i executa Parla amb `mise run run` o `mise run bundle`, no amb el binari directe.
+Consulta [Instal·lació](/parla/ca/docs/install/).
+
+Comprova també que les notificacions d'escriptori no estiguin a **Res**, que la
+conversa no estigui silenciada, que les hores de silenci no estiguin actives i que
+l'espai de treball no estigui pausat. Un missatge a la conversa que ja estàs mirant
+no avisa.
+
+## No puc iniciar la sessió
+
+Si el teu proveïdor d'identitat refusa la finestra d'inici de sessió integrada, usa
+**Enganxa testimoni i galeta**. Consulta
+[Inicia la sessió](/parla/ca/docs/sign-in/).
+
+Si Parla diu que no ha trobat cap espai, inicia la sessió a l'espai a la finestra
+fins que s'obri la seva pàgina i torna-ho a provar. Si un espai necessita SSO o
+doble factor, acaba aquell pas a la finestra i deixa la fila marcada.
+
+## Un espai de treball segueix buit o diu que encara connecta
+
+Parla mostra el motiu en un avís en lloc de deixar la barra lateral buida. Espera
+que acabi la primera càrrega. Els espais grans carreguen la llista de membres per
+parts. Si el servidor no respon en 20 segons, apareix una barra d'error amb
+**Torna-ho a provar**.
+
+Si el problema continua, obre la carpeta de registres des de Paràmetres, Avançat i
+llegeix `parla.log`. Els testimonis, les galetes i el text dels missatges
+s'eliminen del fitxer, així que és segur adjuntar-lo a un informe d'error.
+
+## La meva sessió ha caducat
+
+Parla mostra un avís que nomena l'espai i ofereix **Inicia la sessió de nou**. Els
+missatges en memòria cau segueixen sent llegibles, però no pots enviar fins que
+iniciïs la sessió. A macOS també reps una notificació per cada caducitat.
+
+Tornar a iniciar la sessió actualitza la sessió desada. Si vas tancar la sessió a
+tots els espais, Parla torna al flux de primera configuració.
+
+## Els missatges segueixen en cua o diuen que no s'han enviat
+
+Els missatges en cua esperen en una safata de sortida i surten en ordre quan torna
+la connexió. **Torna-ho a provar ara** a l'avís sense connexió ho intenta a
+l'instant.
+
+Un missatge que va fallar amb **Pot ser que s'hagi enviat. Comprova-ho abans de
+tornar-ho a provar.** pot haver arribat a la conversa. Comprova-ho primer i després
+tria **Torna-ho a provar**, **Esborra** o **Copia el text**.
+
+## La memòria cau no es pot obrir
+
+Parla mostra un avís quan la memòria cau local d'un espai no es pot llegir. Tria
+**Reconstrueix la memòria cau**. Els missatges es tornen a carregar des del servei,
+però els missatges en cua i els esborranys desats en aquest dispositiu no es poden
+recuperar. Parla no reconstrueix mai una memòria cau per si sol.
+
+## El disc està gairebé ple
+
+Quan queden menys d'1 GiB lliures, apareix un avís **Disc gairebé ple**. Tria
+**Gestiona l'emmagatzematge** per obrir Paràmetres, Privadesa i emmagatzematge, i
+buida la memòria cau o redueix el límit de memòria cau i la retenció. L'espai que
+macOS pot alliberar per si sol no conta.
+
+## La cerca no troba missatges antics
+
+La cerca usa els missatges desats en aquest dispositiu. Els missatges podats, o
+aquells als quals no has tornat a desplaçar-te per carregar-los, no són a l'índex
+local. Desplaça't enrere a la conversa per carregar missatges antics, o augmenta
+**Conserva els missatges durant** a Paràmetres, Privadesa i emmagatzematge. La cerca
+també usa el servidor quan hi ha connexió i el servei ho admet.
+
+## Un huddle no té so
+
+Obre **Dispositius** a la barra de trucada i tria el micròfon i l'altaveu correctes,
+o el valor predeterminat del sistema. Si el micròfon no està disponible, pots seguir
+escoltant. Si l'àudio de Parla no pot connectar, Parla prova la finestra de trucada
+a macOS, després el navegador i després l'app del servei.
+
+Parla encara no transmet vídeo ni compartició de pantalla. Quan algú comença a
+compartir, usa **Obre al navegador**.
+
+## Una actualització falla
+
+Parla deixa intacta l'aplicació instal·lada i diu quin pas ha fallat. Tria
+**Torna-ho a provar**, o **Baixa** per obtenir la versió a mà. Parla no instal·la
+mai un paquet la signatura del qual no coincideixi. Consulta
+[Actualitzacions](/parla/ca/docs/updates/).
+
+## On són els registres i els diagnòstics?
+
+Obre Paràmetres, Avançat i tria **Obre la carpeta de registres** o **Exporta...**.
+L'exportació escriu un fitxer de text censurat amb la versió, el sistema operatiu,
+els paràmetres, les línies recents del registre i els comptadors de rendiment. No
+conté mai text de missatges, testimonis, galetes, adreces de correu ni hosts
+d'espais de treball. Llegeix-lo abans de compartir-lo.
+
+## Preguntes freqüents
+
+### Parla l'ha creat Slack?
+
+No. Parla és un projecte independent i de codi obert. No l'ha creat Slack
+Technologies, LLC, no hi està afiliat ni compta amb el seu suport, i Slack no li
+dona suport.
+
+### Parla envia els meus missatges al projecte?
+
+No. Parla parla amb el servei de xat amb la teva sessió. El projecte no executa
+servidors per a Parla i no rep dades de missatges. Consulta
+[Privadesa](/parla/ca/docs/privacy/).
+
+### He de crear una app o demanar permís a un administrador?
+
+No. Parla usa la teva pròpia sessió web, així que no cal crear cap app ni hi ha un
+pas d'aprovació de l'administrador. Tot i això, pot aplicar-se la política de la
+teva empresa; pregunta abans d'usar un compte de feina.
+
+### Puc usar diversos espais de treball?
+
+Sí. Cada espai amb la sessió iniciada segueix connectat, amb la seva pròpia
+insígnia, i pots canviar amb la barra, `cmd-1` a `cmd-9` o el selector ràpid.
+
+### Parla és compatible amb Windows i Linux?
+
+El codi té com a objectiu macOS, Windows i Linux. CI compila macOS i Linux, i
+comprova la compilació del codi exclusiu de Windows. Les compilacions de macOS
+són a GitHub Releases; no hi ha instal·ladors per a Windows ni Linux, així que
+compila'ls des del codi font. macOS és la plataforma amb suport per ara, i
+algunes funcions depenen de macOS.
+
+### Parla admet videotrucades?
+
+Parla transmet l'àudio dels huddles. El vídeo i la compartició de pantalla s'obren
+al navegador per ara.
+
+### Les meves dades locals estan xifrades?
+
+La base de dades local de cada espai està xifrada i la seva clau és al clauer del
+sistema operatiu. Les imatges en memòria cau i altres fitxers es poden desar sense
+xifrar, així que mantén actiu el xifratge de disc complet. Consulta
+[Privadesa](/parla/ca/docs/privacy/).
+
+Següent: [Privadesa](/parla/ca/docs/privacy/).

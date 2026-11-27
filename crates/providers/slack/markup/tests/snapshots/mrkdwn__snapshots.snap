@@ -1,0 +1,169 @@
+---
+source: crates/providers/slack/markup/tests/mrkdwn.rs
+expression: parse_mrkdwn(msg)
+---
+RichText {
+    blocks: [
+        Paragraph(
+            [
+                Text {
+                    text: "Deploy",
+                    style: Style {
+                        bold: true,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Text {
+                    text: " done by ",
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                User {
+                    id: UserId(
+                        "U1",
+                    ),
+                    label: Some(
+                        "ana",
+                    ),
+                },
+                Text {
+                    text: " in ",
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Conversation {
+                    id: ConversationId(
+                        "C1",
+                    ),
+                    label: Some(
+                        "ops",
+                    ),
+                },
+                Text {
+                    text: " ",
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Emoji(
+                    EmojiRef {
+                        shortcode: "tada",
+                        unicode: Some(
+                            "🎉",
+                        ),
+                        skin_tone: None,
+                    },
+                ),
+            ],
+        ),
+        Quote(
+            [
+                Paragraph(
+                    [
+                        Text {
+                            text: "quoted & ",
+                            style: Style {
+                                bold: false,
+                                italic: false,
+                                strike: false,
+                            },
+                        },
+                        Text {
+                            text: "kept",
+                            style: Style {
+                                bold: false,
+                                italic: true,
+                                strike: false,
+                            },
+                        },
+                    ],
+                ),
+            ],
+        ),
+        List {
+            style: Bullet,
+            indent: 0,
+            items: [
+                [
+                    Text {
+                        text: "one",
+                        style: Style {
+                            bold: false,
+                            italic: false,
+                            strike: false,
+                        },
+                    },
+                ],
+                [
+                    Text {
+                        text: "two",
+                        style: Style {
+                            bold: false,
+                            italic: false,
+                            strike: false,
+                        },
+                    },
+                ],
+            ],
+        },
+        Code {
+            lang: None,
+            text: "let x = 1 < 2;",
+        },
+        Paragraph(
+            [
+                Text {
+                    text: "see ",
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Link {
+                    url: "https://x.test/a",
+                    label: Some(
+                        "docs",
+                    ),
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Text {
+                    text: " ",
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Date {
+                    unix: 1392734382,
+                    fallback: "Feb 18",
+                },
+                Text {
+                    text: " ",
+                    style: Style {
+                        bold: false,
+                        italic: false,
+                        strike: false,
+                    },
+                },
+                Broadcast(
+                    Here,
+                ),
+            ],
+        ),
+    ],
+}

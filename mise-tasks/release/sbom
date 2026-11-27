@@ -1,0 +1,35 @@
+#!/bin/sh
+#MISE description="Generate a CycloneDX SBOM for the parla package"
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+mkdir -p target/release-assets
+
+version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "parla") | .version' | head -n 1)
+if [ -z "$version" ] || [ "$version" = "null" ]; then
+  echo "could not determine parla version" >&2
+  exit 1
+fi
+
+out="$root/target/release-assets/Parla-${version}.cdx.json"
+# cargo-cyclonedx 0.5.10 has no output-dir flag; override the filename and run
+# from the crate directory so it writes a single deterministic BOM we can move.
+base="Parla-${version}.cdx"
+bom="crates/parla/${base}.json"
+rm -f "$bom"
+
+if ! cargo cyclonedx --help >/dev/null 2>&1; then
+  echo "cargo-cyclonedx is required; run \`mise install\` to install it" >&2
+  exit 1
+fi
+
+(cd crates/parla && cargo cyclonedx --format json --override-filename "$base" >/dev/null)
+
+if [ ! -f "$bom" ]; then
+  echo "could not find generated CycloneDX JSON at $bom" >&2
+  exit 1
+fi
+
+mv "$bom" "$out"
+echo "wrote $out"

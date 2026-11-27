@@ -1,0 +1,4 @@
+[{"type":"section","text":{"type":"mrkdwn","text":"*Deploy* finished"},
+  "fields":[{"type":"mrkdwn","text":"*Env*\nstaging"},{"type":"plain_text","text":"ok"}],
+  "accessory":{"type":"image","image_url":"https://img.example.test/a.png","alt_text":"logo"}},
+ {"type":"header","text":{"type":"plain_text","text":"Release"}},{"type":"divider"}]

@@ -1,0 +1,27 @@
+[package]
+name = "domain"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+default = []
+# In-memory `FakeProvider` and shared builders for tests of core crates.
+test-support = []
+
+[dependencies]
+settings = { path = "../settings", default-features = false }
+i18n = { path = "../i18n" }
+futures.workspace = true
+jiff.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+url.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+domain = { path = ".", features = ["test-support"] }

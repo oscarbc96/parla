@@ -1,0 +1,132 @@
+/// Lifecycle: the one export every plugin has.
+interface lifecycle {
+  use types.{error};
+  enum activate-reason { install, update, resident, invoked, dev-reload }
+  /// Deadline 1 s; a miss fails the load and counts as a crash.
+  activate: func(reason: activate-reason) -> result<_, error>;
+}
+
+/// Optional. Deadline 200 ms before the host drops the instance.
+interface deactivation {
+  use types.{error};
+  deactivate: func() -> result<_, error>;
+}
+
+/// Optional. Deadline 5 s; a failure keeps the old version.
+interface migration {
+  use types.{error, version};
+  migrate: func(previous: version) -> result<_, error>;
+}
+
+/// `[[commands]]`. Deadline 10 s.
+interface commands {
+  use types.{error, context};
+  run-command: func(id: string, context: context) -> result<_, error>;
+}
+
+/// `[[slash]]`. Handled locally, never sent to the provider.
+/// `args` at most 4 KB. `view` is the host-assigned id an `ephemeral`
+/// result is shown under, so `ui.update` and view events can target it.
+interface slash-commands {
+  use types.{error, context, view-id};
+  use view.{view-tree};
+  variant slash-result { none, replace-draft(string), ephemeral(view-tree), open(view-id) }
+  run-slash: func(view: view-id, name: string, args: string, context: context) -> result<slash-result, error>;
+}
+
+/// `[[actions]]`. The invoked message is in context.
+interface message-actions {
+  use types.{error, context, message-ref};
+  message-action: func(id: string, message: message-ref, context: context) -> result<_, error>;
+}
+
+/// `[hooks]` events. Read-only: writes return `denied`.
+/// Deadline 50 ms each, queued (64).
+interface event-hooks {
+  use types.{error, workspace-id, conversation-id, user-id, message-ref, message};
+  enum message-change { new, edited, deleted }
+  record message-event { workspace: workspace-id, change: message-change, ref: message-ref, message: option<message> }
+  record reaction-event { workspace: workspace-id, ref: message-ref, emoji: string, user: user-id, added: bool }
+  record channel-open-event { workspace: workspace-id, conversation: conversation-id }
+  variant event { message(message-event), reaction(reaction-event), channel-open(channel-open-event) }
+  on-event: func(event: event) -> result<_, error>;
+}
+
+/// `[hooks] notification_filter`. Deadline 20 ms; fails open.
+interface notification-filter {
+  use types.{error, workspace-id, conversation-id, message-ref};
+  enum priority { low, normal, high }
+  record notification {
+    workspace: workspace-id,
+    conversation: conversation-id,
+    message: option<message-ref>,
+    title: string,
+    body: string,
+    sound: bool,
+  }
+  /// `title-prefix` at most 40 bytes.
+  record modification { title-prefix: option<string>, sound: option<bool>, priority: option<priority> }
+  variant decision { keep, suppress, modify(modification) }
+  notification-filter: func(notification: notification) -> result<decision, error>;
+}
+
+/// `[[transforms]]`. Deadline 100 ms; a check never blocks
+/// sending. `draft` and a replacement at most 40 KB; at most 50 issues.
+interface composer-transforms {
+  use types.{error};
+  /// Byte range in the draft, with an optional replacement.
+  record issue { start: u32, end: u32, message: string, fix: option<string> }
+  variant transform-result { replace(string), issues(list<issue>) }
+  composer-transform: func(id: string, draft: string) -> result<transform-result, error>;
+}
+
+/// `[[renderers]]`. Receives the URL, not the message.
+/// Deadline 300 ms to the first tree. `view` is the host-assigned id of
+/// this unfurl, for `ui.update`, `ui.refresh-after` and view events.
+interface renderer {
+  use types.{error, context, view-id};
+  use view.{view-tree};
+  /// `cache-seconds` is the result's TTL, 30 s minimum.
+  record rendered { tree: view-tree, cache-seconds: u32 }
+  render: func(view: view-id, id: string, url: string, context: context) -> result<rendered, error>;
+}
+
+/// Events from the plugin's views: panels, windows, rendered links and
+/// slash notes.
+interface views {
+  use types.{error, view-id};
+  use view.{event};
+  view-event: func(view: view-id, event: event) -> result<_, error>;
+}
+
+/// Hot-reloaded settings.
+interface settings-listener {
+  use types.{error};
+  settings-changed: func(keys: list<string>) -> result<_, error>;
+}
+
+/// `[[mcp.tools]]`. JSON in and out, each at most 1 MB.
+interface mcp-tools {
+  use types.{error};
+  mcp-call: func(tool: string, json: string) -> result<string, error>;
+}
+
+/// A Parla plugin: every host interface imported (each call checked against
+/// the grant), and `lifecycle` exported. Every other extension point is an
+/// optional export the guest adds only when its manifest declares it, for
+/// example `world my-plugin { include parla:plugin/plugin@0.1.0; export
+/// parla:plugin/commands@0.1.0; }`. The host looks each export up by its
+/// interface name and calls only what the manifest declares.
+world plugin {
+  import host;
+  import workspace;
+  import http;
+  import storage;
+  import secrets;
+  import settings;
+  import ui;
+  import composer;
+  import exec;
+
+  export lifecycle;
+}

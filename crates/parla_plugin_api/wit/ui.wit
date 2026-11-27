@@ -1,0 +1,46 @@
+/// Panels, windows, toasts and navigation. The host draws
+/// every tree inside its own chrome, which a plugin cannot change. Trees
+/// follow the rules in `view`.
+interface ui {
+  use types.{error, view-id, node-id, workspace-id, conversation-id, message-id, conversation-target};
+  use view.{view-tree};
+
+  enum toast-kind { info, success, warning, error }
+  /// `title` at most 100 bytes.
+  record window-spec { title: string, width: option<u32>, height: option<u32> }
+  variant notify-target { conversation(conversation-target), view(view-id) }
+
+  /// Capability: `panel`. One per plugin per window.
+  open-panel: func(panel-id: string, tree: view-tree) -> result<view-id, error>;
+  /// Capability: `windows`. At most 2 per plugin.
+  open-window: func(spec: window-spec, tree: view-tree) -> result<view-id, error>;
+  /// Capability: owner of the view (also a rendered link or slash note by
+  /// the `view-id` it was given). Coalesced to 10 per second.
+  update: func(view: view-id, tree: view-tree) -> result<_, error>;
+  /// Capability: owner of the view. Replaces the subtree rooted at `node`
+  /// with `tree`, whose node 0 takes `node`'s place.
+  patch: func(view: view-id, node: node-id, tree: view-tree) -> result<_, error>;
+  /// Capability: owner of the view.
+  close: func(view: view-id) -> result<_, error>;
+  /// Capability: owner of the view. One pending request per view, 4 per
+  /// plugin, 5 s minimum, fires only while visible, as the `refresh`
+  /// view event.
+  refresh-after: func(view: view-id, seconds: u32) -> result<_, error>;
+  /// Capability: none. Plain text, at most 200 bytes, labelled with the
+  /// plugin name; only while handling a user action or with a view open;
+  /// 6 per minute.
+  toast: func(text: string, kind: toast-kind) -> result<_, error>;
+  /// Capability: `notifications`. Plain text, title at most 100 bytes and
+  /// body at most 500; follows quiet hours.
+  notify: func(title: string, body: string, target: notify-target) -> result<_, error>;
+  /// Capability: `clipboard_write`. Only while handling a user action;
+  /// at most 1 MB.
+  copy: func(text: string) -> result<_, error>;
+  /// Capability: none. https only, only while handling a user click. A host
+  /// not on the plugin's card first asks "Open <host> in your browser?"
+  /// with the full URL; declining returns `cancelled`.
+  open-url: func(url: string) -> result<_, error>;
+  /// Capability: none. Only while handling a user click; does not put the
+  /// target in context.
+  open-conversation: func(ws: workspace-id, conversation: conversation-id, message: option<message-id>) -> result<_, error>;
+}

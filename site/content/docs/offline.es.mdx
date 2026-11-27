@@ -1,0 +1,113 @@
+---
+title: Sin conexión y caché
+description: Cómo guarda Parla los mensajes, pone en cola lo que envías sin conexión, conserva borradores y se recupera de una caché dañada.
+---
+
+Parla guarda una copia local de cada espacio de trabajo para que abra rápido y
+siga funcionando cuando la red no lo hace.
+
+## El almacén local cifrado
+
+Cada espacio de trabajo tiene su propia base de datos SQLite cifrada. Su clave se
+guarda en el llavero del sistema operativo, un elemento por espacio. Nada de lo
+que hay en el almacén se envía al proyecto.
+
+En macOS, Parla también comprueba si el cifrado de disco completo está activo.
+Mantenlo activo: el almacén protege el archivo de la base de datos, no el resto
+del disco.
+
+## Ponerse al día
+
+Cuando Parla se reconecta, pide al servicio lo que te has perdido y rellena los
+huecos del historial de las conversaciones. Ponerse al día y cargar historial
+nunca generan notificaciones. Solo los mensajes en directo pueden hacerlo.
+
+## Bandeja de salida
+
+Si envías un mensaje sin conexión, Parla lo pone en una bandeja de salida
+ordenada y lo muestra en la cronología como **En cola**. Los mensajes en cola
+salen en orden cuando vuelve la conexión, y cada uno se envía como mucho una vez.
+
+Los mensajes pendientes y fallidos se quedan al final de la conversación, en el
+orden en que los enviaste, debajo de todos los mensajes ya entregados.
+
+Si Parla se cierra mientras se envía un mensaje, no puede saber si llegó. El
+mensaje se marca como fallido con la nota **Puede que se haya enviado. Compruébalo
+antes de reintentar.** Un mensaje fallido se queda en la cronología, también
+después de reiniciar, con **No enviado.** y tres acciones: **Reintentar** lo pone
+en cola otra vez, **Borrar** lo descarta y **Copiar texto** pone su texto en el
+portapapeles.
+
+## Borradores
+
+Parla guarda el texto del compositor como borrador de cada conversación y de cada
+hilo. El borrador se guarda al cambiar de conversación, cerrar un hilo o salir,
+no con un temporizador. Vaciar el compositor borra el borrador.
+
+Los borradores se quedan en este ordenador, en la caché cifrada, y no se
+comparten con el servicio.
+
+## Aviso sin conexión
+
+Cuando se pierde la conexión con un espacio de trabajo, aparece **Estás sin
+conexión.** sobre la conversación. Parla sigue reintentando por su cuenta con una
+pausa cada vez mayor, así que no hay cuenta atrás. **Reintentar ahora** lo intenta
+al instante. El aviso desaparece cuando vuelve la conexión.
+
+## Reconstruir una caché
+
+Si la caché local de un espacio de trabajo no se puede abrir, Parla muestra un
+aviso. Los mensajes volverán a cargarse desde el servicio, pero los mensajes en
+cola y los borradores guardados en este dispositivo no se pueden recuperar. Elige
+**Reconstruir caché** para borrar el archivo ilegible, crear una clave nueva y
+empezar de cero desde el servicio. Parla nunca lo hace por su cuenta.
+
+Si tu sesión ha caducado, un aviso aparte nombra el espacio y ofrece volver a
+iniciar sesión. Puedes seguir leyendo los mensajes en caché, pero el compositor
+está en solo lectura y dice **Inicia sesión de nuevo para enviar mensajes** hasta
+que lo hagas.
+
+## Retención y espacio en disco
+
+Dos ajustes controlan la caché:
+
+```jsonc
+{
+  "storage": { "cache_mb": 8, "retention_days": 90 },
+}
+```
+
+- `retention_days` (90 por defecto) elimina los mensajes más antiguos que eso de
+  las conversaciones que no has abierto en los últimos 30 días. Las
+  conversaciones que abriste hace poco nunca se podan. La bandeja de salida y los
+  borradores nunca se podan.
+- `cache_mb` (8 por defecto) es la memoria que puede usar la base de datos,
+  compartida entre los espacios abiertos.
+
+Los dos se aplican la próxima vez que Parla se inicie. Puedes cambiarlos en
+Ajustes, Privacidad y almacenamiento.
+
+Cuando el disco que contiene el almacén local tiene menos de 1 GiB libre,
+aparece un aviso **Disco casi lleno** con **Gestionar almacenamiento**, que abre
+Ajustes, Privacidad y almacenamiento. Desaparece por encima de 1,5 GiB. Puedes
+vaciar la caché ahí; cada espacio borra sus mensajes y borradores en caché y
+vuelve a cargar desde el servicio.
+
+Los mensajes antiguos se vuelven a cargar al desplazarte hacia atrás.
+
+## Buscar sin conexión
+
+El almacén mantiene un índice de texto completo del texto de los mensajes. La
+búsqueda lo usa, así que funciona sin conexión. Solo encuentra mensajes ya
+guardados en este dispositivo; los mensajes podados o que nunca se cargaron no se
+buscan. Cuando el servicio también busca en su servidor, eso solo ocurre mientras
+hay conexión, y el panel indica cuándo muestra solo el dispositivo.
+
+## Primeras cargas lentas
+
+Mientras se ejecuta la primera carga, la ventana muestra **Aún conectando...**.
+Los espacios grandes cargan la primera parte de la lista de miembros antes de que
+la ventana se llene; el resto llega después. Si el servidor no responde en 20
+segundos, aparece una barra de error con un botón **Reintentar**.
+
+Siguiente: [Ajustes](/parla/es/docs/settings/).

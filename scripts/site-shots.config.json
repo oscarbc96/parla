@@ -1,0 +1,46 @@
+{
+  "platform": "macos",
+  "shots": [
+    {
+      "output": "thread",
+      "scenario": "thread_open",
+      "appearances": [
+        "light",
+        "dark"
+      ],
+      "crop": null
+    },
+    {
+      "output": "search",
+      "scenario": "search_results",
+      "appearances": [
+        "light",
+        "dark"
+      ],
+      "crop": null
+    },
+    {
+      "output": "switcher",
+      "scenario": "quick_switcher_open",
+      "appearances": [
+        "light",
+        "dark"
+      ],
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1920,
+        "height": 720
+      }
+    },
+    {
+      "output": "huddle",
+      "scenario": "huddle_awareness",
+      "appearances": [
+        "light",
+        "dark"
+      ],
+      "crop": null
+    }
+  ]
+}

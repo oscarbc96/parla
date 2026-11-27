@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "usergroups": [
+    {
+      "id": "S0000001",
+      "team_id": "T0000001",
+      "is_usergroup": true,
+      "name": "Engineering",
+      "handle": "eng",
+      "is_external": false,
+      "date_delete": 0,
+      "user_count": 3,
+      "users": ["U0000001", "U0000002", "U0000003"]
+    },
+    {
+      "id": "S0000002",
+      "team_id": "T0000001",
+      "is_usergroup": true,
+      "name": "Design crew",
+      "handle": "design",
+      "date_delete": 0,
+      "user_count": "2",
+      "users": ["U0000004", "U0000005"]
+    },
+    {
+      "id": "S0000003",
+      "team_id": "T0000001",
+      "name": "Old team",
+      "handle": "old",
+      "date_delete": 1700000000,
+      "user_count": 0,
+      "users": []
+    },
+    {
+      "id": "",
+      "name": "No id",
+      "handle": "noid"
+    }
+  ]
+}
