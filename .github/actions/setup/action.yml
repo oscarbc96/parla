@@ -29,7 +29,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install Linux system packages (GPUI)
+    # GPUI's window and audio libraries, plus GTK 3 and WebKitGTK for wry (the
+    # sign-in and call webviews).
+    - name: Install Linux system packages
       if: inputs.rust == 'true' && runner.os == 'Linux'
       shell: bash
       run: |
@@ -38,7 +40,8 @@ runs:
           clang cmake lld pkg-config \
           libasound2-dev libfontconfig-dev libglib2.0-dev libssl-dev \
           libvulkan-dev libwayland-dev libx11-xcb-dev libxcb1-dev \
-          libxkbcommon-dev libxkbcommon-x11-dev libzstd-dev
+          libxkbcommon-dev libxkbcommon-x11-dev libzstd-dev \
+          libgtk-3-dev libwebkit2gtk-4.1-dev
     # One place for the Cargo settings: rust-cache hashes every CARGO_* variable
     # into its key, so jobs that share a key must see the same values.
     - name: Cargo settings
