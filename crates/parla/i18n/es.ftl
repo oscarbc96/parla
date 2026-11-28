@@ -253,6 +253,7 @@ titlebar-back = Atrás
 titlebar-forward = Adelante
 titlebar-search = Buscar en { $workspace }
 titlebar-search-plain = Buscar
+titlebar-help = Ayuda
 
 ## Ventana de ajustes
 settings-title = Ajustes

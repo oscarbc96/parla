@@ -402,7 +402,6 @@ scheduled-save = Save
 scheduled-cancel = Cancel
 scheduled-edit-error = Check the date and time first.
 sidebar-scheduled = Scheduled
-sidebar-scheduled-count = Scheduled ({ $count })
 
 timeline-jump-to-latest = Viewing older messages. Jump to latest
 
@@ -501,7 +500,6 @@ reminders-linked-message = Linked message · { $place }
 reminders-context = { $author } in { $place }
 reminders-open-message = Open the message
 sidebar-reminders = Reminders
-sidebar-reminders-count = Reminders ({ $count })
 
 ## Profile panel
 profile-title = Profile
@@ -590,9 +588,7 @@ threads-unread =
        *[other] { $count } unread replies
     }
 sidebar-threads = Threads
-sidebar-threads-count = Threads ({ $count })
 sidebar-later = Later
-sidebar-later-count = Later ({ $count })
 action-timeline-toggle-pin = Pin or unpin message
 action-timeline-toggle-saved = Save or unsave message
 action-timeline-copy-link = Copy link to message

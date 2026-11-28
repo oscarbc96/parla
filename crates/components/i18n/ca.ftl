@@ -399,7 +399,6 @@ scheduled-save = Desa
 scheduled-cancel = Cancel·la
 scheduled-edit-error = Revisa primer la data i l'hora.
 sidebar-scheduled = Programats
-sidebar-scheduled-count = Programats ({ $count })
 
 timeline-jump-to-latest = Veient missatges antics. Vés a l'últim
 
@@ -498,7 +497,6 @@ reminders-linked-message = Missatge enllaçat · { $place }
 reminders-context = { $author } a { $place }
 reminders-open-message = Obre el missatge
 sidebar-reminders = Recordatoris
-sidebar-reminders-count = Recordatoris ({ $count })
 
 ## Profile panel
 profile-title = Perfil
@@ -587,9 +585,7 @@ threads-unread =
        *[other] { $count } respostes sense llegir
     }
 sidebar-threads = Fils
-sidebar-threads-count = Fils ({ $count })
 sidebar-later = Més tard
-sidebar-later-count = Més tard ({ $count })
 action-timeline-toggle-pin = Fixa o deixa de fixar el missatge
 action-timeline-toggle-saved = Desa o treu dels desats
 action-timeline-copy-link = Copia l'enllaç al missatge

@@ -253,6 +253,7 @@ titlebar-back = Enrere
 titlebar-forward = Endavant
 titlebar-search = Cerca a { $workspace }
 titlebar-search-plain = Cerca
+titlebar-help = Ajuda
 
 ## Finestra de paràmetres
 settings-title = Paràmetres

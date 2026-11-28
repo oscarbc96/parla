@@ -4697,6 +4697,12 @@ impl Render for RootView {
                 Some(name) => t!(l, "titlebar-search", workspace = name).into_owned(),
                 None => t!(l, "titlebar-search-plain").into_owned(),
             };
+            // The bell is crossed out while notifications are paused.
+            let paused = self.ready.as_ref().is_some_and(|r| {
+                r.session
+                    .read(cx)
+                    .notifications_paused(components::now_secs(cx))
+            });
             titlebar::bar(
                 titlebar::BarActions {
                     back: std::rc::Rc::new(move |_, window, cx| {
@@ -4711,17 +4717,20 @@ impl Render for RootView {
                     pause: std::rc::Rc::new(move |_, window, cx| {
                         w_pause.update(cx, |this, cx| this.pause_notifications(window, cx))
                     }),
+                    help: std::rc::Rc::new(move |_, _, cx| cx.open_url(crate::menus::DOCS_URL)),
                     // Same rule as the buttons' handlers: no enabled button that does nothing.
                     can_back: self.nav.can_back_to(nav_entry_valid(&self.workspaces, cx)),
                     can_forward: self
                         .nav
                         .can_forward_to(nav_entry_valid(&self.workspaces, cx)),
+                    paused,
                     search_label: search_label.into(),
                     back_label: t!(l, "titlebar-back").into_owned().into(),
                     forward_label: t!(l, "titlebar-forward").into_owned().into(),
                     pause_label: t!(l, "action-workspace-pause-notifications")
                         .into_owned()
                         .into(),
+                    help_label: t!(l, "titlebar-help").into_owned().into(),
                 },
                 cx,
             )

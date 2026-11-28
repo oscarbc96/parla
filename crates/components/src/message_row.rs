@@ -235,13 +235,13 @@ pub fn avatar_sized(
 
 /// [`avatar_sized`] with a presence dot on its bottom right corner, ringed in
 /// `ring` (the ground it sits on). No dot when `presence` is unknown.
-pub fn avatar_with_presence(
+pub fn avatar_with_presence<D: Into<gpui::ElementId>>(
     name: &str,
     initials: SharedString,
     theme: &Theme,
     size: Pixels,
     presence: Option<bool>,
-    (dot_id, ring): (&'static str, gpui::Hsla),
+    (dot_id, ring): (D, gpui::Hsla),
     image: Option<&ImageRef>,
 ) -> gpui::Div {
     let tokens = parla_tokens(theme);
@@ -321,8 +321,27 @@ fn avatar_radius(size: Pixels) -> Pixels {
         themes::metrics::RADIUS_XL
     } else if size >= themes::metrics::LAYOUT_AVATAR_CARD {
         themes::metrics::RADIUS_LG
+    } else if size < themes::metrics::LAYOUT_AVATAR_XS {
+        // The 18 px conversation avatar on the sidebar.
+        themes::metrics::RADIUS_2XS
     } else {
         themes::metrics::RADIUS_AVATAR
+    }
+}
+
+/// The initials' type size for an avatar of side `size`: the sidebar's 18 px
+/// avatar needs a smaller face than a message row's, or the letters clip.
+fn avatar_font(size: Pixels) -> Pixels {
+    if size <= themes::metrics::LAYOUT_AVATAR_2XS {
+        themes::metrics::FONT_SIZE_3XS
+    } else if size < themes::metrics::LAYOUT_MSG_AVATAR {
+        themes::metrics::FONT_SIZE_XS
+    } else if size >= themes::metrics::LAYOUT_AVATAR_LG {
+        themes::metrics::FONT_SIZE_3XL
+    } else if size >= themes::metrics::LAYOUT_AVATAR_CARD {
+        themes::metrics::FONT_SIZE_2XL
+    } else {
+        themes::metrics::FONT_SIZE_SM
     }
 }
 
@@ -427,15 +446,7 @@ impl RenderOnce for AvatarFace {
                 )
                 .into_any_element();
         }
-        let font = if self.size < themes::metrics::LAYOUT_MSG_AVATAR {
-            themes::metrics::FONT_SIZE_XS
-        } else if self.size >= themes::metrics::LAYOUT_AVATAR_LG {
-            themes::metrics::FONT_SIZE_3XL
-        } else if self.size >= themes::metrics::LAYOUT_AVATAR_CARD {
-            themes::metrics::FONT_SIZE_2XL
-        } else {
-            themes::metrics::FONT_SIZE_SM
-        };
+        let font = avatar_font(self.size);
         div()
             .id("avatar")
             .role(gpui::Role::Image)
@@ -762,6 +773,29 @@ fn failed_strip(
 mod tests {
     use super::*;
     use gpui::TestAppContext;
+
+    /// The sidebar's 18 px conversation avatar: its letters need a smaller
+    /// face and a 5 px corner, not a message avatar's 13 px and 8 px.
+    #[test]
+    fn a_sidebar_avatar_uses_the_small_face_and_corner() {
+        assert_eq!(
+            avatar_font(themes::metrics::LAYOUT_AVATAR_2XS),
+            themes::metrics::FONT_SIZE_3XS
+        );
+        assert_eq!(
+            avatar_radius(themes::metrics::LAYOUT_AVATAR_2XS),
+            themes::metrics::RADIUS_2XS
+        );
+        // A message avatar keeps its own face and corner.
+        assert_eq!(
+            avatar_font(themes::metrics::LAYOUT_MSG_AVATAR),
+            themes::metrics::FONT_SIZE_SM
+        );
+        assert_eq!(
+            avatar_radius(themes::metrics::LAYOUT_MSG_AVATAR),
+            themes::metrics::RADIUS_AVATAR
+        );
+    }
 
     /// The row paints one element opacity over a status glyph; the glyph's
     /// colour must be the full-strength text colour, not the row's inherited
