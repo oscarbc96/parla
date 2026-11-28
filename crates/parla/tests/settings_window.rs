@@ -753,6 +753,10 @@ fn record_quit(view: &gpui::Entity<SettingsView>, vcx: &mut VisualTestContext) {
 }
 
 #[gpui::test]
+#[cfg_attr(
+    not(target_os = "macos"),
+    ignore = "records cmd; GPUI names that key super off macOS"
+)]
 fn enter_saves_a_recording_and_two_chords_make_a_sequence(cx: &mut TestAppContext) {
     let (_dir, paths) = setup(cx);
     let (view, vcx) = open_on(cx, &paths, Page::Keymap);
@@ -834,6 +838,10 @@ fn changed_lists_unbound_defaults_and_conflicts_has_a_count(cx: &mut TestAppCont
 }
 
 #[gpui::test]
+#[cfg_attr(
+    not(target_os = "macos"),
+    ignore = "the Dock and menu bar settings exist on macOS only"
+)]
 fn restore_windows_and_menu_bar_only_write_their_keys(cx: &mut TestAppContext) {
     let (_dir, paths) = setup(cx);
     let (_view, vcx) = open(cx, &paths);

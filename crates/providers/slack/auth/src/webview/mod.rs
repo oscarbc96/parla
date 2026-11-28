@@ -27,6 +27,5 @@ pub use policy::{
     ROUTE_HOOK_SCRIPT, allow_navigation, chooser_list, handoff, new_window_action, spa_route,
 };
 pub use sequence::{Start, TeamOutcome, TeamResult, capture_team, capture_teams};
-#[cfg(target_os = "macos")]
 pub use ua::os_major;
 pub use ua::safari_user_agent;
