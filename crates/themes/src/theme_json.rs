@@ -136,6 +136,7 @@ fn build_theme(raw: RawTheme) -> Theme {
             sidebar_text: color(t, "sidebar_text"),
             sidebar_active: color(t, "sidebar_active"),
             message_mention_background: color(t, "message_mention_background"),
+            mention_background: color(t, "mention_background"),
             presence_active: color(t, "presence_active"),
             presence_away: color(t, "presence_away"),
             avatar_text: color(t, "avatar_text"),

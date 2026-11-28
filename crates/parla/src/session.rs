@@ -3225,6 +3225,10 @@ impl TimelineSource for WorkspaceSession {
         self.state.windows.get(c)
     }
 
+    fn thread_open(&self, root: &MessageId) -> bool {
+        self.state.threads.contains_key(root)
+    }
+
     fn member(&self, u: &UserId) -> Option<&Member> {
         self.state.members.get(u)
     }

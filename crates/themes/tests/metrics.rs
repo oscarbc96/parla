@@ -171,6 +171,7 @@ fn layout_matches_tokens() {
             ("avatar-sm", LAYOUT_AVATAR_SM),
             ("avatar-xs", LAYOUT_AVATAR_XS),
             ("avatar-2xs", LAYOUT_AVATAR_2XS),
+            ("avatar-thread", LAYOUT_AVATAR_THREAD),
             ("timeline-min", LAYOUT_TIMELINE_MIN),
             ("context-pane-min", LAYOUT_CONTEXT_PANE_MIN),
             ("avatar-lg", LAYOUT_AVATAR_LG),

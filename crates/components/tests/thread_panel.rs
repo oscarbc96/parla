@@ -34,6 +34,9 @@ impl TimelineSource for Src {
     fn window(&self, c: &ConversationId) -> Option<&MessageWindow> {
         self.state.windows.get(c)
     }
+    fn thread_open(&self, root: &MessageId) -> bool {
+        self.state.threads.contains_key(root)
+    }
     fn member(&self, u: &UserId) -> Option<&Member> {
         self.state.members.get(u)
     }
@@ -226,7 +229,46 @@ fn summary_names_unresolved_repliers_with_a_placeholder(cx: &mut TestAppContext)
     let s = view
         .read_with(vcx, |v, cx| v.thread_summary(&root_id(), cx))
         .expect("summary");
-    assert_eq!(s.authors, vec!["Bob".to_string(), "Unknown".to_string()]);
+    let names: Vec<_> = s.authors.iter().map(|a| a.name.as_str()).collect();
+    assert_eq!(names, ["Bob", "Unknown"]);
+}
+
+#[gpui::test]
+fn closed_thread_summary_shows_the_last_reply_not_the_open_state(cx: &mut TestAppContext) {
+    init(cx);
+    let mut s = new_src(threads_caps());
+    s.state.threads.clear();
+    let src = cx.new(|_| s);
+    let (view, vcx) =
+        cx.add_window_view(move |_w, cx| Timeline::new(src, cid("C1"), Clock::H24, cx));
+    vcx.run_until_parked();
+    assert!(
+        vcx.debug_bounds("thread-summary-open").is_none(),
+        "a closed thread keeps the last-reply line"
+    );
+    assert!(vcx.debug_bounds("thread-summary-avatars").is_some());
+    let summary = view
+        .read_with(vcx, |v, cx| v.thread_summary(&root_id(), cx))
+        .expect("summary");
+    assert_eq!(summary.label, "2 replies");
+}
+
+#[gpui::test]
+fn bot_authors_carry_the_app_tag(cx: &mut TestAppContext) {
+    init(cx);
+    let mut s = new_src(threads_caps());
+    s.state.members.get_mut(&uid("u2")).expect("author").is_bot = true;
+    let src = cx.new(|_| s);
+    let (_view, vcx) =
+        cx.add_window_view(move |_w, cx| Timeline::new(src, cid("C1"), Clock::H24, cx));
+    vcx.run_until_parked();
+    assert!(vcx.debug_bounds("message-app-tag").is_some());
+}
+
+#[gpui::test]
+fn people_authors_carry_no_app_tag(cx: &mut TestAppContext) {
+    let (_view, vcx) = timeline(cx, threads_caps());
+    assert!(vcx.debug_bounds("message-app-tag").is_none());
 }
 
 #[gpui::test]
@@ -236,8 +278,12 @@ fn summary_row_shows_count_and_opens(cx: &mut TestAppContext) {
         .read_with(vcx, |v, cx| v.thread_summary(&root_id(), cx))
         .expect("summary");
     assert_eq!(s.label, "2 replies");
-    assert_eq!(s.authors, vec!["Bob".to_string(), "Cy".to_string()]);
+    let names: Vec<_> = s.authors.iter().map(|a| a.name.as_str()).collect();
+    assert_eq!(names, ["Bob", "Cy"]);
     assert!(!s.latest.is_empty());
+    // The thread is open: the summary pill shows its open state (Thread board).
+    assert!(vcx.debug_bounds("thread-summary-open").is_some());
+    assert!(vcx.debug_bounds("thread-summary-avatars").is_some());
 
     let events = Rc::new(RefCell::new(vec![]));
     let e2 = events.clone();

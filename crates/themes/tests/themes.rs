@@ -124,6 +124,7 @@ fn parla_tokens_fall_back(cx: &mut TestAppContext) {
     assert_eq!(tokens.signal_soft, c.text_accent.opacity(0.14));
     assert_eq!(tokens.text_subtle, c.text_muted);
     assert_eq!(tokens.mention_text, c.text);
+    assert_eq!(tokens.mention_background, c.text_accent.opacity(0.14));
     assert_eq!(tokens.accent_soft_text, c.text);
     assert_eq!(tokens.border_subtle, c.border);
     assert_eq!(tokens.success_soft, theme.status().success.opacity(0.14));
@@ -378,6 +379,7 @@ fn brand_themes_match_design_tokens(cx: &mut TestAppContext) {
             (tt.signal_soft, "signal.soft"),
             (tt.text_subtle, "text.subtle"),
             (tt.mention_text, "mention.text"),
+            (tt.mention_background, "mention.bg"),
             (tt.accent_soft_text, "accent.soft-text"),
             (tt.border_subtle, "border.subtle"),
             (tt.success_soft, "status.success-soft"),

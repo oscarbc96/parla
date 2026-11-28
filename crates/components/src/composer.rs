@@ -410,6 +410,9 @@ pub struct Composer<S: ComposerSource + 'static> {
     editing: Option<MessageId>,
     /// Set in reply mode: the thread root replies go to.
     reply_root: Option<MessageId>,
+    /// The composer sits on `bg.app` (the main pane) rather than on the panel
+    /// surface (a thread or pop-out panel).
+    app_ground: bool,
     broadcast: bool,
     upload_dir: std::path::PathBuf,
     notice: Option<Notice>,
@@ -555,6 +558,7 @@ impl<S: ComposerSource + 'static> Composer<S> {
             input,
             editing: None,
             reply_root: None,
+            app_ground: true,
             broadcast: false,
             upload_dir: crate::upload::uploads_dir(),
             notice: None,
@@ -1497,6 +1501,25 @@ impl<S: ComposerSource + 'static> Composer<S> {
         self.reply_root = root;
         self.broadcast = false;
         cx.notify();
+    }
+
+    /// Puts the composer on the main pane's ground (`bg.app`) or on a panel's
+    /// surface: its own ground matches the pane it sits in.
+    pub fn set_app_ground(&mut self, app: bool, cx: &mut Context<Self>) {
+        if self.app_ground != app {
+            self.app_ground = app;
+            cx.notify();
+        }
+    }
+
+    /// The ground around the composer frame: the main pane's app ground or the
+    /// panel surface it sits on.
+    fn ground(&self, colors: &themes::ThemeColors) -> gpui::Hsla {
+        if self.app_ground {
+            colors.background
+        } else {
+            colors.surface_background
+        }
     }
 
     pub fn reply_root(&self) -> Option<&MessageId> {
@@ -2618,7 +2641,7 @@ impl<S: ComposerSource + 'static> Composer<S> {
             .w_full()
             .px_3()
             .py_2()
-            .bg(colors.editor_background)
+            .bg(self.ground(&colors))
             .child(
                 div()
                     .id("composer-read-only")
@@ -2670,7 +2693,7 @@ impl<S: ComposerSource + 'static> Composer<S> {
             .w_full()
             .px_3()
             .py_2()
-            .bg(colors.editor_background)
+            .bg(self.ground(&colors))
             .child(
                 div()
                     .id("composer-join")
@@ -3497,7 +3520,7 @@ impl<S: ComposerSource + 'static> Render for Composer<S> {
             .w_full()
             .px_3()
             .py_2()
-            .bg(colors.editor_background)
+            .bg(self.ground(colors))
             .children(popup)
             .children(slash_menu)
             .children(send_later_menu)

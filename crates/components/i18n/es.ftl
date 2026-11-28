@@ -127,6 +127,7 @@ header-members =
 ## Mensajes
 author-unknown = Desconocido
 message-edited = (editado)
+message-app-tag = APP
 message-not-sent = No enviado.
 message-failed-maybe-sent = Puede que se haya enviado. Compruébalo antes de reintentar.
 message-retry = Reintentar
@@ -151,6 +152,8 @@ thread-replies =
         [one] 1 respuesta
        *[other] { $count } respuestas
     }
+thread-summary-last-reply = Última respuesta { $time }
+thread-summary-open = Abrir en el panel
 
 ## Redactor
 composer-placeholder = Escribe un mensaje

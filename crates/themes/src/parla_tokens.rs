@@ -50,6 +50,8 @@ pub struct ParlaTokens {
     pub sidebar_text: Hsla,
     pub sidebar_active: Hsla,
     pub message_mention_background: Hsla,
+    /// Background of an @mention chip (`mention.bg`).
+    pub mention_background: Hsla,
     pub presence_active: Hsla,
     pub presence_away: Hsla,
     /// Text on a workspace avatar whose colour is computed from its name.
@@ -149,6 +151,9 @@ pub(crate) fn resolve(
         message_mention_background: o
             .message_mention_background
             .unwrap_or(colors.editor_document_highlight_read_background),
+        mention_background: o
+            .mention_background
+            .unwrap_or(colors.text_accent.opacity(0.14)),
         presence_active: o.presence_active.unwrap_or(status.success),
         presence_away: o.presence_away.unwrap_or(status.warning),
         avatar_text: o.avatar_text.unwrap_or_else(gpui::white),

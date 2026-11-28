@@ -646,16 +646,16 @@ fn every_scenario_has_a_test() {
     }
 }
 
-/// The timeline and composer sit on the editor surface, not the sidebar's:
-/// text is drawn in `text`, which is only readable on the editor background.
+/// The timeline and composer sit on the app ground (`bg.app`), apart from the
+/// header and tabs' surface (the Main board).
 #[test]
-fn timeline_and_composer_use_the_editor_background() {
+fn timeline_and_composer_use_the_app_background() {
     for v in Variant::defaults() {
         let mut h = UiHarness::with_catalogs(v, &[parla::catalog()]).unwrap();
         let s = scenario::by_name("long_names").unwrap();
         let img = stage::capture(&mut h, s, StageOptions::default()).unwrap();
-        let editor = h.app().update(|cx| cx.theme().colors().editor_background);
-        let c = themes::color::hsla_to_rgba(editor);
+        let app = h.app().update(|cx| cx.theme().colors().background);
+        let c = themes::color::hsla_to_rgba(app);
         let want = [c.r, c.g, c.b].map(|v| (v * 255.0).round() as u8);
         // Logical points: blank timeline area, and the composer's right padding.
         for (name, x, y) in [("timeline", 600.0, 75.0), ("composer", 954.0, 546.0)] {
@@ -672,8 +672,8 @@ fn long_unbroken_token_wraps_inside_the_column() {
         let mut h = UiHarness::with_catalogs(v, &[parla::catalog()]).unwrap();
         let s = scenario::by_name("long_names").unwrap();
         let img = stage::capture(&mut h, s, StageOptions::default()).unwrap();
-        let editor = h.app().update(|cx| cx.theme().colors().editor_background);
-        let c = themes::color::hsla_to_rgba(editor);
+        let app = h.app().update(|cx| cx.theme().colors().background);
+        let c = themes::color::hsla_to_rgba(app);
         let bg = [c.r, c.g, c.b].map(|v| (v * 255.0).round() as u8);
         // The message sits in the lower part of the timeline (logical 430..520).
         // Its right gutter (the last 12 points) must stay blank.

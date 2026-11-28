@@ -176,6 +176,10 @@ fn high_contrast_themes_meet_their_ratios_on_every_ground(cx: &mut TestAppContex
                 ("raised", c.elevated_surface_background),
                 ("signal soft", over(t.signal_soft, c.surface_background)),
                 ("mention row", t.message_mention_background),
+                (
+                    "mention chip",
+                    over(t.mention_background, c.surface_background),
+                ),
             ],
             7.0,
         );

@@ -29,7 +29,7 @@ use crate::rich_text::{
     OpenConversation, OpenUrl, OpenUser, RichColors, RichTextCx, render_rich_text,
 };
 use crate::snippet;
-use crate::thread_summary::{ThreadSummary, summary_for, summary_text};
+use crate::thread_summary::{SummaryAuthor, ThreadSummary, summary_for};
 use crate::timeline_dividers::{self, Lead};
 use crate::vtt as clip_vtt;
 
@@ -97,6 +97,11 @@ pub type ClipDone = Box<dyn FnOnce(Result<(), String>, &mut App)>;
 /// What the timeline needs from the session, so `components` does not depend on `parla`.
 pub trait TimelineSource {
     fn window(&self, c: &ConversationId) -> Option<&MessageWindow>;
+    /// The thread under `root` is open in a panel: its summary pill shows the
+    /// open state and the root row reads as selected.
+    fn thread_open(&self, _root: &MessageId) -> bool {
+        false
+    }
     fn member(&self, u: &UserId) -> Option<&Member>;
     fn self_user(&self) -> Option<&UserId>;
     fn capabilities(&self) -> &Capabilities;
@@ -1333,12 +1338,21 @@ impl<S: TimelineSource + 'static> Timeline<S> {
             return None;
         }
         let l = cx.localizer();
-        let names = m
+        let authors = m
             .reply_users
             .iter()
-            .map(|u| user_name(s.member(u), l))
+            .map(|u| {
+                let member = s.member(u);
+                SummaryAuthor {
+                    name: user_name(member, l),
+                    image: member.and_then(|m| {
+                        m.avatar_for(themes::metrics::LAYOUT_AVATAR_THREAD.as_f32())
+                            .cloned()
+                    }),
+                }
+            })
             .collect::<Vec<_>>();
-        summary_for(m, names, crate::now_secs(cx), l)
+        summary_for(m, authors, crate::now_secs(cx), l)
     }
 
     /// Asks the host to open the thread panel for `root`.
@@ -1902,8 +1916,13 @@ impl<S: TimelineSource + 'static> Timeline<S> {
         let grouped = ix > 0 && continues(&msgs[ix - 1], m);
         let author_member = m.author.as_ref().and_then(|u| session.member(u));
         let author = author_name(author_member, &l);
-        let selected =
-            self.selected.as_ref() == Some(&m.id) || self.highlighted.as_ref() == Some(&m.id);
+        // An open thread reads as selected: the root row and its summary pill
+        // show the open state (Thread board).
+        let thread_open = session.thread_open(&m.id);
+        let selected = thread_open
+            || self.selected.as_ref() == Some(&m.id)
+            || self.highlighted.as_ref() == Some(&m.id);
+        let is_bot = author_member.is_some_and(|m| m.is_bot);
         let delivered = m.state == DeliveryState::Delivered;
         let id = m.id.clone();
         let id_for_pills = m.id.clone();
@@ -1920,7 +1939,7 @@ impl<S: TimelineSource + 'static> Timeline<S> {
             RichColors::from_theme(&theme),
             &m.state,
             queued,
-            theme.colors().editor_background,
+            theme.colors().background,
         );
         let mut rcx = RichTextCx::new(session, colors, l.clone(), self.tz.clone());
         rcx.message = Some(m.id.clone());
@@ -1997,6 +2016,7 @@ impl<S: TimelineSource + 'static> Timeline<S> {
             rich: Some(render_rich_text(&rich, &rcx)),
             author,
             status,
+            is_bot,
             author_link,
             time: format_time(&m.id.ts, self.clock, &self.tz, &l).into(),
             // `rich` is set, so the plain text is never shown.
@@ -2007,6 +2027,7 @@ impl<S: TimelineSource + 'static> Timeline<S> {
             failed_actions,
             grouped,
             selected,
+            ground: theme.colors().background,
             density: self.density,
             show_avatar: self.show_avatars,
             avatar,
@@ -2349,20 +2370,100 @@ impl<S: TimelineSource + 'static> Timeline<S> {
             ));
         }
         if let Some(s) = summary {
-            let open = id_for_pills.clone();
+            let target = id_for_pills.clone();
+            let trailing = if thread_open {
+                t!(l, "thread-summary-open").into_owned()
+            } else if s.latest.is_empty() {
+                String::new()
+            } else {
+                t!(l, "thread-summary-last-reply", time = s.latest.as_str()).into_owned()
+            };
+            let mut stack = div()
+                .debug_selector(|| "thread-summary-avatars".into())
+                .flex()
+                .items_center();
+            for (i, a) in s.authors.iter().enumerate() {
+                stack = stack.child(
+                    div()
+                        .when(i > 0, |d| d.ml(-themes::metrics::SPACE_3))
+                        .rounded(themes::metrics::RADIUS_AVATAR)
+                        // The stack's ring is the ground it sits on, not a layout border.
+                        .shadow(vec![gpui::BoxShadow {
+                            color: colors.background,
+                            offset: gpui::point(px(0.0), px(0.0)),
+                            blur_radius: px(0.0),
+                            spread_radius: themes::metrics::SPACE_1,
+                            inset: false,
+                        }])
+                        .child(crate::message_row::avatar_sized(
+                            &a.name,
+                            &theme,
+                            themes::metrics::LAYOUT_AVATAR_THREAD,
+                            a.image.as_ref(),
+                        )),
+                );
+            }
+            let pill = div()
+                .id(("thread-summary", ix))
+                .debug_selector(|| format!("thread-open-{}", id_for_pills.ts.0))
+                .flex()
+                .items_center()
+                .gap(themes::metrics::SPACE_4)
+                .mt(themes::metrics::SPACE_3)
+                .pl(themes::metrics::SPACE_2)
+                .pr(themes::metrics::SPACE_5)
+                .py(themes::metrics::SPACE_2)
+                .rounded(themes::metrics::RADIUS_MD)
+                .border_1()
+                .border_color(if thread_open {
+                    colors.element_background
+                } else {
+                    gpui::transparent_black()
+                })
+                .bg(if thread_open {
+                    colors.accent_soft
+                } else {
+                    gpui::transparent_black()
+                })
+                .text_size(themes::metrics::FONT_SIZE_SM)
+                .when(!thread_open, |d| {
+                    d.hover(|h| h.border_color(colors.border).bg(colors.surface_background))
+                })
+                .tab_stop(true)
+                .focusable()
+                .focus_visible(crate::controls::focus_style(colors))
+                .child(stack)
+                .child(
+                    div()
+                        .font_weight(themes::metrics::FONT_WEIGHT_SEMIBOLD)
+                        .text_color(if thread_open {
+                            parla_tokens(&theme).accent_soft_text
+                        } else {
+                            colors.text_accent
+                        })
+                        .child(s.label.clone()),
+                )
+                .when(!trailing.is_empty(), |d| {
+                    d.child(
+                        div()
+                            .when(thread_open, |d| {
+                                d.debug_selector(|| "thread-summary-open".into())
+                            })
+                            .text_size(themes::metrics::FONT_SIZE_XS)
+                            .text_color(parla_tokens(&theme).text_subtle)
+                            .child(trailing),
+                    )
+                });
             el = el.child(
                 div()
-                    .id(("thread-summary", ix))
-                    .debug_selector(|| format!("thread-open-{}", id_for_pills.ts.0))
                     .pl(crate::message_row::body_indent())
                     .pr(themes::metrics::SPACE_7)
                     .pb_1()
-                    .text_xs()
-                    .text_color(colors.text_accent)
-                    .child(summary_text(&s))
-                    .on_click(
-                        cx.listener(move |this, _, _, cx| this.open_thread(open.clone(), cx)),
-                    ),
+                    .child(crate::controls::on_activate(
+                        pill,
+                        cx,
+                        move |this, _, cx| this.open_thread(target.clone(), cx),
+                    )),
             );
         }
         let lead = self.leads.get(ix).copied().unwrap_or_default();
@@ -2617,7 +2718,9 @@ impl<S: TimelineSource + 'static> Render for Timeline<S> {
         }
         self.rendered = 0;
         self.sweep_clips();
-        let editor_bg = cx.theme().colors().editor_background;
+        // The board's timeline ground is `bg.app`: the header and tabs keep the
+        // surface, so the two planes read apart (Main board).
+        let app_bg = cx.theme().colors().background;
         let detached = self.is_detached(cx).then(|| {
             let l = i18n::gpui::localizer(cx);
             t!(l, "timeline-jump-to-latest").into_owned()
@@ -2697,7 +2800,7 @@ impl<S: TimelineSource + 'static> Render for Timeline<S> {
             .size_full()
             .flex()
             .flex_col()
-            .bg(editor_bg)
+            .bg(app_bg)
             .on_drop(cx.listener(|this, paths: &gpui::ExternalPaths, _, cx| {
                 this.drop_paths(paths.paths().to_vec(), cx)
             }))
@@ -2716,7 +2819,7 @@ impl<S: TimelineSource + 'static> Render for Timeline<S> {
                                 .top_0()
                                 .left_0()
                                 .size_full()
-                                .bg(editor_bg)
+                                .bg(app_bg)
                                 .child(el),
                         )
                     })

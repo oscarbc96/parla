@@ -127,6 +127,7 @@ header-members =
 ## Missatges
 author-unknown = Desconegut
 message-edited = (editat)
+message-app-tag = APP
 message-not-sent = No enviat.
 message-failed-maybe-sent = Pot ser que s'hagi enviat. Comprova-ho abans de tornar-ho a provar.
 message-retry = Torna-ho a provar
@@ -151,6 +152,8 @@ thread-replies =
         [one] 1 resposta
        *[other] { $count } respostes
     }
+thread-summary-last-reply = Última resposta { $time }
+thread-summary-open = Obre al tauler
 
 ## Editor
 composer-placeholder = Escriu un missatge

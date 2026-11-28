@@ -208,6 +208,9 @@ pub const LAYOUT_AVATAR_XS: Pixels = px(22.0);
 /// Token `layout.avatar-2xs`.
 pub const LAYOUT_AVATAR_2XS: Pixels = px(18.0);
 
+/// Token `layout.avatar-thread`.
+pub const LAYOUT_AVATAR_THREAD: Pixels = px(20.0);
+
 /// Token `layout.timeline-min`.
 pub const LAYOUT_TIMELINE_MIN: Pixels = px(320.0);
 
