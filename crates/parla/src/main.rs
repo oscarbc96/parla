@@ -99,6 +99,8 @@ fn main() {
         let mode = mode.with_tray(cx.global::<SettingsStore>().current().tray);
         parla::log::init(&settings::paths::data_dir());
         parla::log::set_level(cx.global::<SettingsStore>().current().log.level);
+        // Before any window: "Inter" resolves to the bundled design weights.
+        parla::fonts::install(cx);
         parla::crash::set_mode(cx.global::<SettingsStore>().current().crash_reports);
         parla::crash::show_pending_notice(&parla::crash::dir(&settings::paths::data_dir()), cx);
         parla::crash::install_actions(cx);

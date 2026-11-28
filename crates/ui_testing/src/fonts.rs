@@ -1,12 +1,12 @@
-//! Bundled test fonts (SIL OFL 1.1, see `fonts/*LICENSE*` and `fonts/*OFL*`).
-//! Test-only; never packaged.
+//! Bundled test fonts (SIL OFL 1.1, see `fonts/*OFL*` and
+//! `assets/fonts/README.md`). Test-only; never packaged.
 
 use anyhow::{Result, bail};
 use gpui::HeadlessAppContext;
 
-/// Inter 4.1 Italic: the face `*italic*` runs select (same release as Regular).
-pub const INTER_ITALIC: &[u8] = include_bytes!("../fonts/Inter-Italic.ttf");
-pub const INTER_REGULAR: &[u8] = include_bytes!("../fonts/Inter-Regular.ttf");
+/// Inter 4.1 Regular, Italic, Medium, SemiBold and Bold: the design's faces.
+/// The bytes are shared with the app through `themes::fonts`.
+pub use themes::fonts::{INTER_BOLD, INTER_ITALIC, INTER_MEDIUM, INTER_REGULAR, INTER_SEMIBOLD};
 /// Noto Emoji (monochrome, SIL OFL 1.1) cut down to the emoji the visual suites
 /// show, so emoji do not render as missing-glyph boxes.
 pub const NOTO_EMOJI_SUBSET: &[u8] = include_bytes!("../fonts/NotoEmoji-Regular-subset.ttf");

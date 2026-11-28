@@ -8,6 +8,7 @@ mod accent;
 pub mod base_theme;
 mod builtin;
 pub mod color;
+pub mod fonts;
 mod load;
 pub mod metrics;
 mod model;
