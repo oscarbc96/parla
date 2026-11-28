@@ -154,7 +154,8 @@ const hdiutilShim = `if [ "$1" = "create" ]; then
   if [ -d "$stage" ]; then
     printf 'stage:' >> "$LOG"
     for entry in "$stage"/* "$stage"/.[!.]*; do
-      [ -e "$entry" ] || continue
+      # The /Applications link dangles off macOS (CI runs these tests on Linux).
+      [ -e "$entry" ] || [ -L "$entry" ] || continue
       printf ' %s' "\${entry##*/}" >> "$LOG"
     done
     printf '\\n' >> "$LOG"
