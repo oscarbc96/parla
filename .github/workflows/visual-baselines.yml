@@ -1,0 +1,94 @@
+name: Visual baselines
+
+# Renders the visual baselines (and the site shots that come from them) for a
+# branch on the macOS runner and uploads the changed PNGs as an artifact.
+# Contributors without a Mac, or without a local build, regenerate baselines
+# here and commit the artifact's files with their own signed commit; a commit
+# from this workflow's token would not trigger CI. Read-only: it never pushes.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch or commit to render
+        required: true
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-baselines-${{ github.event.inputs.ref || github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  render:
+    name: render-baselines
+    # A labelled same-repository pull request, or a manual run.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.label.name == 'update-baselines' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.ref || github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Set up
+        uses: ./.github/actions/setup
+        with:
+          rust: "true"
+          rust-cache-key: visual-${{ runner.os }}
+      - name: Render baselines
+        run: mise run test:visual:update
+      - name: Render site shots
+        run: mise run site:shots
+      # Uncommitted files the two render steps wrote (tracked and new).
+      - name: Find changed baselines
+        id: verify
+        uses: tj-actions/verify-changed-files@a1c6acee9df209257a246f2cc6ae8cb6581c1edf # v20.0.4
+        with:
+          files: |
+            crates/ui_testing/baselines/**
+            site/public/shots/**
+          separator: "\n"
+      - name: Collect changed files
+        id: changed
+        if: steps.verify.outputs.files_changed == 'true'
+        shell: bash
+        env:
+          CHANGED: ${{ steps.verify.outputs.changed_files }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/baselines"
+          printf '%s\n' "$CHANGED" | sed '/^$/d' > "$RUNNER_TEMP/changed.txt"
+          while read -r f; do
+            [ -f "$f" ] || continue
+            mkdir -p "$RUNNER_TEMP/baselines/$(dirname "$f")"
+            cp "$f" "$RUNNER_TEMP/baselines/$f"
+          done < "$RUNNER_TEMP/changed.txt"
+          cp "$RUNNER_TEMP/changed.txt" "$RUNNER_TEMP/baselines/CHANGED.txt"
+          count=$(wc -l < "$RUNNER_TEMP/changed.txt" | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Visual baselines"
+            echo "Commit: \`$(git rev-parse HEAD)\`, changed files: $count"
+            echo
+            sed 's/^/- /' "$RUNNER_TEMP/changed.txt"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: No changes
+        if: steps.verify.outputs.files_changed != 'true'
+        run: |
+          echo "### Visual baselines: no changes" >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload changed baselines
+        if: steps.verify.outputs.files_changed == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: baselines-${{ github.run_id }}
+          path: ${{ runner.temp }}/baselines
+          retention-days: 3
