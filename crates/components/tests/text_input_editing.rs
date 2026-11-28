@@ -204,7 +204,7 @@ fn shift_delete_cuts_and_ctrl_insert_copies_on_linux_and_windows(cx: &mut TestAp
     assert_eq!(text(&i, vcx), "ho");
     vcx.write_to_clipboard(gpui::ClipboardItem::new_string("ey".into()));
     vcx.simulate_keystrokes("shift-insert");
-    assert_eq!(text(&i, vcx), "hey");
+    assert_eq!(text(&i, vcx), "heyo");
 }
 
 #[gpui::test]

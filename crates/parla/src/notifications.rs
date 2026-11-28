@@ -309,11 +309,10 @@ fn apply_permission_to(
 
 /// Records and logs a permission answer (the log line carries no content).
 fn apply_permission(permission: NotificationPermission, bundled: bool, cx: &mut App) {
-    let line = format!("notification permission: {}", permission.as_str());
     if permission == NotificationPermission::Denied {
-        crate::log::warn(&line);
+        crate::log::warn(&format!("notification permission: {}", permission.as_str()));
     } else {
-        crate::log::info(&line);
+        crate::log::info(&format!("notification permission: {}", permission.as_str()));
     }
     let l = i18n::gpui::localizer(cx);
     let text = t!(l, "notifications-permission-denied").into_owned();
