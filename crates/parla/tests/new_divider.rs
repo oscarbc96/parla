@@ -52,7 +52,19 @@ fn open_with(cx: &mut TestAppContext, read: Option<&str>) -> bool {
     settle_visual_until(vcx, |cx| {
         cx.debug_bounds("timeline-row-1700000300.000001").is_some()
     });
-    vcx.debug_bounds("timeline-new-divider").is_some()
+    // The read position loads from the store on its own thread and can land a
+    // frame after the rows, so give the divider a bounded moment to appear.
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+    loop {
+        vcx.run_until_parked();
+        if vcx.debug_bounds("timeline-new-divider").is_some() {
+            return true;
+        }
+        if std::time::Instant::now() >= deadline {
+            return false;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
 }
 
 #[gpui::test]
