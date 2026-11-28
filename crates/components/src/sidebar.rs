@@ -49,6 +49,25 @@ pub enum SidebarOption {
     Density(settings::Density),
 }
 
+/// The sidebar's quick-link rows, in the order they are drawn. Each is a tab
+/// stop; Enter or Space on one opens its view.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SidebarEntry {
+    Scheduled,
+    Reminders,
+    Threads,
+    Later,
+}
+
+impl SidebarEntry {
+    const ALL: [SidebarEntry; 4] = [
+        SidebarEntry::Scheduled,
+        SidebarEntry::Reminders,
+        SidebarEntry::Threads,
+        SidebarEntry::Later,
+    ];
+}
+
 /// A conversation row picked up in organise mode.
 #[derive(Clone, Debug, PartialEq)]
 pub struct DraggedRow {
@@ -164,9 +183,8 @@ pub enum SidebarRow {
         /// A direct message's peer is active (`Some(true)`) or away; `None`
         /// for other kinds and while unknown (no dot).
         presence: Option<bool>,
-        /// The row reserves room for the dot (a direct message of a provider
-        /// that reports presence), so names line up while it is unknown.
-        dot_slot: bool,
+        /// A group's other members (the count on its avatar); 0 for others.
+        members: u32,
         /// A huddle is live here: the number of people in it.
         huddle: Option<u32>,
     },
@@ -450,7 +468,17 @@ fn row(
         draft: drafts.contains(&c.id),
         level: prefs.map(|p| p.level).unwrap_or_default(),
         presence: crate::header::dm_presence(state, c),
-        dot_slot: state.caps.presence_watch && c.kind == ConversationKind::Direct,
+        members: match c.kind {
+            ConversationKind::Group => {
+                let n = if c.participants.is_empty() {
+                    c.member_ids.len()
+                } else {
+                    c.participants.len()
+                };
+                u32::try_from(n).unwrap_or(u32::MAX)
+            }
+            _ => 0,
+        },
         huddle: state
             .huddles
             .get(&c.id)
@@ -841,6 +869,8 @@ pub struct Sidebar<S: SidebarSource + 'static> {
     sort: SidebarSort,
     /// The keyboard cursor is on this section's header.
     cursor_section: Option<SidebarSection>,
+    /// Focus handles of the quick-link rows, in [`SidebarEntry::ALL`] order.
+    entry_focus: Vec<(SidebarEntry, FocusHandle)>,
     /// The paused strip's text, while notifications are paused.
     paused: Option<String>,
     /// Row height for the user's density, refreshed when settings change.
@@ -866,19 +896,6 @@ pub fn sidebar_options(cx: &App) -> (bool, SidebarSort) {
             let sb = &s.current().sidebar;
             (sb.show_unreads_section, sb.sort)
         })
-}
-
-/// A conversation row's text. The prefix stays in the label's text run (one
-/// element per row). The lock glyph is wider than `#`, so the channel prefix
-/// carries two thin spaces and the lock only a hair space: the names start
-/// within a pixel or two.
-fn row_text(kind: ConversationKind, label: &str) -> SharedString {
-    let prefix = match kind {
-        ConversationKind::Channel => "# \u{2009}\u{2009}",
-        ConversationKind::PrivateChannel => "\u{1F512} ",
-        ConversationKind::Direct | ConversationKind::Group => "",
-    };
-    format!("{prefix}{label}").into()
 }
 
 /// The chevron a section header shows: right when folded, down when open,
@@ -957,6 +974,10 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
                 .iter()
                 .map(|s| (*s, cx.focus_handle().tab_stop(true)))
                 .collect(),
+            entry_focus: SidebarEntry::ALL
+                .iter()
+                .map(|e| (*e, cx.focus_handle().tab_stop(true)))
+                .collect(),
             row_section: Vec::new(),
             custom_order: Vec::new(),
             organising: false,
@@ -1011,6 +1032,35 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
             .get(&section)
             .cloned()
             .unwrap_or_else(|| self.focus.clone())
+    }
+
+    /// The focus handle of a quick-link row (Scheduled, Reminders, Threads,
+    /// Later), a tab stop.
+    fn entry_focus(&self, entry: SidebarEntry) -> FocusHandle {
+        self.entry_focus
+            .iter()
+            .find(|(e, _)| *e == entry)
+            .map(|(_, f)| f.clone())
+            .unwrap_or_else(|| self.focus.clone())
+    }
+
+    /// Opens a quick-link row's view, by click or by Enter or Space while it
+    /// has the focus (the sidebar's `Open` binding wins over element handlers).
+    fn open_entry(&mut self, entry: SidebarEntry, cx: &mut Context<Self>) {
+        match entry {
+            SidebarEntry::Scheduled => {
+                self.session.update(cx, |s, cx| s.open_scheduled(cx));
+            }
+            SidebarEntry::Reminders => {
+                self.session.update(cx, |s, cx| s.open_reminders(cx));
+            }
+            SidebarEntry::Threads => {
+                self.session.update(cx, |s, cx| s.open_threads(cx));
+            }
+            SidebarEntry::Later => {
+                self.session.update(cx, |s, cx| s.open_later(cx));
+            }
+        }
     }
 
     /// Whether organise mode is on.
@@ -1229,6 +1279,12 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
         self.first_rendered
     }
 
+    /// The text of each row (empty for headers), built when the rows change.
+    /// A test hook: the kind icon or avatar is drawn beside the text, never in it.
+    pub fn row_texts(&self) -> &[SharedString] {
+        &self.texts
+    }
+
     /// Rebuilds the rows; false when they came out identical, so an unrelated
     /// session change does not repaint the list.
     fn refresh(&mut self, cx: &mut App) -> bool {
@@ -1332,7 +1388,7 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
             .rows
             .iter()
             .map(|r| match r {
-                SidebarRow::Conversation { kind, label, .. } => row_text(*kind, label),
+                SidebarRow::Conversation { label, .. } => label.clone(),
                 _ => SharedString::default(),
             })
             .collect();
@@ -1439,6 +1495,13 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
     fn open(&mut self, _: &Open, window: &mut Window, cx: &mut Context<Self>) {
         // Enter on a focused header folds it; on its focused "+" it asks for
         // the picker (the binding wins over the elements' own key handlers).
+        for (entry, focus) in &self.entry_focus {
+            if focus.is_focused(window) {
+                let entry = *entry;
+                self.open_entry(entry, cx);
+                return;
+            }
+        }
         let heads: Vec<(SidebarSection, FocusHandle)> = self
             .section_focus
             .iter()
@@ -1765,7 +1828,7 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
                     draft,
                     level,
                     presence,
-                    dot_slot,
+                    members,
                     huddle,
                 } => {
                     let cursor = ring_ix == Some(ix);
@@ -1832,18 +1895,60 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
                                 },
                             ))
                         })
-                        .when_some(*presence, |d, active| {
-                            d.child(presence_dot(
-                                ("sidebar-presence", ix),
-                                active,
-                                tokens.presence_active,
-                                tokens.presence_away,
-                            ))
-                        })
-                        // Keep names aligned while a person's presence is unknown.
-                        .when(presence.is_none() && *dot_slot, |d| {
-                            d.child(div().flex_none().size(px(8.0)))
-                        })
+                        // The row's leading mark: a hash or lock for channels,
+                        // an avatar for people (the board's `.ic` / `.sb-av`).
+                        .when(
+                            matches!(
+                                kind,
+                                ConversationKind::Channel | ConversationKind::PrivateChannel
+                            ),
+                            |d| {
+                                let icon = if *kind == ConversationKind::PrivateChannel {
+                                    crate::icon::IconName::Lock
+                                } else {
+                                    crate::icon::IconName::Hash
+                                };
+                                d.child(
+                                    div()
+                                        .debug_selector(|| format!("sidebar-kind-{ix}"))
+                                        .flex_none()
+                                        .child(
+                                            crate::icon::Icon::new(icon)
+                                                .size(themes::metrics::ICON_SIZE_MD)
+                                                .color(if strong {
+                                                    tokens.sidebar_text_strong
+                                                } else {
+                                                    tokens.sidebar_muted
+                                                }),
+                                        ),
+                                )
+                            },
+                        )
+                        .when(
+                            matches!(kind, ConversationKind::Direct | ConversationKind::Group),
+                            |d| {
+                                // A group shows how many people are in it.
+                                let initials: SharedString = if *members > 0 {
+                                    members.to_string().into()
+                                } else {
+                                    crate::badge::initials(label).into()
+                                };
+                                d.child(
+                                    div()
+                                        .debug_selector(|| format!("sidebar-avatar-{ix}"))
+                                        .flex_none()
+                                        .child(crate::message_row::avatar_with_presence(
+                                            label,
+                                            initials,
+                                            &theme,
+                                            themes::metrics::LAYOUT_AVATAR_2XS,
+                                            *presence,
+                                            (("sidebar-avatar-dot", ix), tokens.sidebar_background),
+                                            None,
+                                        )),
+                                )
+                            },
+                        )
                         .child(
                             // One line, cut with an ellipsis at the column edge.
                             div()
@@ -1855,10 +1960,7 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
                                 .whitespace_nowrap()
                                 .text_ellipsis()
                                 .child(
-                                    self.texts
-                                        .get(ix)
-                                        .cloned()
-                                        .unwrap_or_else(|| row_text(*kind, label)),
+                                    self.texts.get(ix).cloned().unwrap_or_else(|| label.clone()),
                                 ),
                         );
                     if *draft {
@@ -1893,10 +1995,9 @@ impl<S: SidebarSource + 'static> Sidebar<S> {
                                 .px_1()
                                 .text_xs()
                                 .child(
-                                    div()
-                                        .size(px(8.0))
-                                        .rounded_full()
-                                        .bg(tokens.presence_active),
+                                    crate::icon::Icon::new(crate::icon::IconName::Headphones)
+                                        .size(themes::metrics::ICON_SIZE_SM)
+                                        .color(tokens.presence_active),
                                 )
                                 .child(n.to_string()),
                         );
@@ -1956,6 +2057,7 @@ impl<S: SidebarSource + 'static> Render for Sidebar<S> {
         let tokens = parla_tokens(cx.theme());
         let row_h = crate::density::row_height(self.density);
         let colors = *cx.theme().colors();
+        let status = cx.theme().status();
         let workspace_name = self.workspace_name.clone().map(|name| {
             div()
                 .w_full()
@@ -2065,6 +2167,8 @@ impl<S: SidebarSource + 'static> Render for Sidebar<S> {
                 })
         });
         let jump = t!(cx, "sidebar-jump").into_owned();
+        // Keys are drawn as glyphs, never as text: the UI font has no ⌘.
+        let search_key: SharedString = format!("{}K", crate::keycap::COMMAND).into();
         let search = div()
             .w_full()
             .flex_none()
@@ -2079,6 +2183,7 @@ impl<S: SidebarSource + 'static> Render for Sidebar<S> {
                     .px(themes::metrics::SPACE_4)
                     .flex()
                     .items_center()
+                    .gap(themes::metrics::SPACE_4)
                     .rounded(themes::metrics::RADIUS_MD)
                     .border_1()
                     .border_color(tokens.sidebar_border)
@@ -2087,11 +2192,49 @@ impl<S: SidebarSource + 'static> Render for Sidebar<S> {
                     .text_color(tokens.sidebar_muted)
                     .cursor_pointer()
                     .on_click(cx.listener(|_, _, _, cx| cx.emit(SidebarEvent::QuickSwitch)))
-                    .child(jump),
+                    // The search icon is the field's, so it does not follow the
+                    // list's keyboard cursor.
+                    .child(
+                        div()
+                            .debug_selector(|| "sidebar-search-icon".to_string())
+                            .flex_none()
+                            .child(
+                                crate::icon::Icon::new(crate::icon::IconName::Search)
+                                    .size(themes::metrics::ICON_SIZE_BASE)
+                                    .color(tokens.sidebar_muted),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .overflow_hidden()
+                            .whitespace_nowrap()
+                            .text_ellipsis()
+                            .child(jump),
+                    )
+                    .child(
+                        div()
+                            .debug_selector(|| "sidebar-search-kbd".to_string())
+                            .flex_none()
+                            .child(crate::keycap::kbd(
+                                search_key,
+                                tokens.sidebar_border,
+                                tokens.sidebar_muted,
+                                cx,
+                            )),
+                    ),
             );
-        // A quick-link row (Scheduled, Reminders, Threads, Later): same shell as
-        // a conversation row.
-        let entry_row = |id: &'static str, label: String| {
+        // A quick-link row (Scheduled, Reminders, Threads, Later): the board's
+        // `.sb-row`, an icon, the label and a badge (unread) or count at the end.
+        let entry_row = |id: &'static str,
+                         entry: SidebarEntry,
+                         icon: crate::icon::IconName,
+                         label: String,
+                         badge: Option<u32>,
+                         count: Option<usize>|
+         -> gpui::Stateful<gpui::Div> {
+            let focus = self.entry_focus(entry);
             div()
                 .id(id)
                 .debug_selector(|| id.to_string())
@@ -2100,6 +2243,11 @@ impl<S: SidebarSource + 'static> Render for Sidebar<S> {
                 .h(row_h)
                 .px(themes::metrics::SPACE_4)
                 .cursor_pointer()
+                .track_focus(&focus)
+                .tab_stop(true)
+                .focusable()
+                .rounded(themes::metrics::RADIUS_SM)
+                .focus_visible(crate::controls::focus_style(&colors))
                 .child(
                     div()
                         .size_full()
@@ -2107,51 +2255,113 @@ impl<S: SidebarSource + 'static> Render for Sidebar<S> {
                         .px(themes::metrics::SPACE_5)
                         .flex()
                         .items_center()
+                        .gap(themes::metrics::SPACE_4)
                         .rounded(themes::metrics::RADIUS_SM)
                         .text_size(themes::metrics::FONT_SIZE_MD)
                         .text_color(tokens.sidebar_text)
-                        .child(label),
+                        .child(
+                            div()
+                                .debug_selector(move || format!("{id}-icon"))
+                                .flex_none()
+                                .child(
+                                    crate::icon::Icon::new(icon)
+                                        .size(themes::metrics::ICON_SIZE_MD)
+                                        .color(tokens.sidebar_muted),
+                                ),
+                        )
+                        .child(
+                            div()
+                                .debug_selector(move || format!("{id}-label"))
+                                .flex_1()
+                                .min_w_0()
+                                .overflow_hidden()
+                                .whitespace_nowrap()
+                                .text_ellipsis()
+                                .child(label),
+                        )
+                        .when_some(badge, |d, n| {
+                            d.child(
+                                div()
+                                    .debug_selector(move || format!("{id}-badge"))
+                                    .flex()
+                                    .flex_none()
+                                    .items_center()
+                                    .justify_center()
+                                    .min_w(themes::metrics::SPACE_7)
+                                    .h(themes::metrics::SPACE_7)
+                                    .px(themes::metrics::SPACE_3)
+                                    .rounded_full()
+                                    .bg(status.error)
+                                    .text_color(tokens.danger_text)
+                                    .text_size(themes::metrics::FONT_SIZE_XS)
+                                    .font_weight(themes::metrics::FONT_WEIGHT_BOLD)
+                                    .child(n.to_string()),
+                            )
+                        })
+                        .when_some(count, |d, n| {
+                            d.child(
+                                div()
+                                    .debug_selector(move || format!("{id}-count"))
+                                    .flex_none()
+                                    .text_size(themes::metrics::FONT_SIZE_XS)
+                                    .font_weight(themes::metrics::FONT_WEIGHT_MEDIUM)
+                                    .text_color(tokens.sidebar_muted)
+                                    .child(n.to_string()),
+                            )
+                        }),
                 )
         };
         let entry = self.entry.map(|n| {
-            let label = if n == 0 {
-                t!(cx, "sidebar-scheduled").into_owned()
-            } else {
-                t!(cx, "sidebar-scheduled-count", count = n).into_owned()
-            };
-            entry_row("sidebar-scheduled", label).on_click(cx.listener(|this, _, _, cx| {
-                this.session.update(cx, |s, cx| s.open_scheduled(cx));
-            }))
+            let row = entry_row(
+                "sidebar-scheduled",
+                SidebarEntry::Scheduled,
+                crate::icon::IconName::Clock,
+                t!(cx, "sidebar-scheduled").into_owned(),
+                None,
+                (n > 0).then_some(n),
+            );
+            crate::controls::on_activate(row, cx, |this, _, cx| {
+                this.open_entry(SidebarEntry::Scheduled, cx);
+            })
         });
         let reminders = self.reminders.map(|n| {
-            let label = if n == 0 {
-                t!(cx, "sidebar-reminders").into_owned()
-            } else {
-                t!(cx, "sidebar-reminders-count", count = n).into_owned()
-            };
-            entry_row("sidebar-reminders", label).on_click(cx.listener(|this, _, _, cx| {
-                this.session.update(cx, |s, cx| s.open_reminders(cx));
-            }))
+            let row = entry_row(
+                "sidebar-reminders",
+                SidebarEntry::Reminders,
+                crate::icon::IconName::Bell,
+                t!(cx, "sidebar-reminders").into_owned(),
+                None,
+                (n > 0).then_some(n),
+            );
+            crate::controls::on_activate(row, cx, |this, _, cx| {
+                this.open_entry(SidebarEntry::Reminders, cx);
+            })
         });
         let threads = self.threads.map(|n| {
-            let label = if n == 0 {
-                t!(cx, "sidebar-threads").into_owned()
-            } else {
-                t!(cx, "sidebar-threads-count", count = n).into_owned()
-            };
-            entry_row("sidebar-threads", label).on_click(cx.listener(|this, _, _, cx| {
-                this.session.update(cx, |s, cx| s.open_threads(cx));
-            }))
+            let row = entry_row(
+                "sidebar-threads",
+                SidebarEntry::Threads,
+                crate::icon::IconName::Threads,
+                t!(cx, "sidebar-threads").into_owned(),
+                (n > 0).then(|| u32::try_from(n).unwrap_or(u32::MAX)),
+                None,
+            );
+            crate::controls::on_activate(row, cx, |this, _, cx| {
+                this.open_entry(SidebarEntry::Threads, cx);
+            })
         });
         let later = self.later.map(|n| {
-            let label = if n == 0 {
-                t!(cx, "sidebar-later").into_owned()
-            } else {
-                t!(cx, "sidebar-later-count", count = n).into_owned()
-            };
-            entry_row("sidebar-later", label).on_click(cx.listener(|this, _, _, cx| {
-                this.session.update(cx, |s, cx| s.open_later(cx));
-            }))
+            let row = entry_row(
+                "sidebar-later",
+                SidebarEntry::Later,
+                crate::icon::IconName::Bookmark,
+                t!(cx, "sidebar-later").into_owned(),
+                None,
+                (n > 0).then_some(n),
+            );
+            crate::controls::on_activate(row, cx, |this, _, cx| {
+                this.open_entry(SidebarEntry::Later, cx);
+            })
         });
         // As on the board: a pencil, "Drafts" and the count at the end.
         let drafts = self.drafts.map(|n| {
@@ -2710,12 +2920,34 @@ mod tests {
     }
 
     #[test]
-    fn a_draft_row_uses_an_icon_not_a_pencil_glyph() {
-        let text = row_text(ConversationKind::Channel, "general");
-        assert!(
-            !text.contains('\u{270E}'),
-            "pencil must be an icon, not row text: {text:?}"
-        );
-        assert!(text.contains("general"));
+    fn a_conversation_row_draws_its_kind_as_an_icon_not_text() {
+        // The icon or avatar is an element beside the label (see
+        // `channel_and_private_rows_draw_their_icon_and_dms_their_avatar`):
+        // the label itself carries no prefix glyph.
+        for kind in [
+            ConversationKind::Channel,
+            ConversationKind::PrivateChannel,
+            ConversationKind::Direct,
+            ConversationKind::Group,
+        ] {
+            let row = SidebarRow::Conversation {
+                id: ConversationId("C1".into()),
+                label: "general".into(),
+                kind,
+                unread: false,
+                mentions: 0,
+                selected: false,
+                muted: false,
+                draft: false,
+                level: NotifyLevel::Default,
+                presence: None,
+                members: 0,
+                huddle: None,
+            };
+            let SidebarRow::Conversation { label, .. } = row else {
+                unreachable!()
+            };
+            assert_eq!(&*label, "general");
+        }
     }
 }

@@ -1012,23 +1012,70 @@ fn direct_rows_carry_the_peers_presence() {
     assert_eq!(presence(&rows_for(&s, None), "D1"), Some(None));
 }
 
-#[test]
-fn direct_rows_reserve_the_dot_only_when_the_provider_reports_presence() {
-    let mut a = conv("D1", ConversationKind::Direct, "");
-    a.peer = Some(UserId(Arc::from("U1")));
-    let mut s = state(vec![a, conv("C1", ConversationKind::Channel, "general")]);
-    let slot = |s: &WorkspaceState, id: &str| {
-        rows_for(s, None).iter().find_map(|r| match r {
-            SidebarRow::Conversation {
-                id: i, dot_slot, ..
-            } if &*i.0 == id => Some(*dot_slot),
-            _ => None,
-        })
-    };
-    assert_eq!(slot(&s, "D1"), Some(false));
-    s.caps.presence_watch = true;
-    assert_eq!(slot(&s, "D1"), Some(true));
-    assert_eq!(slot(&s, "C1"), Some(false));
+#[gpui::test]
+fn channel_and_private_rows_draw_their_icon_and_dms_their_avatar(cx: &mut TestAppContext) {
+    cx.update(|cx| {
+        themes::init_default(cx);
+        components::init(cx);
+    });
+    let mut dm = conv("D1", ConversationKind::Direct, "ana");
+    dm.peer = Some(UserId(Arc::from("U1")));
+    let mut s = state(vec![
+        conv("C1", ConversationKind::Channel, "general"),
+        conv("C2", ConversationKind::PrivateChannel, "leads"),
+        dm,
+    ]);
+    let uid = UserId(Arc::from("U1"));
+    s.members.insert(
+        uid.clone(),
+        Member {
+            id: uid.clone(),
+            display_name: Arc::from("Ana Reyes"),
+            real_name: Arc::from("Ana Reyes"),
+            handle: Arc::from(""),
+            is_bot: false,
+            deleted: false,
+            status: None,
+            title: None,
+            tz: None,
+            avatar: None,
+            ext: ProviderExt::none(),
+        },
+    );
+    s.presence.insert(uid, true);
+    let src = cx.new(|_| Src {
+        rows: rows_for(&s, None),
+        opened: vec![],
+        calls: Default::default(),
+        toggles: 0,
+        workspace_name: None,
+    });
+    let (view, vcx) = cx.add_window_view(move |_w, cx| Sidebar::new(src, cx));
+    vcx.run_until_parked();
+    vcx.update(|w, cx| w.draw(cx).clear(cx));
+    // The rows: Channels header, general, leads, Direct messages, Ana.
+    let texts = view.read_with(vcx, |v, _| v.row_texts().to_vec());
+    assert_eq!(&texts[1..], ["general", "leads", "", "Ana Reyes"]);
+    assert!(
+        vcx.debug_bounds("sidebar-kind-1").is_some(),
+        "a channel draws its hash icon"
+    );
+    assert!(
+        vcx.debug_bounds("sidebar-kind-2").is_some(),
+        "a private channel draws its lock icon"
+    );
+    let avatar = vcx
+        .debug_bounds("sidebar-avatar-4")
+        .expect("a DM draws its avatar");
+    assert_eq!(
+        avatar.size.width,
+        themes::metrics::LAYOUT_AVATAR_2XS,
+        "the board's 18 px sidebar avatar"
+    );
+    assert!(
+        vcx.debug_bounds("sidebar-avatar-dot-4-active").is_some(),
+        "the presence dot sits on the avatar"
+    );
 }
 
 #[gpui::test]

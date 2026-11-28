@@ -3739,6 +3739,18 @@ impl components::ChannelDetailsSource for WorkspaceSession {
 const MEMBER_LOG: usize = 256;
 
 impl WorkspaceSession {
+    /// Whether notifications are paused now: the titlebar's bell is crossed
+    /// out. The same rule the sidebar and the pause menu use.
+    pub fn notifications_paused(&self, now: i64) -> bool {
+        self.provider.capabilities().dnd
+            && self
+                .state
+                .self_user
+                .as_ref()
+                .and_then(|me| self.state.dnd.get(me))
+                .is_some_and(|status| status.active(now))
+    }
+
     /// Bumps the members revision; a change to one known member is logged so
     /// the People directory patches that entry instead of rebuilding.
     fn log_member_change(&mut self, single: bool) {

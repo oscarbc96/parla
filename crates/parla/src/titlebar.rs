@@ -87,13 +87,26 @@ pub struct BarActions {
     pub forward: Click,
     pub search: Click,
     pub pause: Click,
+    pub help: Click,
     pub can_back: bool,
     pub can_forward: bool,
+    /// Notifications are paused for the workspace: the bell is crossed out.
+    pub paused: bool,
     /// Placeholder of the search pill ("Search <workspace>").
     pub search_label: SharedString,
     pub back_label: SharedString,
     pub forward_label: SharedString,
     pub pause_label: SharedString,
+    pub help_label: SharedString,
+}
+
+/// The pause button's icon: a bell, crossed out while notifications are paused.
+pub fn pause_icon(paused: bool) -> components::icon::IconName {
+    if paused {
+        components::icon::IconName::BellOff
+    } else {
+        components::icon::IconName::Bell
+    }
 }
 
 /// The main window's titlebar (macOS): drag area with the traffic lights at
@@ -101,7 +114,7 @@ pub struct BarActions {
 pub fn bar(actions: BarActions, cx: &App) -> Div {
     let t = parla_tokens(cx.theme());
     let button = |id: &'static str,
-                  glyph: Result<components::icon::IconName, &'static str>,
+                  icon: components::icon::IconName,
                   label: SharedString,
                   on: Click,
                   enabled: bool| {
@@ -124,16 +137,21 @@ pub fn bar(actions: BarActions, cx: &App) -> Div {
             .tooltip(components::reactions::tooltip_view(label.to_string()))
             .on_mouse_down(MouseButton::Left, |_, _, cx| cx.stop_propagation())
             .when(enabled, |d| d.on_click(move |e, w, cx| on(e, w, cx)))
-            .child(match glyph {
-                Ok(icon) => components::icon::Icon::new(icon)
+            .child(
+                components::icon::Icon::new(icon)
                     .size(themes::metrics::ICON_SIZE_LG)
-                    .color(t.sidebar_muted)
-                    .into_any_element(),
-                // The bell is a colour emoji, drawn by the system.
-                Err(text) => div().child(text).into_any_element(),
-            })
+                    .color(t.sidebar_muted),
+            )
     };
     let search = actions.search.clone();
+    // Keys are drawn as glyphs, never as text: the UI font has no ⌘ or ⇧.
+    // The pill opens Search (`cmd-shift-f`), not the quick switcher (`cmd-k`).
+    let search_key: SharedString = format!(
+        "{}{}F",
+        components::keycap::COMMAND,
+        components::keycap::SHIFT
+    )
+    .into();
     div()
         .debug_selector(|| "titlebar".into())
         .window_control_area(WindowControlArea::Drag)
@@ -158,14 +176,14 @@ pub fn bar(actions: BarActions, cx: &App) -> Div {
         .text_color(t.sidebar_text)
         .child(button(
             "titlebar-back",
-            Ok(components::icon::IconName::ChevLeft),
+            components::icon::IconName::ArrowLeft,
             actions.back_label,
             actions.back,
             actions.can_back,
         ))
         .child(button(
             "titlebar-forward",
-            Ok(components::icon::IconName::ChevRight),
+            components::icon::IconName::ArrowRight,
             actions.forward_label,
             actions.forward,
             actions.can_forward,
@@ -177,6 +195,7 @@ pub fn bar(actions: BarActions, cx: &App) -> Div {
                     .debug_selector(|| "titlebar-search".into())
                     .flex()
                     .items_center()
+                    .gap(themes::metrics::SPACE_3)
                     .w_full()
                     .max_w(themes::metrics::LAYOUT_TITLEBAR_SEARCH)
                     .h(themes::metrics::LAYOUT_TITLEBAR_BUTTON)
@@ -192,19 +211,48 @@ pub fn bar(actions: BarActions, cx: &App) -> Div {
                     .on_click(move |e, w, cx| search(e, w, cx))
                     .child(
                         div()
+                            .debug_selector(|| "titlebar-search-icon".to_string())
+                            .flex_none()
+                            .child(
+                                components::icon::Icon::new(components::icon::IconName::Search)
+                                    .size(themes::metrics::ICON_SIZE_BASE)
+                                    .color(t.sidebar_muted),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
                             .min_w_0()
                             .overflow_hidden()
                             .whitespace_nowrap()
                             .text_ellipsis()
                             .child(actions.search_label),
+                    )
+                    .child(
+                        div()
+                            .debug_selector(|| "titlebar-search-kbd".to_string())
+                            .flex_none()
+                            .child(components::keycap::kbd(
+                                search_key,
+                                t.sidebar_border,
+                                t.sidebar_muted,
+                                cx,
+                            )),
                     ),
             ),
         )
         .child(button(
             "titlebar-pause",
-            Err("\u{1F514}"),
+            pause_icon(actions.paused),
             actions.pause_label,
             actions.pause,
+            true,
+        ))
+        .child(button(
+            "titlebar-help",
+            components::icon::IconName::Info,
+            actions.help_label,
+            actions.help,
             true,
         ))
 }
@@ -239,6 +287,12 @@ mod tests {
     fn inset_per_platform() {
         assert_eq!(top_inset_for(true), 32.0);
         assert_eq!(top_inset_for(false), 0.0);
+    }
+
+    #[test]
+    fn the_pause_button_shows_a_bell_off_while_paused() {
+        assert_eq!(pause_icon(false), components::icon::IconName::Bell);
+        assert_eq!(pause_icon(true), components::icon::IconName::BellOff);
     }
 
     #[test]

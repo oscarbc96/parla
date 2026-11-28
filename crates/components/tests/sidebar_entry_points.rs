@@ -139,6 +139,14 @@ struct Src {
     drafts_opened: usize,
     people: bool,
     people_opened: usize,
+    threads: Option<usize>,
+    threads_opened: usize,
+    later: Option<usize>,
+    later_opened: usize,
+    scheduled: Option<usize>,
+    scheduled_opened: usize,
+    reminders: Option<usize>,
+    reminders_opened: usize,
 }
 
 impl SidebarSource for Src {
@@ -164,6 +172,30 @@ impl SidebarSource for Src {
     fn open_people(&mut self, _cx: &mut App) {
         self.people_opened += 1;
     }
+    fn threads_entry(&self) -> Option<usize> {
+        self.threads
+    }
+    fn open_threads(&mut self, _cx: &mut App) {
+        self.threads_opened += 1;
+    }
+    fn later_entry(&self) -> Option<usize> {
+        self.later
+    }
+    fn open_later(&mut self, _cx: &mut App) {
+        self.later_opened += 1;
+    }
+    fn scheduled_entry(&self) -> Option<usize> {
+        self.scheduled
+    }
+    fn open_scheduled(&mut self, _cx: &mut App) {
+        self.scheduled_opened += 1;
+    }
+    fn reminders_entry(&self) -> Option<usize> {
+        self.reminders
+    }
+    fn open_reminders(&mut self, _cx: &mut App) {
+        self.reminders_opened += 1;
+    }
 }
 
 type Events = std::rc::Rc<std::cell::RefCell<Vec<SidebarEvent>>>;
@@ -177,17 +209,34 @@ fn setup(
     &mut VisualTestContext,
     Events,
 ) {
+    setup_with(
+        cx,
+        Src {
+            drafts,
+            ..Src::default()
+        },
+    )
+}
+
+fn setup_with(
+    cx: &mut TestAppContext,
+    mut src_state: Src,
+) -> (
+    Entity<Src>,
+    Entity<Sidebar<Src>>,
+    &mut VisualTestContext,
+    Events,
+) {
     cx.update(|cx| {
         themes::init_default(cx);
         components::init(cx);
         i18n::gpui::init(cx, &[components::catalog()], i18n::LocalePref::System);
     });
-    let s = sample();
-    let src = cx.new(|_| Src {
-        rows: rows(&s, None, &[]),
-        drafts,
-        ..Src::default()
-    });
+    if src_state.rows.is_empty() {
+        let s = sample();
+        src_state.rows = rows(&s, None, &[]);
+    }
+    let src = cx.new(|_| src_state);
     let src2 = src.clone();
     let (view, vcx) = cx.add_window_view(move |_w, cx| Sidebar::new(src2, cx));
     let events = std::rc::Rc::new(std::cell::RefCell::new(Vec::new()));
@@ -410,6 +459,86 @@ fn the_drafts_entry_has_its_icon_and_count(cx: &mut TestAppContext) {
     let (_src, _view, vcx, _) = setup(cx, Some(3));
     assert!(vcx.debug_bounds("sidebar-drafts-icon").is_some());
     assert!(vcx.debug_bounds("sidebar-drafts-count").is_some());
+}
+
+#[gpui::test]
+fn quick_links_draw_their_icon_and_a_right_aligned_count(cx: &mut TestAppContext) {
+    let (_src, _view, vcx, _) = setup_with(
+        cx,
+        Src {
+            threads: Some(3),
+            later: Some(2),
+            scheduled: Some(1),
+            reminders: Some(4),
+            ..Src::default()
+        },
+    );
+    for id in [
+        "sidebar-threads-icon",
+        "sidebar-threads-badge",
+        "sidebar-later-icon",
+        "sidebar-later-count",
+        "sidebar-scheduled-icon",
+        "sidebar-scheduled-count",
+        "sidebar-reminders-icon",
+        "sidebar-reminders-count",
+    ] {
+        assert!(vcx.debug_bounds(id).is_some(), "{id} not drawn");
+    }
+    let icon = vcx.debug_bounds("sidebar-later-icon").unwrap();
+    let label = vcx.debug_bounds("sidebar-later-label").unwrap();
+    let count = vcx.debug_bounds("sidebar-later-count").unwrap();
+    assert!(icon.right() <= label.left(), "the icon leads the label");
+    assert!(
+        count.left() >= label.right(),
+        "the count follows the label, at the row's end"
+    );
+}
+
+#[gpui::test]
+fn the_quick_links_are_tab_stops_that_open_their_view(cx: &mut TestAppContext) {
+    let (src, view, vcx, _) = setup_with(
+        cx,
+        Src {
+            threads: Some(3),
+            later: Some(2),
+            scheduled: Some(1),
+            reminders: Some(4),
+            ..Src::default()
+        },
+    );
+    // The workspace name and New message come first; the entries follow.
+    vcx.update(|w, cx| {
+        let handle = view.read(cx).focus_handle(cx);
+        w.focus(&handle, cx);
+    });
+    vcx.run_until_parked();
+    for _ in 0..3 {
+        vcx.update(|w, cx| w.focus_next(cx));
+    }
+    vcx.simulate_keystrokes("enter");
+    vcx.update(|w, cx| w.focus_next(cx));
+    vcx.simulate_keystrokes("enter");
+    vcx.update(|w, cx| w.focus_next(cx));
+    vcx.simulate_keystrokes("enter");
+    vcx.update(|w, cx| w.focus_next(cx));
+    vcx.simulate_keystrokes("enter");
+    let (scheduled, reminders, threads, later) = src.read_with(vcx, |s, _| {
+        (
+            s.scheduled_opened,
+            s.reminders_opened,
+            s.threads_opened,
+            s.later_opened,
+        )
+    });
+    assert_eq!((scheduled, reminders, threads, later), (1, 1, 1, 1));
+}
+
+#[gpui::test]
+fn the_search_field_has_its_icon_and_key_hint(cx: &mut TestAppContext) {
+    let (_src, _view, vcx, _) = setup(cx, None);
+    assert!(vcx.debug_bounds("sidebar-search-icon").is_some());
+    assert!(vcx.debug_bounds("sidebar-search-kbd").is_some());
 }
 
 #[gpui::test]

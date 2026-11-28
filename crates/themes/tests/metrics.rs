@@ -90,6 +90,7 @@ fn radius_matches_tokens() {
         &["radius"],
         &[
             ("xs", RADIUS_XS),
+            ("2xs", RADIUS_2XS),
             ("sm", RADIUS_SM),
             ("md", RADIUS_MD),
             ("lg", RADIUS_LG),
@@ -169,6 +170,7 @@ fn layout_matches_tokens() {
             ("menu-row", LAYOUT_MENU_ROW),
             ("avatar-sm", LAYOUT_AVATAR_SM),
             ("avatar-xs", LAYOUT_AVATAR_XS),
+            ("avatar-2xs", LAYOUT_AVATAR_2XS),
             ("timeline-min", LAYOUT_TIMELINE_MIN),
             ("context-pane-min", LAYOUT_CONTEXT_PANE_MIN),
             ("avatar-lg", LAYOUT_AVATAR_LG),

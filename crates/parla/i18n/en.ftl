@@ -265,6 +265,7 @@ titlebar-back = Back
 titlebar-forward = Forward
 titlebar-search = Search { $workspace }
 titlebar-search-plain = Search
+titlebar-help = Help
 
 ## Settings window
 settings-title = Settings

@@ -77,6 +77,27 @@ pub fn has_glyphs(text: &str) -> bool {
     text.chars().any(|c| glyph_icon(c).is_some())
 }
 
+/// One key cap in the given border and text colours: the titlebar and the
+/// sidebar draw it on their own grounds, not on the surface colour.
+pub fn kbd(key: SharedString, border: Hsla, text: Hsla, cx: &gpui::App) -> Div {
+    div()
+        .flex()
+        .flex_none()
+        .items_center()
+        .justify_center()
+        .min_w(themes::metrics::SPACE_7)
+        .h(themes::metrics::SPACE_7)
+        .px(themes::metrics::SPACE_2)
+        .rounded(themes::metrics::RADIUS_2XS)
+        .border_1()
+        .border_b_2()
+        .border_color(border)
+        .text_size(themes::metrics::FONT_SIZE_2XS)
+        .font_weight(themes::metrics::FONT_WEIGHT_MEDIUM)
+        .text_color(text)
+        .child(glyph_row(&key, themes::metrics::ICON_SIZE_SM, text, cx))
+}
+
 /// One piece of drawn text: words as text, symbols as icons.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Piece {

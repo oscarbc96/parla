@@ -74,7 +74,7 @@
   },
   "radius": {
     "$type": "dimension",
-    "xs": { "$value": "4px" }, "sm": { "$value": "6px" }, "md": { "$value": "8px" }, "lg": { "$value": "12px" },
+    "xs": { "$value": "4px" }, "2xs": { "$value": "5px", "$description": "Key caps and a conversation avatar in the sidebar." }, "sm": { "$value": "6px" }, "md": { "$value": "8px" }, "lg": { "$value": "12px" },
     "xl": { "$value": "16px" }, "2xl": { "$value": "20px" }, "full": { "$value": "999px" },
     "avatar": { "$value": "8px", "$description": "Rounded square avatars; circles are reserved for presence." }
   },
@@ -112,6 +112,7 @@
     "menu-row": { "$value": "26px", "$description": "Height of a row in a popover menu." },
     "avatar-sm": { "$value": "26px", "$description": "Diameter of a small avatar in the huddle bar." },
     "avatar-xs": { "$value": "22px", "$description": "Diameter of an avatar in a message preview line (All unreads)." },
+    "avatar-2xs": { "$value": "18px", "$description": "Side of a conversation avatar in the sidebar." },
     "timeline-min": { "$value": "320px", "$description": "Narrowest the timeline gets for a second right-column pane (search in context)." },
     "context-pane-min": { "$value": "280px", "$description": "Narrowest search in-context pane; below it the pane hides." },
     "avatar-lg": { "$value": "72px", "$description": "Side of the large avatar on a direct message intro." },

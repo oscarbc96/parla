@@ -20,12 +20,16 @@ The sidebar lists your conversations in these sections:
 - **Your own sections**, above Channels, in the order you put them.
 - **Channels** you are a member of, by name.
 - **Direct messages**, with the most recent activity first.
-- **Threads**, **Later**, **Scheduled** and **Reminders**, when supported.
+- **Threads**, **Later**, **Scheduled** and **Reminders**, when supported, each
+  with its icon and a count at the end.
 - **Drafts**, while you have unsaved text.
 - **People**, to open the workspace directory.
 
-An unread conversation is bold. Click a section title, or press Enter or Space
-on it, to fold it. Parla remembers folded sections per workspace.
+Channels carry a hash, private channels a lock, and people show their avatar
+with a presence dot. An unread conversation is bold. Click a section title, or
+press Enter or Space on it, to fold it. Parla remembers folded sections per
+workspace. The quick links at the top are tab stops too: press Enter or Space on
+one to open it.
 
 Right-click a conversation for its menu: view details, star it, change its
 notification level, mute it, mark it read, move it to one of your sections or
@@ -226,13 +230,15 @@ are away. Parla asks about presence only for the people on screen.
 - **Jump to the latest message:** `cmd-shift-down`.
 - **Shortcuts sheet:** `cmd-/`.
 
-On macOS the titlebar has back and forward buttons, a search control and a bell
-that opens the pause-notifications menu for the current workspace.
+On macOS the titlebar has back and forward arrows, a search control with its
+search icon and `cmd-shift-f` hint, a help button that opens this documentation, and a
+bell that opens the pause-notifications menu for the current workspace. While
+notifications are paused the bell is crossed out.
 
 ## Huddles and calls
 
-When a huddle is live in a conversation, its sidebar row shows a green dot and
-the number of people in it. A bar above the timeline lists up to five people,
+When a huddle is live in a conversation, its sidebar row shows headphones in
+presence green and the number of people in it. A bar above the timeline lists up to five people,
 how long ago the huddle started, and **Join**.
 
 By default Parla joins with its own audio: the call bar shows **Connecting...**,
