@@ -151,6 +151,19 @@ fn is_ok(v: &Val) -> bool {
 }
 
 /// Threads of this process.
+/// The thread count once it reaches `want` or a second passes. The ticker is
+/// joined, but Linux can list a joined thread in /proc/self/task briefly.
+fn settled(want: usize) -> usize {
+    let deadline = Instant::now() + Duration::from_secs(1);
+    loop {
+        let n = threads();
+        if n == want || Instant::now() >= deadline {
+            return n;
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+}
+
 fn threads() -> usize {
     #[cfg(target_os = "linux")]
     {
@@ -288,12 +301,12 @@ fn epoch_thread_only_while_calls_in_flight() {
     assert_eq!(threads(), idle + 1);
     drop(second);
     assert!(!engine.ticker_running());
-    assert_eq!(threads(), idle, "no ticker when nothing runs");
+    assert_eq!(settled(idle), idle, "no ticker when nothing runs");
     // And again: the ticker restarts on the next call.
     let again = engine.begin_call().unwrap();
     assert_eq!(threads(), idle + 1);
     drop(again);
-    assert_eq!(threads(), idle);
+    assert_eq!(settled(idle), idle);
 }
 
 #[test]
