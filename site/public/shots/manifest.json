@@ -4,57 +4,57 @@
       "scenario": "thread_open",
       "appearance": "light",
       "source": "crates/ui_testing/baselines/macos/components/thread_open@2x-light.png",
-      "hash": "9be0cf47a1daa10ad73173507883295477f68e015eb2542427aac5ccfa1ef5ab",
-      "bytes": 54416
+      "hash": "6cae97ff262c76ee9c5f78c3b00467dda2e0c178a54f4e27008c733b04e69980",
+      "bytes": 54228
     },
     "thread-dark.webp": {
       "scenario": "thread_open",
       "appearance": "dark",
       "source": "crates/ui_testing/baselines/macos/components/thread_open@2x-dark.png",
-      "hash": "7f4974adb1c547e23c4b1d780a3fea11c77d624233791b607625d5309b7a49f6",
-      "bytes": 54262
+      "hash": "b7b249f628d711c6e66c02684b178e9912695e2675b89453b0c62cf7cb6bcc5d",
+      "bytes": 54314
     },
     "search-light.webp": {
       "scenario": "search_results",
       "appearance": "light",
       "source": "crates/ui_testing/baselines/macos/components/search_results@2x-light.png",
-      "hash": "fad49e474553c4dadb6fe191aceada3f39f4050a8e996c7dc66e3d8587bb66bc",
-      "bytes": 62434
+      "hash": "5d32f4b0ce07c6cb1407df5a1f45105fb7cba6ca64704ecd047059320c495c74",
+      "bytes": 62578
     },
     "search-dark.webp": {
       "scenario": "search_results",
       "appearance": "dark",
       "source": "crates/ui_testing/baselines/macos/components/search_results@2x-dark.png",
-      "hash": "ba93dd5254eed5feedca96499274fbd0a3a57dd5ddd19939c7c216543e61c4f8",
-      "bytes": 63134
+      "hash": "882b5d2c2cb27dcee3785aecc468d75485f2d957607e68dd879797d8a24f2d1c",
+      "bytes": 63290
     },
     "switcher-light.webp": {
       "scenario": "quick_switcher_open",
       "appearance": "light",
       "source": "crates/ui_testing/baselines/macos/components/quick_switcher_open@2x-light.png",
-      "hash": "9fdf51590e3da134df9e6a25466f07524c7bb5f049d179a85afa635251ef90bd",
-      "bytes": 28944
+      "hash": "a3f2ccfe15f1d19096bae970e5cb7f323e2aa60b99820b685d48196d4207d336",
+      "bytes": 28854
     },
     "switcher-dark.webp": {
       "scenario": "quick_switcher_open",
       "appearance": "dark",
       "source": "crates/ui_testing/baselines/macos/components/quick_switcher_open@2x-dark.png",
-      "hash": "df42d6a12b28563f7231cdf936c9b7160cae2ffec401bb23bd05bcf949d010ae",
-      "bytes": 29008
+      "hash": "69ddb4dab38e16923e0144f3b3852c61d77791a43f47e3a03ed6ef8b4eef58e2",
+      "bytes": 29316
     },
     "huddle-light.webp": {
       "scenario": "huddle_awareness",
       "appearance": "light",
       "source": "crates/ui_testing/baselines/macos/components/huddle_awareness@2x-light.png",
-      "hash": "908efd1b1faebc43b05a21fdeac993087b3f2cf636916eeed046e07a7195c433",
-      "bytes": 41720
+      "hash": "16467d8f794d8ec1c2cbc2bb467f6c4c7ddbf96064ea337442d87138153e2cde",
+      "bytes": 41958
     },
     "huddle-dark.webp": {
       "scenario": "huddle_awareness",
       "appearance": "dark",
       "source": "crates/ui_testing/baselines/macos/components/huddle_awareness@2x-dark.png",
-      "hash": "41e6efaedbbf8b65b1e2bad41769df936aa4b53f724f6f0552241fb3a6bd1c30",
-      "bytes": 41850
+      "hash": "f8badc559eaa52f17e3f81b89271feb9948f4dafe40f5cb089a3a647aae301cb",
+      "bytes": 42044
     }
   }
 }

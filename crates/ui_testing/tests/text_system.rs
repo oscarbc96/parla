@@ -3,9 +3,10 @@
 
 use std::borrow::Cow;
 
-use gpui::{FontRun, FontStyle, PlatformTextSystem, font, px};
+use gpui::{FontRun, FontStyle, FontWeight, PlatformTextSystem, font, px};
 use ui_testing::{
-    INTER_ITALIC, INTER_REGULAR, JETBRAINS_MONO_REGULAR, NOTO_EMOJI_SUBSET, ParleyTextSystem,
+    INTER_BOLD, INTER_ITALIC, INTER_MEDIUM, INTER_REGULAR, INTER_SEMIBOLD, JETBRAINS_MONO_REGULAR,
+    NOTO_EMOJI_SUBSET, ParleyTextSystem,
 };
 
 const TEXT: &str = "Hello, Parla 123";
@@ -17,6 +18,9 @@ fn system() -> ParleyTextSystem {
         .add_fonts(vec![
             Cow::Borrowed(INTER_REGULAR),
             Cow::Borrowed(INTER_ITALIC),
+            Cow::Borrowed(INTER_MEDIUM),
+            Cow::Borrowed(INTER_SEMIBOLD),
+            Cow::Borrowed(INTER_BOLD),
             Cow::Borrowed(JETBRAINS_MONO_REGULAR),
             Cow::Borrowed(NOTO_EMOJI_SUBSET),
         ])
@@ -114,6 +118,42 @@ fn an_italic_run_shapes_with_the_italic_face() {
     assert_ne!(
         upright_layout.runs[0].glyphs[1].id, italic_layout.runs[0].glyphs[1].id,
         "italic glyphs differ from upright glyphs"
+    );
+}
+
+/// The design uses Inter at 400/500/600/700, so a weighted run must shape with
+/// the bundled face for that weight (its own advances), not the regular face.
+#[test]
+fn a_semibold_run_shapes_with_the_semibold_face() {
+    let system = system();
+    let regular = system.font_id(&font("Inter")).expect("Inter resolves");
+    let mut semibold_font = font("Inter");
+    semibold_font.weight = FontWeight::SEMIBOLD;
+    let semibold = system
+        .font_id(&semibold_font)
+        .expect("Inter SemiBold resolves");
+    assert_ne!(regular, semibold, "semibold is its own face");
+
+    let shape = |font_id| {
+        system.layout_line(
+            TEXT,
+            px(FONT_SIZE),
+            &[FontRun {
+                len: TEXT.len(),
+                font_id,
+            }],
+        )
+    };
+    let regular_layout = shape(regular);
+    let semibold_layout = shape(semibold);
+    assert_eq!(
+        semibold_layout.runs[0].font_id, semibold,
+        "the shaped run keeps the semibold face"
+    );
+    assert_ne!(
+        round(f32::from(regular_layout.width)),
+        round(f32::from(semibold_layout.width)),
+        "semibold advances differ from regular"
     );
 }
 

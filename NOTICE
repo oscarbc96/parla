@@ -39,9 +39,12 @@ assets/sounds/parla-chime.wav is original work synthesised by
 scripts/gen_chime.ts and released under CC0-1.0; see
 assets/sounds/README.md.
 
-crates/ui_testing/fonts bundles test-only fonts under the SIL Open Font
-License 1.1, with the licence text next to each family: Inter, JetBrains
-Mono and Noto Emoji. They are never packaged with the app.
+assets/fonts bundles Inter 4.1 (Regular, Italic, Medium, SemiBold and Bold)
+under the SIL Open Font License 1.1, with the licence text next to the files.
+Inter is the default UI font and Parla registers it at start-up; the visual
+test harness renders from the same bytes. crates/ui_testing/fonts bundles the
+test-only JetBrains Mono and Noto Emoji fonts under the same licence, with the
+licence text next to each family. It is never packaged with the app.
 
 Third-party software
 --------------------

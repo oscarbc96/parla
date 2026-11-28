@@ -16,6 +16,7 @@ pub mod drafts;
 pub mod error_text;
 pub mod expiry_banner;
 pub mod files;
+pub mod fonts;
 pub mod huddles;
 pub mod idle_lock;
 pub mod instance;
