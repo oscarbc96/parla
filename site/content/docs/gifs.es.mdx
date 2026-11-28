@@ -1,0 +1,55 @@
+---
+title: GIF
+description: Busca, envía e inserta GIF desde el compositor con tu propia clave de GIPHY o KLIPY.
+---
+
+## Abrir el selector
+
+El botón de GIF en la barra de acciones del compositor abre el selector. Solo
+aparece cuando hay al menos un proveedor de GIF activado.
+
+- `cmd-mayús-g` en macOS, `ctrl-mayús-g` en Windows y Linux.
+- Escribe `/gif` y una búsqueda, por ejemplo `/gif gatos`. El comando nunca sale
+  de tu equipo: abre el selector con el cuadro de búsqueda ya relleno.
+
+## Tu clave, tu proveedor
+
+Parla ofrece dos proveedores, **GIPHY** y **KLIPY**, pero no tiene ninguna clave
+de API propia: no se envía nada a ninguno de los dos servicios hasta que actives
+uno con tu propia clave. Un proveedor que aún no has configurado muestra una
+tarjeta de configuración en su pestaña:
+
+1. Abre la página de claves del proveedor: [GIPHY](https://developers.giphy.com/dashboard)
+   o [KLIPY](https://partner.klipy.com).
+2. Crea una aplicación y copia su clave de API.
+3. Pega la clave en el campo **Clave de API** y elige **Activar**.
+
+La clave se guarda en el llavero del sistema, no en el archivo de ajustes de
+Parla ni en sus registros. La tarjeta indica los servidores con los que habla el
+proveedor. En los ajustes, `gifs.providers` elige qué proveedores ofrece el
+selector.
+
+## Qué se envía
+
+Solo después de activar un proveedor, y solo para la pestaña que estás usando,
+Parla envía el texto del cuadro de búsqueda (o nada, cuando la pestaña muestra
+tendencias) y tu clasificación de contenido a los servidores de ese proveedor.
+La clasificación es `gifs.rating`, `pg-13` de forma predeterminada. El
+proveedor devuelve los resultados; Parla no guarda ninguna copia más allá de la
+lista que muestra el selector abierto.
+
+## Enviar o insertar
+
+- **Intro** envía el GIF seleccionado como mensaje propio. El borrador que
+  estabas escribiendo se queda en el compositor.
+- **Mayús-Intro** inserta el enlace del GIF en el borrador, en la posición del
+  cursor, con un espacio donde el texto lo necesita.
+- Haz clic en un GIF para enviarlo. Las flechas se mueven por la cuadrícula,
+  Arriba desde la primera fila vuelve al cuadro de búsqueda, Tab cambia de
+  pestaña de proveedor y Escape cierra el selector.
+
+`gifs.send_as` decide qué hace el envío. Con **link**, el mensaje es la URL del
+GIF, que los servicios muestran en línea. Con **upload**, Parla descarga el GIF
+y lo sube como archivo, lo que también funciona donde los enlaces no se
+despliegan. `gifs.autoplay_in_messages` decide si los GIF de los mensajes se
+reproducen siempre, al pasar el puntero o nunca.

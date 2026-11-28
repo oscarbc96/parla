@@ -22,6 +22,8 @@ pub struct MediaImage {
     alt: String,
     max: (f32, f32),
     fixed: bool,
+    /// Fill `max`, cropping the overflow (`MediaImage::cover`).
+    cover: bool,
     /// `None` follows `gifs.autoplay_in_messages`.
     autoplay: Option<GifAutoplay>,
     /// Paint strength, for a dimmed (pending) row. An image ignores the text
@@ -39,6 +41,7 @@ impl MediaImage {
                 themes::metrics::LAYOUT_MEDIA_HEIGHT.as_f32(),
             ),
             fixed: false,
+            cover: false,
             autoplay: None,
             strength: 1.0,
         }
@@ -56,6 +59,13 @@ impl MediaImage {
         self
     }
 
+    /// Fill the box, cropping the overflow instead of fitting inside it (the
+    /// GIF grid, whose tiles are their item's shape with the height capped).
+    pub fn cover(mut self) -> Self {
+        self.cover = true;
+        self
+    }
+
     /// Paint at `strength`: a leaf, so opacity multiplies each picture once
     /// and dims a pending row the way main's group opacity did.
     pub fn dimmed(mut self, strength: f32) -> Self {
@@ -66,6 +76,12 @@ impl MediaImage {
     pub fn autoplay(mut self, mode: GifAutoplay) -> Self {
         self.autoplay = Some(mode);
         self
+    }
+
+    /// The autoplay override this image was built with (a test hook for the
+    /// picker's focused tile).
+    pub fn autoplay_mode(&self) -> Option<GifAutoplay> {
+        self.autoplay
     }
 
     fn alt_text(&self, cx: &App) -> String {
@@ -108,19 +124,20 @@ impl RenderOnce for MediaImage {
             ImageState::Failed => self.placeholder(Some(self.alt_text(cx))).into_any_element(),
             ImageState::Ready(image) => {
                 let s = image.size(0);
-                let (w, h) = fit_logical(
-                    s.width.0 as f32 / scale,
-                    s.height.0 as f32 / scale,
-                    self.max.0,
-                    self.max.1,
-                );
-                let (w, h) = if self.fixed { self.max } else { (w, h) };
+                let (iw, ih) = (s.width.0 as f32 / scale, s.height.0 as f32 / scale);
+                let (w, h) = if self.fixed || self.cover {
+                    self.max
+                } else {
+                    fit_logical(iw, ih, self.max.0, self.max.1)
+                };
+                let cover = self.cover;
                 let mode = self.autoplay.unwrap_or_else(|| autoplay_setting(cx));
                 let anim = animation_for(cx, &self.src, boxed, scale, mode);
                 match anim {
                     None => img(image)
                         .w(px(w))
                         .h(px(h))
+                        .when(cover, |i| i.object_fit(gpui::ObjectFit::Cover))
                         .when(self.strength < 1.0, |i| i.opacity(self.strength))
                         .into_any_element(),
                     Some(anim) => {
@@ -133,9 +150,24 @@ impl RenderOnce for MediaImage {
                                 let next =
                                     anim.borrow_mut().tick(cx.background_executor().now(), play);
                                 let frame = anim.borrow().current();
+                                let (bw, bh) =
+                                    (bounds.size.width.as_f32(), bounds.size.height.as_f32());
+                                // Cover: the widest scale, centred, cropped by
+                                // the tile's `overflow_hidden`.
+                                let (dw, dh) = if cover {
+                                    let k = (bw / iw).max(bh / ih);
+                                    (iw * k, ih * k)
+                                } else {
+                                    (bw, bh)
+                                };
+                                let draw = gpui::Bounds {
+                                    origin: bounds.origin
+                                        + gpui::point(px((bw - dw) / 2.0), px((bh - dh) / 2.0)),
+                                    size: size(px(dw), px(dh)),
+                                };
                                 let _ = window.paint_image(
-                                    bounds,
-                                    bounds,
+                                    draw,
+                                    draw,
                                     Default::default(),
                                     frame,
                                     0,

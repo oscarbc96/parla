@@ -136,6 +136,7 @@ pub const KNOWN: &[&str] = &[
     "composer::BulletList",
     "composer::NumberedList",
     "composer::Link",
+    "composer::GifPicker",
     "text_input::Left",
     "text_input::Right",
     "text_input::Up",

@@ -1193,6 +1193,7 @@ dependencies = [
 name = "components"
 version = "0.0.1"
 dependencies = [
+ "components",
  "dirs 7.0.0",
  "domain",
  "emojis",
@@ -6634,6 +6635,7 @@ dependencies = [
  "objc2-app-kit 0.3.2",
  "objc2-foundation 0.3.2",
  "parla",
+ "plugin_host",
  "png 0.18.1",
  "redact",
  "regex",
@@ -6659,6 +6661,7 @@ dependencies = [
  "tray-icon",
  "url",
  "uuid",
+ "wasmparser",
  "wiremock",
  "write_confirm",
  "zeroize",
@@ -7021,6 +7024,7 @@ dependencies = [
  "futures",
  "libc",
  "parla_plugin_api",
+ "plugin_host",
  "semver",
  "serde",
  "serde_json",

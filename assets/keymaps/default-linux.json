@@ -70,6 +70,7 @@
       "ctrl-shift-8": "composer::BulletList",
       "ctrl-shift-7": "composer::NumberedList",
       "ctrl-shift-u": "composer::Link",
+      "ctrl-shift-g": "composer::GifPicker",
       "ctrl-shift-enter": "composer::SendLater",
       "tab": "composer::AcceptCompletion"
     }

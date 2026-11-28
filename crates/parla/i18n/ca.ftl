@@ -8,6 +8,7 @@ action-app-command-palette = Paleta d'ordres
 action-app-reload-config = Torna a carregar la configuració
 action-app-check-for-updates = Cerca actualitzacions
 action-app-about = Quant a Parla
+action-composer-gif-picker = Selector de GIF
 action-theme-toggle-mode = Canvia entre mode clar i fosc
 action-store-rebuild-cache = Reconstrueix la memòria cau
 action-mcp-rebuild-audit-log = Reconstrueix el registre d'auditoria
@@ -92,6 +93,7 @@ file-error-no-download = Aquest fitxer no es pot baixar
 file-error-download-failed = La baixada ha fallat: { $reason }
 file-error-needs-connection = Les pujades necessiten connexió: connecta't i torna-ho a provar (les pujades no es posen en cua)
 file-error-refused = { $reasons }
+gif-upload-failed = No s'ha pogut baixar el GIF, així que no s'ha enviat res.
 
 ## Visor de fitxers
 media-viewer-meta = { $sender } a { $place } · { $time } · { $size }
@@ -620,3 +622,29 @@ code-viewer-lines =
         [one] 1 línia
        *[other] { $count } línies
     }
+
+# Cerca de GIF (la pàgina Connectors)
+settings-gif-title = Cerca de GIF
+settings-gif-subtitle = Cerca i envia GIF des dels proveïdors integrats.
+settings-gif-providers-title = Proveïdors
+settings-gif-providers-desc = Res surt del teu ordinador fins que afegeixis una clau i activis un proveïdor. Les claus es guarden a la clau del sistema, mai a settings.json.
+settings-gif-no-providers = Aquesta compilació no inclou cap proveïdor de GIF.
+settings-gif-enabled = Utilitza aquest proveïdor
+settings-gif-key = Clau d'API
+settings-gif-key-saved = Clau desada
+settings-gif-key-help = Es guarda a la clau del sistema, mai a settings.json.
+settings-gif-key-placeholder = Enganxa la teva clau d'API
+settings-gif-save = Desa
+settings-gif-remove = Treu
+settings-gif-get-key = Obtén una clau d'API
+settings-gif-hosts = Es comunica amb { $hosts }
+settings-gif-send-title = Enviament
+settings-gif-send-desc = Com arriba a la conversa el GIF que tries.
+settings-gif-rating = Classificació màxima
+settings-gif-rating-help = Els proveïdors que filtren per classificació amaguen el que supera aquest límit.
+settings-gif-send-as = Envia els GIF com a
+settings-gif-send-help = Pujar baixa el GIF i l'envia com a fitxer; amb enllaç només s'envia l'adreça.
+settings-gif-send-link = Enllaç
+settings-gif-send-upload = Pujada
+settings-gif-key-failed = No s'ha pogut desar la clau. Torna-ho a provar.
+settings-gif-unavailable = La cerca de GIF no està disponible en aquesta compilació.

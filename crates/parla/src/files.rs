@@ -166,7 +166,7 @@ impl WorkspaceSession {
         self.files.notice.clone()
     }
 
-    fn file_error(&mut self, msg: i18n::LocalizedText, cx: &mut Context<Self>) {
+    pub(crate) fn file_error(&mut self, msg: i18n::LocalizedText, cx: &mut Context<Self>) {
         self.files.notice = Some(FileNotice::Error(msg));
         cx.notify();
     }
@@ -295,7 +295,7 @@ impl WorkspaceSession {
         );
     }
 
-    fn upload_temp_dir(&self) -> PathBuf {
+    pub(crate) fn upload_temp_dir(&self) -> PathBuf {
         self.files.upload_dir.clone().unwrap_or_else(uploads_dir)
     }
 
@@ -338,6 +338,49 @@ impl WorkspaceSession {
             });
         }
         self.staged_changed(cx);
+    }
+
+    /// Stages a file already written under the upload temp dir (a downloaded
+    /// GIF) as `name` on the draft of `c`, then sends it as a message of its
+    /// own when `send`. The temp file is removed when it cannot be staged.
+    pub(crate) fn adopt_upload(
+        &mut self,
+        c: ConversationId,
+        thread: Option<MessageTs>,
+        path: PathBuf,
+        name: String,
+        send: bool,
+        cx: &mut Context<Self>,
+    ) {
+        let dir = self.upload_temp_dir();
+        if self.state.session == domain::Session::Expired {
+            cleanup_temp(&[path], &dir);
+            return;
+        }
+        let mut planned = plan(std::slice::from_ref(&path));
+        let Some(mut upload) = planned.accepted.pop() else {
+            let reasons =
+                components::upload::refusals_text(&planned.refused, &i18n::gpui::localizer(cx));
+            cleanup_temp(&[path], &dir);
+            return self.file_error(
+                i18n::LocalizedText::new("parla", "file-error-refused").with("reasons", reasons),
+                cx,
+            );
+        };
+        upload.name = name.as_str().into();
+        self.files.next_id += 1;
+        self.files.staged.push(Staged {
+            key: (c.clone(), thread.clone()),
+            id: self.files.next_id,
+            upload,
+            lines: 0,
+            batch: None,
+            state: StagedState::Ready,
+        });
+        self.staged_changed(cx);
+        if send {
+            self.send_staged(c, thread, None, cx);
+        }
     }
 
     /// Attaches a snippet created from a long paste: its text is written to a temp file on
@@ -895,5 +938,58 @@ mod tests {
                 "the failed file is not marked uploading with no task behind it"
             );
         });
+    }
+
+    /// A downloaded GIF is named from its title, kept as a normal staged file
+    /// while `send` is false, and uploaded once (and cleaned up) when sent.
+    #[gpui::test]
+    async fn a_downloaded_gif_is_staged_with_its_title(cx: &mut TestAppContext) {
+        let (_p, session) = session(cx);
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("temp.gif");
+        std::fs::write(&path, b"GIF89a").unwrap();
+        session.update(cx, |s, cx| {
+            s.files.upload_dir = Some(dir.path().to_path_buf());
+            s.adopt_upload(
+                cid("C1"),
+                None,
+                path.clone(),
+                "party cat.gif".into(),
+                false,
+                cx,
+            );
+            let staged = s.staged_files(&cid("C1"), None);
+            assert_eq!(staged.len(), 1);
+            assert_eq!(staged[0].name.as_ref(), "party cat.gif");
+            assert!(path.exists(), "kept while it waits in the draft");
+            assert!(s.files.batches.is_empty(), "not sent yet");
+        });
+        session.update(cx, |s, cx| s.send_staged(cid("C1"), None, None, cx));
+        cx.run_until_parked();
+        assert!(!path.exists(), "the temp file went with the upload");
+    }
+
+    #[gpui::test]
+    async fn a_downloaded_gif_is_sent_as_its_own_message(cx: &mut TestAppContext) {
+        let (provider, session) = session(cx);
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("temp.gif");
+        std::fs::write(&path, b"GIF89a").unwrap();
+        session.update(cx, |s, cx| {
+            s.files.upload_dir = Some(dir.path().to_path_buf());
+            s.adopt_upload(cid("C1"), None, path.clone(), "cat.gif".into(), true, cx);
+        });
+        cx.run_until_parked();
+        let uploads: Vec<_> = provider
+            .calls()
+            .into_iter()
+            .filter(|c| matches!(c, domain::test_support::Call::Upload { .. }))
+            .collect();
+        assert_eq!(uploads.len(), 1, "exactly one upload, never two");
+        let domain::test_support::Call::Upload { files, .. } = &uploads[0] else {
+            unreachable!()
+        };
+        assert_eq!(files[0].name.as_ref(), "cat.gif");
+        assert!(!path.exists());
     }
 }

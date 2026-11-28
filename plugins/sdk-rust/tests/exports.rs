@@ -70,8 +70,19 @@ fn default_exports_return_unsupported() {
     unsupported(Empty::view_event("v".into(), Event::Refresh));
     unsupported(Empty::settings_changed(vec![]));
     unsupported(Empty::mcp_call("tool".into(), "{}".into()));
-    unsupported(Empty::media_search("m".into(), "cats".into(), None, 10));
-    unsupported(Empty::media_trending("m".into(), None, 10));
+    unsupported(Empty::media_search(
+        "m".into(),
+        "cats".into(),
+        None,
+        10,
+        parla_plugin_sdk::media::ContentRating::Pg13,
+    ));
+    unsupported(Empty::media_trending(
+        "m".into(),
+        None,
+        10,
+        parla_plugin_sdk::media::ContentRating::Pg13,
+    ));
     unsupported(Empty::media_resolve("m".into(), "1".into()));
     let _unused: Option<ViewTree> = None;
 }

@@ -459,3 +459,128 @@ reason = "diagnostic log line built here and logged by the session, never shown 
 path = "crates/parla/src/platform/macos.rs"
 literal = "Tink"
 reason = "name of a macOS system sound, not user-facing text"
+
+[[allow]]
+path = "crates/parla/src/main.rs"
+literal = "usage: parla {} <wasm> <out>"
+reason = "usage line of the hidden plugin precompile subcommand, printed to stderr for developers"
+
+[[allow]]
+path = "crates/parla/src/plugins/backend.rs"
+literal = "Parla-Plugin"
+reason = "User-Agent product token of plugin HTTP requests, an identifier"
+
+[[allow]]
+path = "crates/parla/src/plugins/backend.rs"
+literal = "response body"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/backend.rs"
+literal = "the plugin host did not resolve"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/backend.rs"
+literal = "the plugin host resolves to a non-public address"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/backend.rs"
+literal = "network: {host}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "the {id} provider keeps crashing; close the picker to try again"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "cannot name the app binary: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "cannot create the plugin cache: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "cannot stage the plugin: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "cannot save the plugin setting: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "the provider has no lifecycle"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "the provider did not start: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "the provider did not start"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/manager.rs"
+literal = "api key"
+reason = "machine error code the GIF providers return for a missing or refused key, compared in code"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "invalid plugin id"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "invalid secret key"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "cannot read the development credentials file"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "cannot write the development credentials file"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "cannot encode the key index"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "too many secrets"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "cannot remove the key index: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "MemorySecrets"
+reason = "type name in a Debug implementation, an identifier"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "keychain unavailable"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"
+
+[[allow]]
+path = "crates/parla/src/plugins/secrets.rs"
+literal = "keychain: {e}"
+reason = "diagnostic detail of a plugin host error; logged, never shown: the picker shows its own localized gif-error messages"

@@ -1,0 +1,148 @@
+{
+  "result": true,
+  "data": {
+    "data": [
+      {
+        "id": 9000000000000004,
+        "slug": "synthetic-klipy-delta",
+        "title": "Synthetic Klipy delta",
+        "file": {
+          "hd": {
+            "gif": {
+              "url": "https://static1.klipy.com/ii/synthetic/synthetic-klipy-delta/hd.gif",
+              "width": 640,
+              "height": 360,
+              "size": 300000
+            },
+            "webp": {
+              "url": "https://static1.klipy.com/ii/synthetic/synthetic-klipy-delta/hd.webp",
+              "width": 640,
+              "height": 360,
+              "size": 300000
+            },
+            "jpg": {
+              "url": "https://static1.klipy.com/ii/synthetic/synthetic-klipy-delta/hd.jpg",
+              "width": 640,
+              "height": 360,
+              "size": 300000
+            },
+            "mp4": {
+              "url": "https://static1.klipy.com/ii/synthetic/synthetic-klipy-delta/hd.mp4",
+              "width": 640,
+              "height": 360,
+              "size": 300000
+            },
+            "webm": {
+              "url": "https://static1.klipy.com/ii/synthetic/synthetic-klipy-delta/hd.webm",
+              "width": 640,
+              "height": 360,
+              "size": 300000
+            }
+          },
+          "md": {
+            "gif": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/md.gif",
+              "width": 480,
+              "height": 270,
+              "size": 180000
+            },
+            "webp": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/md.webp",
+              "width": 480,
+              "height": 270,
+              "size": 180000
+            },
+            "jpg": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/md.jpg",
+              "width": 480,
+              "height": 270,
+              "size": 180000
+            },
+            "mp4": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/md.mp4",
+              "width": 480,
+              "height": 270,
+              "size": 180000
+            },
+            "webm": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/md.webm",
+              "width": 480,
+              "height": 270,
+              "size": 180000
+            }
+          },
+          "sm": {
+            "gif": {
+              "url": "https://static.klipy.com/ii/synthetic/synthetic-klipy-delta/sm.gif",
+              "width": 200,
+              "height": 113,
+              "size": 40000
+            },
+            "webp": {
+              "url": "https://static.klipy.com/ii/synthetic/synthetic-klipy-delta/sm.webp",
+              "width": 200,
+              "height": 113,
+              "size": 40000
+            },
+            "jpg": {
+              "url": "https://static.klipy.com/ii/synthetic/synthetic-klipy-delta/sm.jpg",
+              "width": 200,
+              "height": 113,
+              "size": 40000
+            },
+            "mp4": {
+              "url": "https://static.klipy.com/ii/synthetic/synthetic-klipy-delta/sm.mp4",
+              "width": 200,
+              "height": 113,
+              "size": 40000
+            },
+            "webm": {
+              "url": "https://static.klipy.com/ii/synthetic/synthetic-klipy-delta/sm.webm",
+              "width": 200,
+              "height": 113,
+              "size": 40000
+            }
+          },
+          "xs": {
+            "gif": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/xs.gif",
+              "width": 100,
+              "height": 56,
+              "size": 12000
+            },
+            "webp": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/xs.webp",
+              "width": 100,
+              "height": 56,
+              "size": 12000
+            },
+            "jpg": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/xs.jpg",
+              "width": 100,
+              "height": 56,
+              "size": 12000
+            },
+            "mp4": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/xs.mp4",
+              "width": 100,
+              "height": 56,
+              "size": 12000
+            },
+            "webm": {
+              "url": "https://static2.klipy.com/ii/synthetic/synthetic-klipy-delta/xs.webm",
+              "width": 100,
+              "height": 56,
+              "size": 12000
+            }
+          }
+        },
+        "tags": [],
+        "type": "gif",
+        "blur_preview": ""
+      }
+    ],
+    "current_page": 1,
+    "per_page": 1,
+    "has_next": true
+  }
+}

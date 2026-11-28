@@ -8,6 +8,7 @@ action-app-command-palette = Paleta de comandos
 action-app-reload-config = Recargar la configuración
 action-app-check-for-updates = Buscar actualizaciones
 action-app-about = Acerca de Parla
+action-composer-gif-picker = Selector de GIF
 action-theme-toggle-mode = Alternar entre modo claro y oscuro
 action-store-rebuild-cache = Reconstruir la caché
 action-mcp-rebuild-audit-log = Reconstruir el registro de auditoría
@@ -92,6 +93,7 @@ file-error-no-download = Este archivo no se puede descargar
 file-error-download-failed = Ha fallado la descarga: { $reason }
 file-error-needs-connection = Las subidas necesitan conexión: conéctate e inténtalo de nuevo (las subidas no se ponen en cola)
 file-error-refused = { $reasons }
+gif-upload-failed = No se ha podido descargar el GIF, así que no se ha enviado nada.
 
 ## Visor de archivos
 media-viewer-meta = { $sender } en { $place } · { $time } · { $size }
@@ -620,3 +622,29 @@ code-viewer-lines =
         [one] 1 línea
        *[other] { $count } líneas
     }
+
+# Búsqueda de GIF (la página Plugins)
+settings-gif-title = Búsqueda de GIF
+settings-gif-subtitle = Busca y envía GIF desde los proveedores integrados.
+settings-gif-providers-title = Proveedores
+settings-gif-providers-desc = Nada sale de tu ordenador hasta que añadas una clave y actives un proveedor. Las claves se guardan en el llavero del sistema, nunca en settings.json.
+settings-gif-no-providers = Esta compilación no incluye ningún proveedor de GIF.
+settings-gif-enabled = Usar este proveedor
+settings-gif-key = Clave de API
+settings-gif-key-saved = Clave guardada
+settings-gif-key-help = Se guarda en el llavero del sistema, nunca en settings.json.
+settings-gif-key-placeholder = Pega tu clave de API
+settings-gif-save = Guardar
+settings-gif-remove = Quitar
+settings-gif-get-key = Obtener una clave de API
+settings-gif-hosts = Se comunica con { $hosts }
+settings-gif-send-title = Envío
+settings-gif-send-desc = Cómo llega a la conversación el GIF que eliges.
+settings-gif-rating = Clasificación máxima
+settings-gif-rating-help = Los proveedores que filtran por clasificación ocultan lo que supera este límite.
+settings-gif-send-as = Enviar GIF como
+settings-gif-send-help = Subir descarga el GIF y lo envía como archivo; con enlace solo se envía la dirección.
+settings-gif-send-link = Enlace
+settings-gif-send-upload = Subida
+settings-gif-key-failed = No se ha podido guardar la clave. Inténtalo de nuevo.
+settings-gif-unavailable = La búsqueda de GIF no está disponible en esta compilación.

@@ -160,6 +160,31 @@ fn mcp_controls_write_their_keys_and_apply_live(cx: &mut TestAppContext) {
 }
 
 #[gpui::test]
+fn gif_controls_write_their_keys_and_apply_live(cx: &mut TestAppContext) {
+    if !parla::plugins::builtin::all().iter().any(|b| b.bundled()) {
+        eprintln!("skipped: no GIF plugin is bundled; run `mise run plugins:build`");
+        return;
+    }
+    let (_dir, paths) = setup(cx);
+    let (_view, vcx) = open_on(cx, &paths, Page::Plugins);
+    reload(vcx);
+    assert!(
+        vcx.debug_bounds("settings-gif-giphy-enabled").is_some(),
+        "the GIPHY row is drawn"
+    );
+    assert!(vcx.debug_bounds("settings-gif-giphy-key").is_some());
+    assert!(vcx.debug_bounds("settings-gif-giphy-save").is_some());
+    click(vcx, "settings-gif-giphy-enabled");
+    click(vcx, "settings-gif-rating-g");
+    click(vcx, "settings-gif-send-upload");
+    reload(vcx);
+    let s = live(vcx);
+    assert!(s.plugins.entry("giphy").is_some_and(|e| e.enabled));
+    assert_eq!(s.gifs.rating, "g");
+    assert_eq!(s.gifs.send_as, settings::GifSendAs::Upload);
+}
+
+#[gpui::test]
 fn calls_controls_write_their_keys_and_apply_live(cx: &mut TestAppContext) {
     let (_dir, paths) = setup(cx);
     let (_view, vcx) = open_on(cx, &paths, Page::Calls);

@@ -14,9 +14,9 @@ o fes clic al botó Paràmetres al final de la barra d'espais de treball. Parla 
 sola finestra de paràmetres; la drecera la porta al davant si ja està oberta.
 
 Les pàgines són General, Aparença, Notificacions, Tecles, Espais de treball,
-Privadesa i emmagatzematge, Trucades, IA, Connectors, MCP i Avançat. IA i
-Connectors encara no tenen controls; et remeten a `settings.json`. Espais de
-treball i Privadesa i emmagatzematge mostren la mateixa pàgina.
+Privadesa i emmagatzematge, Trucades, IA, Connectors, MCP i Avançat. IA encara no
+té controls; et remet a `settings.json`. Espais de treball i Privadesa i
+emmagatzematge mostren la mateixa pàgina.
 
 Cada control escriu la seva clau a `settings.json` amb una edició que conserva els
 comentaris, així que l'aplicació en marxa ho aplica com una edició manual. Si el
@@ -124,6 +124,22 @@ magatzem xifrat i els inicis de sessió desats. Els teus paràmetres es conserve
 
 El límit de memòria cau i la retenció s'apliquen la propera vegada que Parla
 s'iniciï. Els altres controls de privadesa s'apliquen a l'instant.
+
+## Cerca de GIF
+
+Paràmetres, Connectors té els proveïdors de GIF integrats. Parla inclou GIPHY i
+KLIPY; no s'executa res ni surt res del teu ordinador fins que enganxis una clau
+d'API i activis el proveïdor. La clau es guarda a la clau del sistema (en una
+compilació de depuració, al fitxer de credencials de desenvolupament), mai a
+`settings.json`. La pàgina indica els hosts amb què parla cada proveïdor i enllaça
+on s'obté una clau.
+
+| Clau                   | Què fa                                                                      |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `gifs.providers`       | Les pestanyes de proveïdors, en ordre. Els ids no integrats s'ometen        |
+| `plugins.<id>.enabled` | Si el proveïdor `<id>` s'executa. Els proveïdors integrats comencen apagats |
+| `gifs.rating`          | Classificació màxima que mostrar: `g`, `pg`, `pg-13` o `r`                  |
+| `gifs.send_as`         | `link` envia l'adreça del GIF; `upload` el baixa i l'envia com a fitxer     |
 
 ## IA i MCP
 

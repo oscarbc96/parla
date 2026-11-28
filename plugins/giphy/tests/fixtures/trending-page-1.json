@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "type": "gif",
+      "id": "synthTrend01",
+      "slug": "synthetic-trending-one",
+      "url": "https://giphy.com/gifs/synthetic-trending-one",
+      "title": "Synthetic trending one",
+      "alt_text": "",
+      "rating": "pg",
+      "username": "synthetic",
+      "images": {
+        "fixed_width_small": {
+          "url": "https://media3.giphy.com/media/synthTrend01/100w.gif",
+          "width": "100",
+          "height": "75",
+          "size": "10000"
+        },
+        "original": {
+          "url": "https://media.giphy.com/media/synthTrend01/giphy.gif",
+          "width": "400",
+          "height": "300",
+          "size": "120000"
+        }
+      }
+    }
+  ],
+  "pagination": {
+    "total_count": 2,
+    "count": 1,
+    "offset": 0
+  },
+  "meta": {
+    "status": 200,
+    "msg": "OK",
+    "response_id": "synthetic-trending-1"
+  }
+}

@@ -107,6 +107,11 @@ fn init_with(cx: &mut App, paths: ConfigPaths, watch_files: bool) {
     }
     bind_keymap(cx, &paths);
     register_actions(cx);
+    // The GIF providers: a global that does nothing until the picker's first
+    // call. Only the real app (watched settings, real data dirs) gets it.
+    if watch_files {
+        crate::plugins::install(cx, &paths);
+    }
 
     let (tx, mut rx) = futures::channel::mpsc::unbounded();
     let watch = if watch_files {

@@ -46,10 +46,12 @@ _.source = "scripts/sccache-env.sh"
 
 [tasks.build]
 description = "Build the workspace"
+depends = ["plugins:build"]
 run = "cargo build --workspace"
 
 [tasks.run]
 description = "Build, bundle and run the debug app with the dev signing identity"
+depends = ["plugins:build"]
 run = [
   "cargo build -p parla",
   "scripts/dev-bundle.sh target/debug/parla target/debug/Parla.app",
@@ -171,6 +173,7 @@ run = "bun scripts/gates.ts"
 
 [tasks."app:shot"]
 description = "Screenshot the running Parla window (macOS): app:shot -- [--fixture] [--appearance both] [--wait-log <text>] [--attach]"
+depends = ["plugins:build"]
 run = "bun scripts/app-shot.ts"
 
 [tasks."lint:pr-body"]
@@ -305,7 +308,7 @@ run = "bun scripts/gen_chime.ts"
 
 [tasks.bundle]
 description = "Build target/release/Parla.app signed with the dev identity (ad hoc without it)"
-depends = ["release:notice"]
+depends = ["release:notice", "plugins:build"]
 run = [
   "cargo build --release -p parla",
   "cargo packager -p parla --release --formats app --out-dir target/release",

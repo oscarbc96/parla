@@ -15,8 +15,8 @@ trabajo. Parla tiene una sola ventana de ajustes; el atajo la trae al frente si 
 está abierta.
 
 Las páginas son General, Apariencia, Notificaciones, Teclas, Espacios de trabajo,
-Privacidad y almacenamiento, Llamadas, IA, Complementos, MCP y Avanzado. IA y
-Complementos todavía no tienen controles; te remiten a `settings.json`. Espacios de trabajo y
+Privacidad y almacenamiento, Llamadas, IA, Complementos, MCP y Avanzado. IA
+todavía no tiene controles; te remite a `settings.json`. Espacios de trabajo y
 Privacidad y almacenamiento muestran la misma página.
 
 Cada control escribe su clave en `settings.json` con una edición que conserva los
@@ -126,6 +126,22 @@ almacén cifrado y los inicios de sesión guardados. Tus ajustes se conservan.
 
 El límite de caché y la retención se aplican la próxima vez que Parla se inicie.
 Los demás controles de privacidad se aplican al instante.
+
+## Búsqueda de GIF
+
+Ajustes, Complementos tiene los proveedores de GIF integrados. Parla incluye
+GIPHY y KLIPY; nada se ejecuta ni sale de tu ordenador hasta que pegues una clave
+de API y actives el proveedor. La clave se guarda en el llavero del sistema (en
+una compilación de depuración, en el archivo de credenciales de desarrollo),
+nunca en `settings.json`. La página indica los hosts con los que habla cada
+proveedor y enlaza a donde se obtiene una clave.
+
+| Clave                  | Qué hace                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| `gifs.providers`       | Las pestañas de proveedores, en orden. Los ids no integrados se omiten          |
+| `plugins.<id>.enabled` | Si el proveedor `<id>` se ejecuta. Los proveedores integrados empiezan apagados |
+| `gifs.rating`          | Clasificación máxima que mostrar: `g`, `pg`, `pg-13` o `r`                      |
+| `gifs.send_as`         | `link` envía la dirección del GIF; `upload` lo descarga y lo envía como archivo |
 
 ## IA y MCP
 

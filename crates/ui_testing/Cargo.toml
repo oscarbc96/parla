@@ -16,7 +16,7 @@ e2e = []
 gpui = { workspace = true, features = ["test-support"] }
 gpui_platform = { workspace = true, features = ["test-support"] }
 themes.path = "../themes"
-components.path = "../components"
+components = { path = "../components", features = ["test-support"] }
 settings.path = "../settings"
 image.workspace = true
 anyhow.workspace = true

@@ -1,6 +1,6 @@
 #!/bin/sh
 #MISE description="Build an unsigned universal macOS Parla.app and zip it"
-#MISE depends=["release:notice"]
+#MISE depends=["release:notice", "plugins:build"]
 set -eu
 
 root=$(git rev-parse --show-toplevel)

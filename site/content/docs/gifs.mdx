@@ -1,0 +1,52 @@
+---
+title: GIFs
+description: Search, send and insert GIFs from the composer with your own GIPHY or KLIPY key.
+---
+
+## Open the picker
+
+The GIF button in the composer's action bar opens the picker. It appears only
+when at least one GIF provider is enabled.
+
+- `cmd-shift-g` on macOS, `ctrl-shift-g` on Windows and Linux.
+- Type `/gif` and a search, for example `/gif cats`. The command never leaves
+  your machine: it opens the picker with the search box already filled in.
+
+## Your key, your provider
+
+Parla offers two providers, **GIPHY** and **KLIPY**, but it has no API key of
+its own: nothing is sent to either service until you enable one with your own
+key. A provider you have not set up shows a set-up card in its tab:
+
+1. Open the key page of the provider: [GIPHY](https://developers.giphy.com/dashboard)
+   or [KLIPY](https://partner.klipy.com).
+2. Create an app and copy its API key.
+3. Paste the key into the **API key** field and choose **Enable**.
+
+The key is stored in the system keychain of your computer, not in Parla's
+settings file and not in its logs. The card lists the hosts the provider talks
+to. Settings, `gifs.providers` chooses which providers the picker offers.
+
+## What is sent
+
+Only after you enable a provider, and only for the tab you are using, Parla
+sends the text in the search box (or nothing, when the tab shows trending) and
+your content rating to that provider's servers. The rating is `gifs.rating`,
+`pg-13` by default. The provider returns the results; Parla keeps no copy of
+them beyond the list the open picker shows.
+
+## Send or insert
+
+- **Enter** sends the focused GIF as a message of its own. A draft you were
+  writing stays in the composer.
+- **Shift-Enter** inserts the GIF's link into the draft at the cursor, with a
+  space where the text needs one.
+- Click a GIF to send it. The arrow keys move in the grid, Up from the first
+  row returns to the search box, Tab switches provider tabs and Escape closes
+  the picker.
+
+`gifs.send_as` chooses what sending does. With **link** the message is the
+GIF's URL, which services show inline. With **upload** Parla downloads the GIF
+and uploads it as a file, which also works where links do not unfurl.
+`gifs.autoplay_in_messages` decides whether GIFs in messages play always, when
+hovered or never.

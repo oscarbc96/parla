@@ -3619,6 +3619,41 @@ impl ComposerSource for WorkspaceSession {
         });
     }
 
+    /// Downloads the picked GIF and hands it to the upload path. False when the
+    /// session cannot take it (link mode, no file capability, offline, or a URL
+    /// outside the enabled providers' hosts): the composer sends the link.
+    /// A download that fails after this returns true shows a notice and sends
+    /// nothing.
+    fn send_gif_upload(
+        &mut self,
+        c: ConversationId,
+        thread: Option<MessageTs>,
+        item: &components::gif_picker::GifItem,
+        send: bool,
+        cx: &mut App,
+    ) -> bool {
+        let settings = self.settings(cx);
+        if settings.gifs.send_as != settings::GifSendAs::Upload {
+            return false;
+        }
+        if !self.provider.capabilities().files
+            || self.state.connection != domain::Connection::Online
+            || self.state.session == domain::Session::Expired
+        {
+            return false;
+        }
+        let hosts = gif_upload_hosts(&settings, cx);
+        if !gif_url_allowed(item.full_url.as_ref(), &hosts) {
+            return false;
+        }
+        let url = item.full_url.to_string();
+        let name = gif_file_name(item.title.as_ref(), &url);
+        self.defer_to(cx, move |s, cx| {
+            s.download_gif(c, thread, url, name, send, cx)
+        });
+        true
+    }
+
     fn completions(&self, kind: CompletionKind, query: &str) -> Vec<Completion> {
         match kind {
             CompletionKind::Person => {
@@ -3763,6 +3798,45 @@ impl WorkspaceSession {
             self.directory_people.clear();
             self.sync_presence_watch(cx);
         }
+    }
+
+    /// Fetches the picked GIF into the upload temp dir, then stages or sends it.
+    /// A failure shows the app's file notice and sends nothing.
+    fn download_gif(
+        &mut self,
+        c: ConversationId,
+        thread: Option<MessageTs>,
+        url: String,
+        name: String,
+        send: bool,
+        cx: &mut Context<Self>,
+    ) {
+        let dir = self.upload_temp_dir();
+        let ext = gif_extension(&url);
+        self.run(
+            cx,
+            async move {
+                let bytes = crate::media::fetch_web_bytes(&url, GIF_UPLOAD_MAX_BYTES).await?;
+                if bytes.len() as u64 > GIF_UPLOAD_MAX_BYTES {
+                    return Err(GifFetchError::TooLarge);
+                }
+                std::fs::create_dir_all(&dir).map_err(|_| GifFetchError::Write)?;
+                let path = dir.join(format!("{}.{ext}", uuid::Uuid::new_v4()));
+                std::fs::write(&path, &bytes).map_err(|_| GifFetchError::Write)?;
+                Ok(path)
+            },
+            move |s, result, cx| match result {
+                Ok(path) => s.adopt_upload(c, thread, path, name, send, cx),
+                Err(e) => {
+                    crate::log::warn(match e {
+                        GifFetchError::TooLarge => "gif upload: over the size limit",
+                        GifFetchError::Network => "gif upload: download failed",
+                        GifFetchError::Write => "gif upload: cannot write the temp file",
+                    });
+                    s.file_error(i18n::LocalizedText::new("parla", "gif-upload-failed"), cx);
+                }
+            },
+        );
     }
 }
 
@@ -3932,6 +4006,101 @@ impl ThreadSource for WorkspaceSession {
     }
 }
 
+/// Largest GIF the app downloads to upload (20 MB).
+pub(crate) const GIF_UPLOAD_MAX_BYTES: u64 = 20 * 1024 * 1024;
+
+/// Why a GIF download for an upload did not produce a file. Deliberately
+/// carries no URL: the URL can name the provider and its key.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum GifFetchError {
+    Network,
+    TooLarge,
+    Write,
+}
+
+impl From<components::media::MediaError> for GifFetchError {
+    fn from(e: components::media::MediaError) -> Self {
+        match e {
+            components::media::MediaError::TooLarge => Self::TooLarge,
+            _ => Self::Network,
+        }
+    }
+}
+
+/// True when `url` is https and its host is one the enabled providers talk to.
+fn gif_url_allowed(url: &str, hosts: &[String]) -> bool {
+    let Ok(url) = url::Url::parse(url) else {
+        return false;
+    };
+    if url.scheme() != "https" {
+        return false;
+    }
+    let Some(host) = url.host_str() else {
+        return false;
+    };
+    hosts.iter().any(|h| h.eq_ignore_ascii_case(host))
+}
+
+/// The hosts of the enabled, bundled providers.
+fn gif_upload_hosts(s: &settings::Settings, cx: &App) -> Vec<String> {
+    let Some(manager) = cx.try_global::<crate::plugins::PluginManager>() else {
+        return Vec::new();
+    };
+    manager
+        .providers_cached(&s.gifs, &s.plugins)
+        .into_iter()
+        .filter(|p| p.state == crate::plugins::ProviderState::Ready)
+        .flat_map(|p| p.hosts)
+        .collect()
+}
+
+/// The file name an uploaded GIF gets: the title made safe, with the
+/// rendition's extension (`.gif` when there is none or it is unknown).
+fn gif_file_name(title: &str, url: &str) -> String {
+    let ext = gif_extension(url);
+    let cleaned: String = title
+        .chars()
+        .map(|c| {
+            if c.is_alphanumeric() || matches!(c, ' ' | '-' | '_' | '.') {
+                c
+            } else {
+                ' '
+            }
+        })
+        .collect();
+    let words: Vec<&str> = cleaned.split_whitespace().collect();
+    let mut base: String = words.join(" ").chars().take(80).collect();
+    base = base.trim_matches([' ', '.']).to_string();
+    if base.is_empty() {
+        base = "gif".to_string();
+    }
+    if !base.to_ascii_lowercase().ends_with(&format!(".{ext}")) {
+        base.push('.');
+        base.push_str(ext);
+    }
+    base
+}
+
+/// The extension of the rendition, from its URL path; unknown means `.gif`.
+fn gif_extension(url: &str) -> &'static str {
+    let Ok(url) = url::Url::parse(url) else {
+        return "gif";
+    };
+    match url
+        .path()
+        .rsplit_once('.')
+        .map(|(_, ext)| ext.to_ascii_lowercase())
+        .as_deref()
+    {
+        Some("gif") => "gif",
+        Some("mp4") => "mp4",
+        Some("webp") => "webp",
+        Some("png") => "png",
+        Some("jpg" | "jpeg") => "jpg",
+        _ => "gif",
+    }
+}
+
 /// A short, content-free name for a failed provider call (no ids, no text).
 fn error_kind(e: &ProviderError) -> &'static str {
     match e {
@@ -3947,6 +4116,75 @@ fn error_kind(e: &ProviderError) -> &'static str {
 
 /// Channels per page of the channel browser.
 const BROWSE_PAGE: u32 = 50;
+
+#[cfg(test)]
+mod gif_upload_tests {
+    use super::*;
+
+    #[test]
+    fn the_file_name_uses_the_title_and_the_rendition_extension() {
+        assert_eq!(
+            gif_file_name(
+                "Excited cat GIF!",
+                "https://media.giphy.com/media/x/giphy.gif"
+            ),
+            "Excited cat GIF.gif"
+        );
+        assert_eq!(
+            gif_file_name("dancing   dog", "https://static.klipy.com/x/clip.mp4?x=1"),
+            "dancing dog.mp4"
+        );
+        // A title that already names the extension is not doubled.
+        assert_eq!(
+            gif_file_name("party.gif", "https://media.giphy.com/x/giphy.gif"),
+            "party.gif"
+        );
+        // No usable title, no usable extension.
+        assert_eq!(
+            gif_file_name("///", "https://media.giphy.com/x/no-ext"),
+            "gif.gif"
+        );
+        assert_eq!(
+            gif_file_name(&"a".repeat(200), "https://media.giphy.com/x/giphy.gif"),
+            format!("{}.gif", "a".repeat(80))
+        );
+    }
+
+    #[test]
+    fn only_https_urls_on_a_provider_host_are_allowed() {
+        let hosts = vec![
+            "media.giphy.com".to_string(),
+            "static.klipy.com".to_string(),
+        ];
+        assert!(gif_url_allowed(
+            "https://media.giphy.com/media/x/giphy.gif",
+            &hosts
+        ));
+        assert!(gif_url_allowed(
+            "https://MEDIA.GIPHY.COM/media/x/giphy.gif",
+            &hosts
+        ));
+        assert!(!gif_url_allowed(
+            "http://media.giphy.com/media/x/giphy.gif",
+            &hosts
+        ));
+        assert!(!gif_url_allowed("https://evil.example/media/x.gif", &hosts));
+        assert!(!gif_url_allowed(
+            "https://media.giphy.com.evil.example/x.gif",
+            &hosts
+        ));
+        assert!(!gif_url_allowed(
+            "https://media.giphy.com@evil.example/x.gif",
+            &hosts
+        ));
+        assert!(!gif_url_allowed("not a url", &hosts));
+    }
+
+    #[test]
+    fn the_upload_cap_is_twenty_megabytes() {
+        assert_eq!(GIF_UPLOAD_MAX_BYTES, 20 * 1024 * 1024);
+    }
+}
 
 #[cfg(test)]
 mod client_id_tests {

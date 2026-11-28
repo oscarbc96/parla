@@ -1,0 +1,18 @@
+[package]
+name = "klipy"
+version.workspace = true
+edition.workspace = true
+license = "Apache-2.0 OR MIT"
+publish = false
+description = "GIF search plugin for Parla: Klipy media provider."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+parla_plugin_sdk.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+parla_plugin_sdk = { workspace = true, features = ["testing"] }
+toml.workspace = true

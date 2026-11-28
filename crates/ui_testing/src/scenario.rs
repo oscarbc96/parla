@@ -41,8 +41,18 @@ pub struct Draft {
     pub send_later: Option<SendLaterStage>,
     /// The emoji picker of the composer's emoji button is open.
     pub emoji_picker: bool,
+    /// The GIF picker is open over the composer, driven by this scripted source.
+    pub gif_picker: Option<GifPickerOpen>,
     /// This long text was just pasted: the snippet offer is open on it.
     pub snippet_paste: Option<String>,
+}
+
+/// A GIF picker open over the composer: the source's tabs and its first page.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct GifPickerOpen {
+    pub tabs: Vec<components::gif_picker::GifTab>,
+    /// What the trending load answers (the set-up card ignores it).
+    pub page: components::gif_picker::GifPage,
 }
 
 /// How far the Send later flow is opened.
@@ -1273,6 +1283,76 @@ fn composer_typing() -> Scenario {
     let mut s = composer("composer_typing", None);
     s.typing = vec![uid("u2")];
     s
+}
+
+/// The composer with the GIF picker open on a scripted source: two provider
+/// tabs and a page of results of mixed shapes (the fixture pictures live on
+/// `gifs.example.test`).
+fn gif_picker_results() -> Scenario {
+    use components::gif_picker::fake::{item, page, ready_tab};
+    let mut results = page(
+        vec![
+            item("cat-wave", "Cat waving", 4, 3),
+            item("dog-shrug", "Dog shrugging", 3, 4),
+            item("fox-spin", "Fox spinning", 1, 1),
+            item("owl-blink", "Owl blinking", 16, 9),
+            item("bear-dance", "Bear dancing", 4, 3),
+            item("penguin-slide", "Penguin sliding", 4, 3),
+            item("otter-float", "Otter floating", 3, 4),
+            item("seal-clap", "Seal clapping", 1, 1),
+            item("rabbit-hop", "Rabbit hopping", 16, 9),
+        ],
+        Some("2"),
+    );
+    if let Some(first) = results.items.first_mut() {
+        first.attribution = Some("Powered by Example".into());
+    }
+    composer(
+        "gif_picker_results",
+        Some(Draft {
+            text: "Here comes the reaction ".into(),
+            gif_picker: Some(GifPickerOpen {
+                tabs: vec![
+                    ready_tab("one", "Example GIFs"),
+                    ready_tab("two", "Studio GIFs"),
+                ],
+                page: results,
+            }),
+            ..Default::default()
+        }),
+    )
+}
+
+/// The GIF picker on a provider that has no API key yet: the set-up card.
+fn gif_picker_setup_card() -> Scenario {
+    use components::gif_picker::fake::{page, setup_tab};
+    composer(
+        "gif_picker_setup_card",
+        Some(Draft {
+            text: "Here comes the reaction ".into(),
+            gif_picker: Some(GifPickerOpen {
+                tabs: vec![setup_tab("one", "Example GIFs")],
+                page: page(Vec::new(), None),
+            }),
+            ..Default::default()
+        }),
+    )
+}
+
+/// The GIF picker with a search that found nothing.
+fn gif_picker_empty() -> Scenario {
+    use components::gif_picker::fake::{page, ready_tab};
+    composer(
+        "gif_picker_empty",
+        Some(Draft {
+            text: "Here comes the reaction ".into(),
+            gif_picker: Some(GifPickerOpen {
+                tabs: vec![ready_tab("one", "Example GIFs")],
+                page: page(Vec::new(), None),
+            }),
+            ..Default::default()
+        }),
+    )
 }
 
 /// "composer_empty" shows a public channel the user is not in, opened from
@@ -2887,6 +2967,9 @@ pub fn all() -> Vec<Scenario> {
         popout_thread(),
         composer_join(),
         composer_typing(),
+        gif_picker_results(),
+        gif_picker_setup_card(),
+        gif_picker_empty(),
         composer(
             "composer_multiline",
             Some(Draft {

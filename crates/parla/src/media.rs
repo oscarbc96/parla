@@ -75,6 +75,18 @@ async fn fetch_web(c: reqwest::Client, url: String, max_bytes: u64) -> Result<Ve
     Ok(out)
 }
 
+/// Fetches a plain web URL for the app's own uploads (a picked GIF): https
+/// only, the same credential-free client and redirect rules as image loading,
+/// and at most `max_bytes`.
+pub(crate) async fn fetch_web_bytes(
+    url: &str,
+    max_bytes: u64,
+) -> Result<Vec<u8>, components::media::MediaError> {
+    static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
+    let client = CLIENT.get_or_init(|| client(true)).clone();
+    fetch_web(client, url.to_owned(), max_bytes).await
+}
+
 impl Fetcher {
     pub fn new(provider: Arc<dyn ChatProvider>, handle: Option<Handle>) -> Self {
         Self {

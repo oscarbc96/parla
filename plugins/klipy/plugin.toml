@@ -1,0 +1,28 @@
+id = "klipy"
+name = "GIF search: Klipy"
+namespace = "klipy"
+version = "0.1.0"
+api = "0.1"
+description = "Search and share GIFs from Klipy in the media picker."
+license = "Apache-2.0 OR MIT"
+categories = ["media"]
+activation = ["media:klipy"]
+
+[capabilities]
+network = [
+  "api.klipy.com",
+  "static.klipy.com",
+  "static1.klipy.com",
+  "static2.klipy.com",
+]
+
+[[media_providers]]
+id = "klipy"
+title = "KLIPY"
+kinds = ["gif"]
+
+[[settings]]
+key = "api_key"
+type = "secret"
+title = "API key"
+description = "Create a Klipy app key in the partner.klipy.com panel and paste it here."

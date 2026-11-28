@@ -24,6 +24,15 @@ fn main() {
         print!("{}", parla::actions::print_actions_json());
         return;
     }
+    // `parla __plugin-precompile <wasm> <out>` compiles a plugin component for
+    // the plugin engine in this short-lived process (the app's precompile
+    // cache runs it). Before the crash hook, settings, store and GPUI.
+    if std::env::args_os()
+        .nth(1)
+        .is_some_and(|a| a == plugin_host::cache::PRECOMPILE_SUBCOMMAND)
+    {
+        std::process::exit(precompile_child());
+    }
     // `parla mcp` is the stdio shim: it runs before any GPUI, settings or log init.
     if std::env::args_os().nth(1).is_some_and(|a| a == "mcp") {
         std::process::exit(i32::from(mcp::shim::main_code()));
@@ -339,4 +348,27 @@ fn main() {
             parla::perf::driver::spawn(opts, window, provider, cx);
         }
     });
+}
+
+/// Body of `parla __plugin-precompile <wasm> <out>`: 0 when the `.cwasm` was
+/// written, 1 with a message on stderr otherwise.
+fn precompile_child() -> i32 {
+    let mut args = std::env::args_os().skip(2);
+    let (Some(wasm), Some(out), None) = (args.next(), args.next(), args.next()) else {
+        eprintln!(
+            "usage: parla {} <wasm> <out>",
+            plugin_host::cache::PRECOMPILE_SUBCOMMAND
+        );
+        return 1;
+    };
+    match plugin_host::cache::precompile_child(
+        std::path::Path::new(&wasm),
+        std::path::Path::new(&out),
+    ) {
+        Ok(()) => 0,
+        Err(e) => {
+            eprintln!("{e}");
+            1
+        }
+    }
 }

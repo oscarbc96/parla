@@ -8,6 +8,11 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
+[features]
+default = []
+# A scripted `GifSource` for tests and visual scenarios.
+test-support = []
+
 [dependencies]
 domain.path = "../domain"
 zeroize.workspace = true
@@ -29,6 +34,8 @@ image = { workspace = true, features = ["jpeg", "gif", "webp"] }
 
 [dev-dependencies]
 tempfile.workspace = true
+# The GIF picker tests drive the scripted source.
+components = { path = ".", features = ["test-support"] }
 # The MCP prompt tests build requests through `mcp`'s adapter.
 mcp = { path = "../mcp" }
 domain = { path = "../domain", features = ["test-support"] }
