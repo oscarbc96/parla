@@ -624,10 +624,10 @@ impl Stage {
             }
             if d.emoji_picker {
                 composer.update(cx, |c, cx| c.toggle_emoji_picker(window, cx));
-                if d.emoji_picker_custom {
-                    if let Some(p) = composer.read(cx).emoji_picker().cloned() {
-                        p.update(cx, |p, cx| p.select_tab(components::PickerTab::Custom, cx));
-                    }
+                if d.emoji_picker_custom
+                    && let Some(p) = composer.read(cx).emoji_picker().cloned()
+                {
+                    p.update(cx, |p, cx| p.select_tab(components::PickerTab::Custom, cx));
                 }
             }
             if let Some(text) = &d.snippet_paste {
