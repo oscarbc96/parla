@@ -347,6 +347,10 @@ fn shipped_keymaps_bind_the_switcher_and_history() {
 }
 
 #[gpui::test]
+#[cfg_attr(
+    not(target_os = "macos"),
+    ignore = "macOS keymap: Linux and Windows bind ctrl-k"
+)]
 async fn cmd_k_works_before_any_conversation_is_open(cx: &mut TestAppContext) {
     let e = env(cx, "{}");
     let (view, cx) = view(cx, &e);

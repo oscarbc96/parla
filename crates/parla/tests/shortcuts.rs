@@ -171,6 +171,10 @@ fn every_default_keymap_binds_the_sheet_without_a_conflict() {
 }
 
 #[test]
+#[cfg_attr(
+    not(target_os = "macos"),
+    ignore = "macOS keymap and actions (cmd-b, app::Hide)"
+)]
 fn recording_the_keys_of_a_nulled_default_spelled_another_way_keeps_both() {
     let default = r#"[{ "bindings": { "cmd-alt-h": "app::HideOthers", "cmd-q": "app::Quit" } }]"#;
     let rows = shortcuts::shortcuts(default, "");
@@ -194,6 +198,10 @@ fn recording_the_keys_of_a_nulled_default_spelled_another_way_keeps_both() {
 }
 
 #[test]
+#[cfg_attr(
+    not(target_os = "macos"),
+    ignore = "macOS keymap and actions (cmd-b, app::Hide)"
+)]
 fn a_hand_written_binding_is_replaced_by_the_same_keys_recorded() {
     let user = r#"[{ "bindings": { "cmd-alt-h": "app::Hide" } }]"#;
     let rows = shortcuts::shortcuts(DEFAULT, user);
@@ -209,6 +217,10 @@ fn a_hand_written_binding_is_replaced_by_the_same_keys_recorded() {
 }
 
 #[test]
+#[cfg_attr(
+    not(target_os = "macos"),
+    ignore = "macOS keymap and actions (cmd-b, app::Hide)"
+)]
 fn a_global_binding_and_a_context_one_with_the_same_keys_conflict() {
     let rows = shortcuts::shortcuts(DEFAULT, "");
     let bold = row(&rows, "composer::Bold");
