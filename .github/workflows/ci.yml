@@ -210,6 +210,8 @@ jobs:
         with:
           persist-credentials: false
       # The release build job restores this entry (same key).
+      # Runs on pull requests only when a packaging input changed
+      # (scripts/changes.ts) and on every push to main.
       - name: Set up
         uses: ./.github/actions/setup
         with:

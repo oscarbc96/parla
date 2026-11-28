@@ -3,11 +3,13 @@ description: >-
   The tools and caches every job shares: mise tools, and optionally a Rust
   build (system packages, Metal toolchain, Cargo cache) and a Bun install.
   Every cache key comes from lock files (Cargo.lock, bun.lock, mise.toml), so a
-  dependency change starts a fresh entry. Every run saves what it built when
-  its key is new: main's entries serve every PR, and a PR's own entries serve
-  its next runs (GitHub scopes them to that PR). GitHub evicts the least
-  recently used entries past the repo quota; main's, restored by every run,
-  go last.
+  dependency change starts a fresh entry. Only runs on main save the Cargo
+  cache; pull requests and tags restore main's entry (the exact key, or the
+  newest entry for the same toolchain when their lock file differs) and
+  rebuild only what they changed. The mise, Bun and Turborepo caches save on
+  every run, a PR's entries serving its next runs (GitHub scopes them to that
+  PR). GitHub evicts the least recently used entries past the repo quota;
+  main's, restored by every run, go last.
 
 inputs:
   tools:
@@ -19,8 +21,8 @@ inputs:
   rust-cache-key:
     description: >-
       Cargo cache entry for jobs that build the same profile and features.
-      Jobs that build different things need different keys, or the first to
-      finish saves and the others are never cached.
+      Jobs that build different things need different keys, or on main the
+      first to finish saves and the others are never cached.
     default: ""
   bun-install:
     description: Directory to run `bun install --frozen-lockfile` in (with a download cache).
@@ -74,6 +76,11 @@ runs:
     # $CARGO_HOME/bin during the job, and nothing does (mise installs the cargo
     # tools in its own, cached, directory). The toolchain itself (~/.rustup,
     # about 1 GB) is not cached: downloading it is as fast as restoring it.
+    # Only main saves, since a failed or cancelled job used to save a half-built
+    # entry under the final key, which was never replaced, and every PR that
+    # changed Cargo.lock wrote about 4 GB against the 10 GB repo quota. Pull
+    # requests and tags restore main's entry (exact key, or the newest for the
+    # same toolchain when their lock file differs) and rebuild what they changed.
     - name: Cache Cargo
       if: inputs.rust == 'true'
       uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
@@ -84,7 +91,7 @@ runs:
           plugins -> target/build
           plugins -> target/test
         cache-bin: "false"
-        cache-on-failure: true
+        save-if: ${{ github.ref == 'refs/heads/main' }}
     # Keyed by the lock file only: the packages depend on nothing else, and
     # Bun's download cache stays usable across Bun upgrades.
     - name: Cache Bun downloads
