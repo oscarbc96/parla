@@ -12,10 +12,13 @@ use std::sync::Arc;
 
 use domain::notify::{Notification, SessionExpiredNotice};
 use domain::{ConversationId, MessageId, Ring};
+use futures::channel::mpsc::UnboundedSender;
 use gpui::{App, Entity, Global, SystemNotification, SystemNotificationAction, WeakEntity};
 use settings::WorkspaceKey;
 
+use crate::platform::NotificationPermission;
 use crate::session::WorkspaceSession;
+use crate::toast::ConfigBanner;
 
 /// Where notifications and the badge go. `cx` is the GPUI app so the real
 /// implementation can call the platform.
@@ -58,6 +61,29 @@ struct NoSound;
 impl NotificationSound for NoSound {
     fn play(&self) {}
 }
+
+/// The system side of notification permission: the request/grant check and
+/// the System Settings pane. Faked in tests.
+pub trait PermissionChecker {
+    fn request(&self, tx: UnboundedSender<NotificationPermission>);
+    fn open_settings(&self);
+}
+
+/// The real checker: UserNotifications on macOS, a no-op elsewhere.
+pub struct SystemPermissionChecker;
+
+impl PermissionChecker for SystemPermissionChecker {
+    fn request(&self, tx: UnboundedSender<NotificationPermission>) {
+        crate::platform::request_notification_permission(tx);
+    }
+
+    fn open_settings(&self) {
+        crate::platform::open_notification_settings();
+    }
+}
+
+/// The notice key of the "notifications are off" banner.
+pub const PERMISSION_NOTICE: &str = "notifications";
 
 /// Id of the incoming-huddle notification of a conversation:
 /// `<provider>/<workspace>/<conversation>/ring`.
@@ -266,6 +292,76 @@ pub fn notifier_for(bundled: bool) -> Rc<dyn Notifier> {
     }
 }
 
+/// Puts a permission result into the config banner: Denied shows the notice,
+/// Allowed or Undetermined clears it. Outside an app bundle nothing is done.
+fn apply_permission_to(
+    banner: &mut ConfigBanner,
+    permission: NotificationPermission,
+    bundled: bool,
+    text: &str,
+) {
+    if !bundled {
+        return;
+    }
+    let notice = (permission == NotificationPermission::Denied).then(|| text.to_string());
+    banner.set_notice(PERMISSION_NOTICE, notice);
+}
+
+/// Records and logs a permission answer (the log line carries no content).
+fn apply_permission(permission: NotificationPermission, bundled: bool, cx: &mut App) {
+    let line = format!("notification permission: {}", permission.as_str());
+    if permission == NotificationPermission::Denied {
+        crate::log::warn(&line);
+    } else {
+        crate::log::info(&line);
+    }
+    let l = i18n::gpui::localizer(cx);
+    let text = t!(l, "notifications-permission-denied").into_owned();
+    apply_permission_to(cx.global_mut::<ConfigBanner>(), permission, bundled, &text);
+}
+
+/// Asks the system for permission now (so the prompt appears while the user
+/// looks at Parla) and applies the answer. No-op outside an app bundle.
+fn request_permission_with(hub: &Notifications, bundled: bool, cx: &mut App) {
+    if !bundled {
+        return;
+    }
+    let permissions = hub.0.permissions.borrow().clone();
+    let (tx, mut rx) = futures::channel::mpsc::unbounded();
+    permissions.request(tx);
+    cx.spawn(async move |cx| {
+        use futures::StreamExt as _;
+        while let Some(permission) = rx.next().await {
+            cx.update(|cx| apply_permission(permission, bundled, cx));
+        }
+    })
+    .detach();
+}
+
+/// Startup check: ask for notification permission right after the notifier is
+/// installed. macOS asks lazily inside the first notification otherwise, and a
+/// missed prompt leaves notifications silently off.
+pub fn request_permission(cx: &mut App) {
+    let Some(hub) = cx.try_global::<Notifications>().cloned() else {
+        return;
+    };
+    request_permission_with(&hub, can_notify(), cx);
+}
+
+/// Re-checks the permission whenever the main window becomes active, so the
+/// notice clears once the user turns notifications on in System Settings.
+pub fn watch_activation<T: 'static>(window: &mut gpui::Window, cx: &mut gpui::Context<T>) {
+    if !can_notify() {
+        return;
+    }
+    cx.observe_window_activation(window, |_, window, cx| {
+        if window.is_window_active() {
+            request_permission(cx);
+        }
+    })
+    .detach();
+}
+
 /// Opens the sign-in window after an expired-session notification is clicked.
 /// The shell installs one that routes through the main window's "Sign in
 /// again" path; tests install a recorder.
@@ -274,6 +370,7 @@ pub type SignInOpener = Rc<dyn Fn(&WorkspaceKey, &mut App) + 'static>;
 struct Inner {
     notifier: Rc<dyn Notifier>,
     sound: RefCell<Rc<dyn NotificationSound>>,
+    permissions: RefCell<Rc<dyn PermissionChecker>>,
     delivered: RefCell<HashMap<ConvKey, Notification>>,
     mentions: RefCell<HashMap<WorkspaceKey, u32>>,
     badge: RefCell<Option<Option<u32>>>,
@@ -295,6 +392,7 @@ impl Notifications {
         Self(Rc::new(Inner {
             notifier,
             sound: RefCell::new(Rc::new(NoSound)),
+            permissions: RefCell::new(Rc::new(SystemPermissionChecker)),
             delivered: RefCell::default(),
             mentions: RefCell::default(),
             badge: RefCell::default(),
@@ -307,6 +405,12 @@ impl Notifications {
     /// Plays `sound` for every shown notification that is not silent.
     pub fn with_sound(self, sound: Rc<dyn NotificationSound>) -> Self {
         *self.0.sound.borrow_mut() = sound;
+        self
+    }
+
+    /// Replaces the platform permission checker (tests use a fake).
+    pub fn with_permissions(self, permissions: Rc<dyn PermissionChecker>) -> Self {
+        *self.0.permissions.borrow_mut() = permissions;
         self
     }
 
@@ -644,8 +748,106 @@ impl Notifications {
 
 #[cfg(test)]
 mod tests {
+    use std::cell::Cell;
+
+    use gpui::TestAppContext;
+
     use super::*;
     use domain::test_support::{cid, mid};
+
+    struct FakePermission {
+        result: Cell<NotificationPermission>,
+        requests: Cell<u32>,
+        opens: Cell<u32>,
+    }
+
+    impl FakePermission {
+        fn new(result: NotificationPermission) -> Rc<Self> {
+            Rc::new(Self {
+                result: Cell::new(result),
+                requests: Cell::new(0),
+                opens: Cell::new(0),
+            })
+        }
+    }
+
+    impl PermissionChecker for FakePermission {
+        fn request(&self, tx: UnboundedSender<NotificationPermission>) {
+            self.requests.set(self.requests.get() + 1);
+            let _ = tx.unbounded_send(self.result.get());
+        }
+
+        fn open_settings(&self) {
+            self.opens.set(self.opens.get() + 1);
+        }
+    }
+
+    fn install(cx: &mut TestAppContext, fake: Rc<FakePermission>) -> Notifications {
+        cx.update(|cx| {
+            i18n::gpui::init(
+                cx,
+                &[crate::catalog()],
+                i18n::LocalePref::Code("en".parse().unwrap()),
+            );
+            cx.set_global(ConfigBanner::default());
+            let hub = Notifications::new(Rc::new(NoopNotifier)).with_permissions(fake);
+            cx.set_global(hub.clone());
+            hub
+        })
+    }
+
+    fn notice(cx: &mut TestAppContext) -> Option<String> {
+        cx.update(|cx| {
+            cx.global::<ConfigBanner>()
+                .notices
+                .iter()
+                .find(|(k, _)| *k == PERMISSION_NOTICE)
+                .map(|(_, t)| t.clone())
+        })
+    }
+
+    #[gpui::test]
+    fn denied_shows_the_notice_and_allowed_clears_it(cx: &mut TestAppContext) {
+        let fake = FakePermission::new(NotificationPermission::Denied);
+        let hub = install(cx, fake.clone());
+        cx.update(|cx| request_permission_with(&hub, true, cx));
+        cx.run_until_parked();
+        assert_eq!(fake.requests.get(), 1);
+        let shown = notice(cx).expect("the denied notice");
+        assert!(shown.contains("System Settings"), "{shown}");
+
+        fake.result.set(NotificationPermission::Allowed);
+        cx.update(|cx| request_permission_with(&hub, true, cx));
+        cx.run_until_parked();
+        assert_eq!(fake.requests.get(), 2);
+        assert_eq!(notice(cx), None, "allowed clears the notice");
+    }
+
+    #[gpui::test]
+    fn an_undetermined_result_shows_no_notice(cx: &mut TestAppContext) {
+        let fake = FakePermission::new(NotificationPermission::Undetermined);
+        let hub = install(cx, fake.clone());
+        cx.update(|cx| {
+            cx.global_mut::<ConfigBanner>()
+                .set_notice(PERMISSION_NOTICE, Some("stale".into()));
+        });
+        cx.update(|cx| request_permission_with(&hub, true, cx));
+        cx.run_until_parked();
+        assert_eq!(notice(cx), None);
+    }
+
+    #[gpui::test]
+    fn nothing_is_asked_outside_an_app_bundle(cx: &mut TestAppContext) {
+        let fake = FakePermission::new(NotificationPermission::Denied);
+        let hub = install(cx, fake.clone());
+        cx.update(|cx| request_permission_with(&hub, false, cx));
+        cx.run_until_parked();
+        assert_eq!(fake.requests.get(), 0);
+        assert_eq!(notice(cx), None);
+        let mut banner = ConfigBanner::default();
+        apply_permission_to(&mut banner, NotificationPermission::Denied, false, "off");
+        assert!(banner.notices.is_empty());
+    }
 
     fn sample(ts: &str) -> Notification {
         Notification {

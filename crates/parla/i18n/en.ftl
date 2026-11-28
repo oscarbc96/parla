@@ -160,6 +160,7 @@ notification-reminder-title = Reminder
 reminder-about-message = Follow up on this message
 session-expired-title = Sign in to { $workspace } again
 session-expired-body = Your session ended. Click to sign in.
+notifications-permission-denied = Notifications are turned off for Parla in System Settings. Turn them on under Notifications > Parla.
 
 ## Scheduled messages
 schedule-late-title =

@@ -3,7 +3,7 @@
 # unused-ok: action-timeline-jump-to-latest action-timeline-toggle-pin action-timeline-toggle-saved action-timeline-copy-link
 # unused-ok: action-timeline-edit-message action-timeline-delete-message action-timeline-add-reaction action-timeline-open-thread action-timeline-mark-unread
 # unused-ok: action-composer-send action-composer-newline action-composer-plain-enter action-composer-plain-enter-mac action-composer-edit-last action-composer-cancel action-composer-toggle-broadcast action-composer-paste action-composer-accept-completion action-composer-bold action-composer-italic action-composer-strike action-composer-code action-composer-code-block action-composer-quote action-composer-bullet-list action-composer-numbered-list action-composer-link action-composer-send-later
-# unused-ok: action-text-input-left action-text-input-right action-text-input-up action-text-input-down action-text-input-word-left action-text-input-word-right action-text-input-line-start action-text-input-line-end action-text-input-doc-start action-text-input-doc-end action-text-input-select-left action-text-input-select-right action-text-input-select-up action-text-input-select-down action-text-input-select-word-left action-text-input-select-word-right action-text-input-select-line-start action-text-input-select-line-end action-text-input-select-doc-start action-text-input-select-doc-end action-text-input-select-all action-text-input-backspace action-text-input-delete action-text-input-delete-word-left action-text-input-cut action-text-input-copy action-text-input-paste action-text-input-undo action-text-input-redo
+# unused-ok: action-text-input-left action-text-input-right action-text-input-up action-text-input-down action-text-input-word-left action-text-input-word-right action-text-input-line-start action-text-input-line-end action-text-input-doc-start action-text-input-doc-end action-text-input-select-left action-text-input-select-right action-text-input-select-up action-text-input-select-down action-text-input-select-word-left action-text-input-select-word-right action-text-input-select-line-start action-text-input-select-line-end action-text-input-select-doc-start action-text-input-select-doc-end action-text-input-select-all action-text-input-backspace action-text-input-delete action-text-input-delete-word-left action-text-input-delete-word-right action-text-input-delete-to-line-start action-text-input-delete-to-line-end action-text-input-cut action-text-input-copy action-text-input-paste action-text-input-undo action-text-input-redo
 # unused-ok: action-picker-confirm action-picker-select-next action-picker-select-prev action-picker-select-left action-picker-select-right action-picker-dismiss
 # unused-ok: action-workspace-all-unreads action-workspace-all-mentions action-workspace-all-scheduled
 # unused-ok: action-workspace-quick-switch action-workspace-go-back action-workspace-go-forward
@@ -63,6 +63,9 @@ action-text-input-select-all = Seleccionar todo el texto
 action-text-input-backspace = Borrar el carácter anterior al cursor
 action-text-input-delete = Borrar el carácter posterior al cursor
 action-text-input-delete-word-left = Borrar la palabra anterior al cursor
+action-text-input-delete-word-right = Borrar la palabra posterior al cursor
+action-text-input-delete-to-line-start = Borrar desde el cursor hasta el inicio de la línea
+action-text-input-delete-to-line-end = Borrar desde el cursor hasta el final de la línea
 action-text-input-cut = Cortar
 action-text-input-copy = Copiar
 action-text-input-paste = Pegar como texto sin formato

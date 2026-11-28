@@ -113,6 +113,8 @@ fn main() {
         ))
         .with_sound(std::rc::Rc::new(parla::notifications::SystemSound))
         .install(cx);
+        // Ask now, while the user is looking at Parla, not at the first message.
+        parla::notifications::request_permission(cx);
         parla::ringer::Ringer::new(std::rc::Rc::new(parla::ringer::SystemPlayer), cx).install(cx);
         // The menu-bar icon: created here, on the main thread after GPUI starts.
         // Both a shim and a login launch start with no window, so both hide the

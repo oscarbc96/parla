@@ -251,6 +251,25 @@ fn a_long_paste_offers_a_snippet_instead_of_filling_the_draft(cx: &mut TestAppCo
     assert!(vcx.debug_bounds("composer-snippet-offer").is_some());
 }
 
+/// The TextInput context binds the paste key too; the composer's own paste
+/// (images, files, the snippet offer) must still run.
+#[gpui::test]
+fn the_composer_paste_key_still_offers_a_snippet(cx: &mut TestAppContext) {
+    let (comp, src, _log, vcx) = setup(cx, false);
+    vcx.write_to_clipboard(gpui::ClipboardItem::new_string(long_rust(30)));
+    let key = if cfg!(target_os = "macos") {
+        "cmd-v"
+    } else {
+        "ctrl-v"
+    };
+    vcx.simulate_keystrokes(key);
+    settle(&src, vcx);
+    comp.read_with(vcx, |c, cx| {
+        assert_eq!(c.text(cx), "", "the draft is untouched");
+        assert_eq!(c.snippet_offer_lines(), Some(32));
+    });
+}
+
 #[gpui::test]
 fn the_threshold_is_lines_or_characters(cx: &mut TestAppContext) {
     let (comp, _src, _log, vcx) = setup(cx, false);

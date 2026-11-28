@@ -9,6 +9,14 @@ On macOS, system notifications work only when Parla runs from an app bundle.
 `mise run run` and `mise run bundle` create one. If you run the plain binary,
 Parla stays silent. See [Install](/parla/docs/install/).
 
+## Notifications do not appear on macOS
+
+Parla asks for notification permission the first time it starts. If the
+permission prompt was dismissed, macOS keeps notifications off and Parla cannot
+post them. Enable Parla under **System Settings > Notifications**. Parla shows a
+banner when it notices the permission is off and clears it once you turn
+notifications back on.
+
 ## When Parla notifies
 
 Only live messages notify. Catching up after a disconnection and loading old
