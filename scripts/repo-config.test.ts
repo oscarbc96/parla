@@ -112,3 +112,25 @@ describe("hk globs", () => {
     expect(pre).not.toContain('check = "mise run test"');
   });
 });
+
+describe("workflow tool installs", () => {
+  test("every mise-action install_args names a tool exactly as mise.toml pins it", () => {
+    // A short name (`minisign`) installs a tool mise.toml does not activate
+    // (it pins `aqua:jedisct1/minisign`), so the task then cannot find it.
+    const { readdirSync, readFileSync } = require("node:fs") as typeof import("node:fs");
+    const { join } = require("node:path") as typeof import("node:path");
+    const root = join(import.meta.dir, "..");
+    const tools = Object.keys((Bun.TOML.parse(readFileSync(join(root, "mise.toml"), "utf8")) as any).tools);
+    const dir = join(root, ".github", "workflows");
+    const bad: string[] = [];
+    for (const f of readdirSync(dir)) {
+      for (const m of readFileSync(join(dir, f), "utf8").matchAll(/install_args:\s*([^\n#]+)/g)) {
+        for (const name of m[1].trim().split(/\s+/)) {
+          if (name.startsWith("$")) continue;
+          if (!tools.includes(name)) bad.push(`${f}: ${name}`);
+        }
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+});
