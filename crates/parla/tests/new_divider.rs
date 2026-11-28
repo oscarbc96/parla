@@ -52,7 +52,7 @@ fn open_with(cx: &mut TestAppContext, read: Option<&str>) -> bool {
     settle_visual_until(vcx, |cx| {
         ws.read_with(cx, |w, cx| {
             w.session(&key("w1"))
-                .is_some_and(|s| s.read(cx).state().conversations.get(&cid("C1")).is_some())
+                .is_some_and(|s| s.read(cx).state().conversations.contains_key(&cid("C1")))
         })
     });
     view.update_in(vcx, |v, window, cx| {
