@@ -24,6 +24,8 @@ pub struct Completion {
     pub members: Option<u32>,
     /// "Group · N people" for a group row, localised once when the picker opens.
     pub members_label: Option<SharedString>,
+    /// A custom emoji's image, drawn before the label; `None` for other rows.
+    pub image: Option<domain::ImageRef>,
     pub inline: domain::Inline,
 }
 
@@ -108,6 +110,7 @@ pub fn people(
                         detail: None,
                         members: None,
                         members_label: None,
+                        image: None,
                         inline: Inline::Broadcast(b),
                     },
                 ));
@@ -135,6 +138,7 @@ pub fn people(
                 detail: detail.map(Into::into),
                 members: None,
                 members_label: None,
+                image: None,
                 inline: Inline::User {
                     id: m.id.clone(),
                     label: None,
@@ -160,6 +164,7 @@ pub fn people(
                 detail: detail.map(|d| d.to_string().into()),
                 members: Some(g.member_count),
                 members_label: None,
+                image: None,
                 inline: Inline::Group {
                     id: g.id.clone(),
                     label: None,
@@ -203,6 +208,7 @@ pub fn conversations(state: &WorkspaceState, query: &str) -> Vec<Completion> {
                         detail: None,
                         members: None,
                         members_label: None,
+                        image: None,
                         inline: Inline::Conversation {
                             id: c.id.clone(),
                             label: None,
@@ -232,6 +238,7 @@ pub fn emoji<'a>(
                     detail: None,
                     members: None,
                     members_label: None,
+                    image: Some(c.image.clone()),
                     inline: Inline::Emoji(EmojiRef {
                         shortcode: c.shortcode.clone(),
                         unicode: None,
@@ -256,6 +263,7 @@ pub fn emoji<'a>(
                     detail: Some(format!(":{code}:").into()),
                     members: None,
                     members_label: None,
+                    image: None,
                     inline: Inline::Emoji(EmojiRef {
                         shortcode: code.into(),
                         unicode: Some(e.as_str().into()),

@@ -275,6 +275,102 @@ fn custom_tab_needs_capability(cx: &mut TestAppContext) {
 }
 
 #[gpui::test]
+fn custom_tab_is_sorted_by_shortcode(cx: &mut TestAppContext) {
+    let (_s, _v, vcx) = setup(cx, Capabilities::default());
+    let custom = |codes: &[&str]| -> Vec<CustomEmoji> {
+        codes
+            .iter()
+            .map(|c| CustomEmoji {
+                shortcode: (*c).into(),
+                image: ImageRef::Web(format!("https://example.invalid/{c}.png").into()),
+            })
+            .collect()
+    };
+    let p = vcx.new(|cx| EmojiPicker::new(custom(&["zeta", "alpha", "mike"]), true, cx));
+    p.update(vcx, |p, cx| p.select_tab(PickerTab::Custom, cx));
+    let got = p.read_with(vcx, |p, _| p.results());
+    assert_eq!(
+        got.iter().map(|e| &*e.shortcode).collect::<Vec<_>>(),
+        ["alpha", "mike", "zeta"]
+    );
+}
+
+#[gpui::test]
+fn emoji_tab_search_finds_custom_emoji_when_enabled(cx: &mut TestAppContext) {
+    let (_s, _v, vcx) = setup(cx, Capabilities::default());
+    let custom = vec![CustomEmoji {
+        shortcode: "partyparrot".into(),
+        image: ImageRef::Web("https://example.invalid/p.png".into()),
+    }];
+    let on = vcx.new(|cx| EmojiPicker::new(custom.clone(), true, cx));
+    on.update(vcx, |p, cx| p.set_query("party".into(), cx));
+    let got = on.read_with(vcx, |p, _| p.results());
+    assert!(
+        got.iter()
+            .any(|e| e.unicode.is_none() && &*e.shortcode == "partyparrot"),
+        "the Emoji tab merges custom emoji: {got:?}"
+    );
+    let off = vcx.new(|cx| EmojiPicker::new(custom, false, cx));
+    off.update(vcx, |p, cx| p.set_query("party".into(), cx));
+    let got = off.read_with(vcx, |p, _| p.results());
+    assert!(
+        got.iter().all(|e| &*e.shortcode != "partyparrot"),
+        "without the capability custom emoji stay out: {got:?}"
+    );
+}
+
+#[gpui::test]
+fn custom_tab_lists_more_than_the_standard_cap(cx: &mut TestAppContext) {
+    let (_s, _v, vcx) = setup(cx, Capabilities::default());
+    let custom: Vec<CustomEmoji> = (0..500)
+        .map(|i| CustomEmoji {
+            shortcode: format!("custom{i:03}").into(),
+            image: ImageRef::Web(format!("https://example.invalid/{i}.png").into()),
+        })
+        .collect();
+    let p = vcx.new(|cx| EmojiPicker::new(custom, true, cx));
+    p.update(vcx, |p, cx| p.select_tab(PickerTab::Custom, cx));
+    let got = p.read_with(vcx, |p, _| p.results());
+    assert_eq!(got.len(), 500);
+    assert_eq!(&*got[0].shortcode, "custom000");
+    assert_eq!(&*got[499].shortcode, "custom499");
+}
+
+#[gpui::test]
+fn keyboard_selection_advances_by_a_row_in_a_long_custom_tab(cx: &mut TestAppContext) {
+    let (_s, _v, _vcx) = setup(cx, Capabilities::default());
+    let custom: Vec<CustomEmoji> = (0..500)
+        .map(|i| CustomEmoji {
+            shortcode: format!("custom{i:03}").into(),
+            image: ImageRef::Web(format!("https://example.invalid/{i}.png").into()),
+        })
+        .collect();
+    let (p, vcx) = cx.add_window_view(|_, cx| {
+        let mut p = EmojiPicker::new(custom, true, cx);
+        p.select_tab(PickerTab::Custom, cx);
+        p
+    });
+    vcx.update(|w, cx| {
+        let f = gpui::Focusable::focus_handle(p.read(cx), cx);
+        w.focus(&f, cx);
+    });
+    let picked: Arc<std::sync::Mutex<Vec<String>>> = Arc::default();
+    let got = picked.clone();
+    let sub = vcx.update(|_, cx| {
+        cx.subscribe(&p, move |_, ev: &EmojiPicked, _| {
+            got.lock().unwrap().push(ev.0.shortcode.to_string())
+        })
+    });
+    std::mem::forget(sub);
+    // Down moves a whole row; ten rows land on `custom080`.
+    for _ in 0..10 {
+        vcx.simulate_keystrokes("down");
+    }
+    vcx.simulate_keystrokes("enter");
+    assert_eq!(*picked.lock().unwrap(), ["custom080"]);
+}
+
+#[gpui::test]
 fn add_reaction_action_opens_picker_and_reacts(cx: &mut TestAppContext) {
     let (src, view, vcx) = setup(cx, Capabilities::default());
     view.update(vcx, |v, cx| v.select(Some(id()), cx));

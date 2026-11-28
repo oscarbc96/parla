@@ -3,14 +3,16 @@ use std::rc::Rc;
 
 use components::{
     Cancel, Composer, ComposerEvent, ComposerSource, EditLast, Newline, Send, TimelineEvent,
-    composer::Paste,
+    composer::Paste, text_input::Undo,
 };
 use domain::test_support::{cid, mid, msg, uid};
 use domain::{
     Capabilities, ComposedText, ConversationId, DeliveryState, HistoryPage, Input, MessageWindow,
     UserId, WorkspaceState, reduce,
 };
-use gpui::{AppContext as _, Entity, Focusable as _, TestAppContext, VisualTestContext};
+use gpui::{
+    AppContext as _, ClipboardItem, Entity, Focusable as _, TestAppContext, VisualTestContext,
+};
 use settings::WorkspaceKey;
 
 struct Src {
@@ -50,6 +52,10 @@ impl ComposerSource for Src {
     }
     fn capabilities(&self) -> &Capabilities {
         &self.caps
+    }
+    fn custom_emoji_image(&self, shortcode: &str) -> Option<domain::ImageRef> {
+        (shortcode == "partyparrot")
+            .then(|| domain::ImageRef::Web("https://example.invalid/partyparrot.png".into()))
     }
 }
 
@@ -540,4 +546,58 @@ fn a_channel_the_user_is_not_in_offers_join_and_sends_nothing(cx: &mut TestAppCo
     vcx.run_until_parked();
     assert!(vcx.debug_bounds("composer-input").is_some());
     assert_eq!(text(&v, vcx), "first words");
+}
+
+fn custom_caps() -> Capabilities {
+    Capabilities {
+        custom_emoji: true,
+        ..Default::default()
+    }
+}
+
+#[gpui::test]
+fn typing_a_custom_emoji_code_inserts_the_span(cx: &mut TestAppContext) {
+    let (v, _ev, vcx) = setup(cx, custom_caps());
+    vcx.simulate_input(":partyparrot:");
+    let c = v.read_with(vcx, |c, cx| c.composed(cx));
+    assert_eq!(c.text.as_ref(), ":partyparrot:");
+    assert_eq!(c.spans.len(), 1);
+    assert_eq!(c.spans[0].range, 0..13);
+    assert!(matches!(
+        &c.spans[0].inline,
+        domain::Inline::Emoji(e) if e.shortcode.as_ref() == "partyparrot" && e.unicode.is_none()
+    ));
+    // One undo brings the typed text back, as text.
+    vcx.dispatch_action(Undo);
+    let c = v.read_with(vcx, |c, cx| c.composed(cx));
+    assert_eq!(c.text.as_ref(), ":partyparrot:");
+    assert!(c.spans.is_empty());
+}
+
+#[gpui::test]
+fn typing_a_standard_emoji_code_inserts_its_glyph(cx: &mut TestAppContext) {
+    let (v, _ev, vcx) = setup(cx, custom_caps());
+    vcx.simulate_input(":tada:");
+    let glyph = emojis::get_by_shortcode("tada").expect("tada").as_str();
+    assert_eq!(text(&v, vcx), glyph);
+    assert!(v.read_with(vcx, |c, cx| c.composed(cx)).spans.is_empty());
+}
+
+#[gpui::test]
+fn typed_code_lookalikes_stay_text(cx: &mut TestAppContext) {
+    for input in ["10:30:", ":nope:"] {
+        let (v, _ev, vcx) = setup(cx, custom_caps());
+        vcx.simulate_input(input);
+        assert_eq!(text(&v, vcx), input);
+        assert!(v.read_with(vcx, |c, cx| c.composed(cx)).spans.is_empty());
+    }
+}
+
+#[gpui::test]
+fn a_pasted_custom_emoji_code_stays_text(cx: &mut TestAppContext) {
+    let (v, _ev, vcx) = setup(cx, custom_caps());
+    vcx.write_to_clipboard(ClipboardItem::new_string(":partyparrot:".into()));
+    vcx.dispatch_action(Paste);
+    assert_eq!(text(&v, vcx), ":partyparrot:");
+    assert!(v.read_with(vcx, |c, cx| c.composed(cx)).spans.is_empty());
 }

@@ -1,14 +1,19 @@
 //! Emoji picker: fuzzy search over `emojis` shortcodes and custom emoji, a
 //! keyboard-navigable grid, skin tones and a "Recent" row the host seeds from the store.
 
-use domain::{CustomEmoji, EmojiRef};
+use std::collections::HashMap;
+use std::ops::Range;
+use std::sync::Arc;
+
+use domain::{CustomEmoji, EmojiRef, ImageRef};
 use gpui::{
-    App, Context, EventEmitter, FocusHandle, Focusable, IntoElement, KeyBinding, KeyDownEvent,
-    Render, ScrollHandle, Window, actions, div, prelude::*, px,
+    AnyElement, App, Context, EventEmitter, FocusHandle, Focusable, IntoElement, KeyBinding,
+    KeyDownEvent, Render, SharedString, UniformListScrollHandle, Window, actions, div, prelude::*,
+    uniform_list,
 };
 use themes::ActiveTheme;
 
-use crate::reactions::glyph;
+use crate::reactions::{glyph, tooltip_shared};
 
 actions!(
     picker,
@@ -27,6 +32,8 @@ pub const KEY_CONTEXT: &str = "Picker";
 
 /// Grid columns (arrow keys move by one, up/down by a row).
 pub const COLUMNS: usize = 8;
+/// Rows the grid shows before it scrolls; the rest are virtualised.
+const GRID_ROWS: usize = 6;
 const MAX_SHOWN: usize = 160;
 const MAX_RECENT: usize = 16;
 
@@ -107,6 +114,8 @@ fn tone(n: u8) -> Option<emojis::SkinTone> {
 pub struct EmojiPicker {
     query: String,
     custom: Vec<CustomEmoji>,
+    /// Image of each custom emoji by shortcode, built once from `custom`.
+    images: HashMap<Arc<str>, ImageRef>,
     custom_enabled: bool,
     tab: PickerTab,
     skin_tone: Option<u8>,
@@ -115,11 +124,13 @@ pub struct EmojiPicker {
     recent_sel: Option<usize>,
     /// Cached grid contents; rebuilt when query, tab or skin tone change.
     cache: Vec<EmojiRef>,
+    /// `:shortcode:` tooltip of each cached cell, built with `cache`.
+    labels: Vec<SharedString>,
     /// Emoji used in this workspace, newest first (the host persists them).
     recent: Vec<EmojiRef>,
     focus: FocusHandle,
     /// Scroll of the grid, which keeps the keyboard selection in view.
-    scroll: ScrollHandle,
+    scroll: UniformListScrollHandle,
 }
 
 impl EventEmitter<EmojiPicked> for EmojiPicker {}
@@ -128,18 +139,24 @@ impl EventEmitter<PickerDismissed> for EmojiPicker {}
 impl EmojiPicker {
     /// `custom_enabled` mirrors `Capabilities::custom_emoji`.
     pub fn new(custom: Vec<CustomEmoji>, custom_enabled: bool, cx: &mut Context<Self>) -> Self {
+        let images = custom
+            .iter()
+            .map(|c| (c.shortcode.clone(), c.image.clone()))
+            .collect();
         let mut p = Self {
             query: String::new(),
             custom,
+            images,
             custom_enabled,
             tab: PickerTab::Standard,
             skin_tone: None,
             selected: 0,
             recent_sel: None,
             cache: Vec::new(),
+            labels: Vec::new(),
             recent: Vec::new(),
             focus: cx.focus_handle(),
-            scroll: ScrollHandle::new(),
+            scroll: UniformListScrollHandle::new(),
         };
         p.refresh();
         p
@@ -202,30 +219,42 @@ impl EmojiPicker {
 
     fn refresh(&mut self) {
         self.cache = self.compute_results();
+        self.labels = self
+            .cache
+            .iter()
+            .map(|e| SharedString::from(format!(":{}:", e.shortcode)))
+            .collect();
+    }
+
+    /// Matching custom emoji, best score first, ties by shortcode (so an empty
+    /// query lists every one alphabetically).
+    fn custom_results(&self) -> Vec<(i32, EmojiRef)> {
+        let mut v: Vec<(i32, EmojiRef)> = self
+            .custom
+            .iter()
+            .filter_map(|c| {
+                fuzzy_score(&self.query, &c.shortcode).map(|s| {
+                    (
+                        s,
+                        EmojiRef {
+                            shortcode: c.shortcode.clone(),
+                            unicode: None,
+                            skin_tone: None,
+                        },
+                    )
+                })
+            })
+            .collect();
+        v.sort_by(|a, b| {
+            b.0.cmp(&a.0)
+                .then_with(|| a.1.shortcode.cmp(&b.1.shortcode))
+        });
+        v
     }
 
     fn compute_results(&self) -> Vec<EmojiRef> {
         match self.tab {
-            PickerTab::Custom => {
-                let mut v: Vec<(i32, EmojiRef)> = self
-                    .custom
-                    .iter()
-                    .filter_map(|c| {
-                        fuzzy_score(&self.query, &c.shortcode).map(|s| {
-                            (
-                                s,
-                                EmojiRef {
-                                    shortcode: c.shortcode.clone(),
-                                    unicode: None,
-                                    skin_tone: None,
-                                },
-                            )
-                        })
-                    })
-                    .collect();
-                v.sort_by_key(|(s, _)| std::cmp::Reverse(*s));
-                v.into_iter().map(|(_, e)| e).collect()
-            }
+            PickerTab::Custom => self.custom_results().into_iter().map(|(_, e)| e).collect(),
             PickerTab::Standard => {
                 let mut v: Vec<(i32, &'static emojis::Emoji, &'static str)> = emojis::iter()
                     .filter(|e| e.skin_tone().is_none_or(|t| t == emojis::SkinTone::Default))
@@ -236,13 +265,25 @@ impl EmojiPicker {
                             .map(|(n, s)| (n, e, s))
                     })
                     .collect();
-                if !self.query.is_empty() {
-                    v.sort_by_key(|(s, _, _)| std::cmp::Reverse(*s));
+                let mut rows: Vec<(i32, String, EmojiRef)> = v
+                    .drain(..)
+                    .map(|(s, e, code)| (s, code.to_string(), self.standard_ref(e, code)))
+                    .collect();
+                if self.query.is_empty() {
+                    rows.truncate(MAX_SHOWN);
+                } else {
+                    // The Emoji tab searches the workspace's custom emoji too.
+                    if self.custom_enabled {
+                        rows.extend(
+                            self.custom_results()
+                                .into_iter()
+                                .map(|(s, e)| (s, e.shortcode.to_string(), e)),
+                        );
+                    }
+                    rows.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.cmp(&b.1)));
+                    rows.truncate(MAX_SHOWN);
                 }
-                v.into_iter()
-                    .take(MAX_SHOWN)
-                    .map(|(_, e, code)| self.standard_ref(e, code))
-                    .collect()
+                rows.into_iter().map(|(_, _, e)| e).collect()
             }
         }
     }
@@ -313,7 +354,8 @@ impl EmojiPicker {
             return;
         }
         self.selected = (self.selected as isize + delta).clamp(0, n as isize - 1) as usize;
-        self.scroll.scroll_to_item(self.selected);
+        self.scroll
+            .scroll_to_item(self.selected / COLUMNS, gpui::ScrollStrategy::Nearest);
         cx.notify();
     }
 
@@ -340,6 +382,69 @@ impl EmojiPicker {
             }
         }
     }
+
+    /// One emoji as drawn: its custom image when the cache can fetch it, else
+    /// the glyph (or `:shortcode:`).
+    fn cell_content(&self, e: &EmojiRef, cx: &App) -> AnyElement {
+        let image = if e.unicode.is_none() {
+            self.images.get(&e.shortcode)
+        } else {
+            None
+        };
+        match (image, cx.has_global::<crate::media::ImageCache>()) {
+            (Some(image), true) => crate::media::emoji_hook(image, &e.shortcode),
+            _ => glyph(e).into_any_element(),
+        }
+    }
+
+    /// A row of [`COLUMNS`] grid cells; `uniform_list` draws only the visible ones.
+    fn render_rows(
+        &mut self,
+        range: Range<usize>,
+        _: &mut Window,
+        cx: &mut Context<Self>,
+    ) -> Vec<AnyElement> {
+        let colors = *cx.theme().colors();
+        let recent_sel = self.recent_selected();
+        let mut out = Vec::with_capacity(range.len());
+        for row in range {
+            let mut line = div()
+                .id(("picker-row", row))
+                .flex()
+                .h(themes::metrics::SPACE_9);
+            for col in 0..COLUMNS {
+                let i = row * COLUMNS + col;
+                let Some(e) = self.cache.get(i).cloned() else {
+                    break;
+                };
+                let tooltip = self
+                    .labels
+                    .get(i)
+                    .cloned()
+                    .unwrap_or_else(|| format!(":{}:", e.shortcode).into());
+                let e2 = e.clone();
+                line = line.child(
+                    div()
+                        .id(("picker-cell", i))
+                        .w(themes::metrics::SPACE_9)
+                        .h(themes::metrics::SPACE_9)
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .rounded_md()
+                        .overflow_hidden()
+                        .when(i == self.selected && recent_sel.is_none(), |d| {
+                            d.bg(colors.accent_soft)
+                        })
+                        .child(self.cell_content(&e, cx))
+                        .tooltip(tooltip_shared(tooltip))
+                        .on_click(cx.listener(move |this, _, _, cx| this.pick(e2.clone(), cx))),
+                );
+            }
+            out.push(line.into_any_element());
+        }
+        out
+    }
 }
 
 impl Focusable for EmojiPicker {
@@ -352,7 +457,8 @@ impl Render for EmojiPicker {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let theme = cx.theme().clone();
         let colors = theme.colors();
-        let results = self.cache.clone();
+        let rows = self.cache.len().div_ceil(COLUMNS);
+        let grid_h = themes::metrics::SPACE_9 * rows.min(GRID_ROWS) as f32;
         let recent_sel = self.recent_selected();
         let recent = if self.query.is_empty() && self.tab == PickerTab::Standard {
             self.recent()
@@ -406,35 +512,16 @@ impl Render for EmojiPicker {
             );
         }
 
-        let mut grid = div()
+        let grid = div()
             .id("picker-grid")
             .debug_selector(|| "picker-grid".into())
-            .track_scroll(&self.scroll)
-            .overflow_y_scroll()
-            .flex()
-            .flex_wrap()
-            .content_start()
-            .flex_1()
-            .min_h_0()
-            .w(themes::metrics::SPACE_9 * COLUMNS as f32);
-        for (i, e) in results.iter().enumerate() {
-            let e2 = e.clone();
-            grid = grid.child(
-                div()
-                    .id(("picker-cell", i))
-                    .w(px(32.0))
-                    .h(px(32.0))
-                    .flex()
-                    .items_center()
-                    .justify_center()
-                    .rounded_md()
-                    .when(i == self.selected && recent_sel.is_none(), |d| {
-                        d.bg(colors.accent_soft)
-                    })
-                    .child(glyph(e))
-                    .on_click(cx.listener(move |this, _, _, cx| this.pick(e2.clone(), cx))),
+            .w(themes::metrics::SPACE_9 * COLUMNS as f32)
+            .child(
+                uniform_list("picker-rows", rows, cx.processor(Self::render_rows))
+                    .track_scroll(&self.scroll)
+                    .w_full()
+                    .h(grid_h),
             );
-        }
         let mut root = div()
             .key_context(KEY_CONTEXT)
             .track_focus(&self.focus)
@@ -489,7 +576,8 @@ impl Render for EmojiPicker {
                         .debug_selector(move || format!("picker-recent-{i}"))
                         .rounded_md()
                         .when(recent_sel == Some(i), |d| d.bg(colors.accent_soft))
-                        .child(glyph(&e))
+                        .child(self.cell_content(&e, cx))
+                        .tooltip(tooltip_shared(format!(":{}:", e.shortcode).into()))
                         .on_click(cx.listener(move |this, _, _, cx| this.pick(e2.clone(), cx))),
                 );
             }

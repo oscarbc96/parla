@@ -11,12 +11,16 @@ glob = "crates/components/src/composer.rs"
 scenarios = ["composer_*", "empty_conversation"]
 
 [[map]]
+glob = "crates/components/src/text_input/**"
+scenarios = ["composer_custom_emoji"]
+
+[[map]]
 glob = "crates/domain/src/typing.rs"
 scenarios = ["composer_typing"]
 
 [[map]]
 glob = "crates/components/src/{format_toolbar,slash_menu,send_later,datetime_picker,completion,emoji_picker}.rs"
-scenarios = ["composer_*", "emoji_picker_open"]
+scenarios = ["composer_*", "emoji_picker_open", "emoji_picker_custom"]
 
 [[map]]
 glob = "crates/components/src/{timeline,message_row,rich_text,reactions,message_actions}.rs"
