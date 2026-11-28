@@ -4,8 +4,11 @@
  * the checks that can be affected. One mapping serves both; it is tested by
  * scripts/changes.test.ts.
  *
- *   bun scripts/changes.ts --base <ref> [--head HEAD] --github-output
+ *   bun scripts/changes.ts --base <ref> [--head HEAD] [--all] --github-output
  *   bun scripts/changes.ts --base origin/main --run     (pre-push)
+ *
+ * `--all` marks every part changed (CI uses it for pushes to main: a pending
+ * main run can be replaced by a newer one, so each main run checks everything).
  *
  * Outputs: rust, site, deps, package ("true" or "false"). An empty or
  * unreadable diff, or a path nobody claims, runs the Rust checks (fail safe).
@@ -97,6 +100,11 @@ function git(args: string[]): string | null {
   }
 }
 
+/** What CI runs: `--all` or an unreadable diff runs everything; otherwise the diff decides. */
+export function decide(files: string[] | null, all: boolean): Changes {
+  return all || !files ? { ...ALL } : classify(files);
+}
+
 export function changedFiles(base: string, head: string): string[] | null {
   const out = git(["diff", "--name-only", `${base}...${head}`]) ?? git(["diff", "--name-only", base, head]);
   return out === null ? null : out.split("\n").filter(Boolean);
@@ -111,7 +119,7 @@ function main() {
     process.exit(2);
   }
   const files = changedFiles(base, opt("--head") ?? "HEAD");
-  const c = files ? classify(files) : { ...ALL };
+  const c = decide(files, a.includes("--all"));
   if (a.includes("--github-output")) {
     const lines = Object.entries(c).map(([k, v]) => `${k}=${v}`);
     console.log(lines.join("\n"));

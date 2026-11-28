@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { ALL, classify, prePushTasks } from "./changes";
+import { ALL, classify, decide, prePushTasks } from "./changes";
 
 const tasks = (files: string[]) => prePushTasks(classify(files), files);
 
@@ -84,5 +84,16 @@ describe("pre-push tasks", () => {
       "site:verify",
       "test:repo",
     ]);
+  });
+});
+
+describe("decide", () => {
+  test("--all runs everything, even for a site-only diff (CI passes it for pushes to main)", () => {
+    const site = ["site/src/a.ts"];
+    expect(decide(site, false)).toMatchObject({ rust: false, site: true });
+    expect(decide(site, true)).toEqual({ ...ALL });
+  });
+  test("an unreadable diff runs everything", () => {
+    expect(decide(null, false)).toEqual({ ...ALL });
   });
 });

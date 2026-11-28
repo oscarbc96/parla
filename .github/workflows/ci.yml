@@ -42,11 +42,20 @@ jobs:
         uses: ./.github/actions/setup
         with:
           tools: bun
+      # Pull requests run only the parts their diff touches. Every push to main
+      # runs everything: GitHub drops a pending main run when a newer one is
+      # queued, so a diff against the previous push could skip a change.
       - name: Map the diff to parts of the repo
         id: map
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: bun scripts/changes.ts --base "$BASE_SHA" --github-output
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = push ]; then
+            bun scripts/changes.ts --base "$BASE_SHA" --all --github-output
+          else
+            bun scripts/changes.ts --base "$BASE_SHA" --github-output
+          fi
 
   # OS-independent checks run once. Clippy runs per OS (in `rust`) so
   # platform-specific cfg code is linted too.
