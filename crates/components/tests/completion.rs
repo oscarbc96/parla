@@ -47,6 +47,7 @@ impl ComposerSource for Src {
                     detail: None,
                     members: None,
                     members_label: None,
+                    image: None,
                     inline: Inline::User {
                         id: uid(id),
                         label: None,
@@ -57,6 +58,7 @@ impl ComposerSource for Src {
                     detail: Some("Engineering".into()),
                     members: Some(12),
                     members_label: None,
+                    image: None,
                     inline: Inline::Group {
                         id: "S1".into(),
                         label: None,
@@ -67,6 +69,7 @@ impl ComposerSource for Src {
                     detail: None,
                     members: None,
                     members_label: None,
+                    image: None,
                     inline: Inline::Broadcast(Broadcast::Here),
                 }))
                 .collect(),
@@ -78,6 +81,7 @@ impl ComposerSource for Src {
                     detail: None,
                     members: None,
                     members_label: None,
+                    image: None,
                     inline: Inline::Conversation {
                         id: cid(&format!("C-{n}")),
                         label: None,
@@ -100,6 +104,11 @@ impl ComposerSource for Src {
                 detail: Some(format!(":{}:", e.shortcode).into()),
                 members: None,
                 members_label: None,
+                image: e.unicode.is_none().then(|| {
+                    domain::ImageRef::Web(
+                        format!("https://example.invalid/{}.png", e.shortcode).into(),
+                    )
+                }),
                 inline: Inline::Emoji(e),
             })
             .collect(),
@@ -479,5 +488,25 @@ mod data {
             .expect("custom emoji is listed");
         assert!(matches!(&custom_row.inline, Inline::Emoji(e) if e.unicode.is_none()));
         assert!(got.len() <= components::completion::SOURCE_LIMIT);
+    }
+
+    #[test]
+    fn emoji_rows_carry_their_image() {
+        let custom = [CustomEmoji {
+            shortcode: "partyparrot".into(),
+            image: ImageRef::Web("https://example.invalid/p.png".into()),
+        }];
+        let got = emoji(&custom, "party");
+        let row = got
+            .iter()
+            .find(|c| c.label.as_ref() == ":partyparrot:")
+            .expect("custom emoji is listed");
+        assert_eq!(
+            row.image,
+            Some(ImageRef::Web("https://example.invalid/p.png".into()))
+        );
+        let standard = emoji(&custom, "tada");
+        assert_eq!(standard[0].label.as_ref(), "\u{1f389}");
+        assert!(standard[0].image.is_none());
     }
 }

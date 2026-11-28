@@ -158,6 +158,7 @@ impl ScenarioSession {
         let mut state = WorkspaceState::new(p.workspace().clone(), PAGE as usize);
         state.caps.member_lookup = p.capabilities().member_lookup;
         state.caps.channel_admin = p.capabilities().channel_admin;
+        state.caps.custom_emoji = s.custom_emoji_capability;
         let boot = block_on(p.bootstrap()).expect("fake bootstrap");
         let fx = reduce(&mut state, Input::Bootstrapped(boot));
         settle_lookups(&mut state, p.as_ref(), fx);
@@ -295,6 +296,7 @@ impl ScenarioSession {
                 status: true,
                 presence: true,
                 scheduled_send: s.scheduled.is_some(),
+                custom_emoji: s.custom_emoji_capability,
                 pins: s.collections.is_some(),
                 bookmarks: s.collections.is_some(),
                 saved: s.collections.is_some(),

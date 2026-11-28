@@ -41,6 +41,8 @@ pub struct Draft {
     pub send_later: Option<SendLaterStage>,
     /// The emoji picker of the composer's emoji button is open.
     pub emoji_picker: bool,
+    /// With `emoji_picker`: open it on the Custom tab.
+    pub emoji_picker_custom: bool,
     /// This long text was just pasted: the snippet offer is open on it.
     pub snippet_paste: Option<String>,
 }
@@ -279,6 +281,8 @@ pub struct Scenario {
     pub reminders: Option<Reminders>,
     /// Saved drafts (the sidebar shows "Drafts" while any exist).
     pub saved_drafts: Option<Drafts>,
+    /// The provider serves custom emoji and the workspace uses them.
+    pub custom_emoji_capability: bool,
     /// Sidebar sections the user collapsed.
     pub collapsed: Vec<components::SidebarSection>,
     /// The user's own sidebar sections (`sidebar.sections`).
@@ -458,6 +462,7 @@ fn scenario(name: &'static str, provider: FakeProvider) -> Scenario {
         scheduled: None,
         reminders: None,
         saved_drafts: None,
+        custom_emoji_capability: false,
         collapsed: Vec::new(),
         sidebar_sections: Vec::new(),
         sidebar_organise: false,
@@ -2134,9 +2139,54 @@ fn collections(name: &'static str, show: CollectionsShow, menu: bool) -> Scenari
     s
 }
 
+/// The composer's emoji button picker on the Custom tab, over many custom emoji.
+fn emoji_picker_custom() -> Scenario {
+    let mut s = composer(
+        "emoji_picker_custom",
+        Some(Draft {
+            text: "Shipping on Friday ".into(),
+            emoji_picker: true,
+            emoji_picker_custom: true,
+            ..Default::default()
+        }),
+    );
+    s.custom_emoji_capability = true;
+    for (i, code) in [
+        "partyparrot",
+        "partyparty",
+        "shipit",
+        "taco",
+        "tada",
+        "thumbsup",
+        "rocket",
+        "sparkles",
+        "fire",
+        "eyes",
+        "wave",
+        "heart",
+        "coffee",
+        "pizza",
+        "cat",
+        "dog",
+        "sun",
+        "moon",
+        "star",
+        "penguin",
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        s.provider.add_custom_emoji(CustomEmoji {
+            shortcode: code.into(),
+            image: ImageRef::Web(format!("https://example.invalid/emoji/{i}.png").into()),
+        });
+    }
+    s
+}
+
 /// A composer with a picker open on `text`, over a workspace with a few channels.
 fn composer_picker(name: &'static str, text: &str) -> Scenario {
-    let s = composer(
+    let mut s = composer(
         name,
         Some(Draft {
             text: text.into(),
@@ -2148,6 +2198,7 @@ fn composer_picker(name: &'static str, text: &str) -> Scenario {
         s.provider.add_conversation(conv(id, channel));
     }
     // Custom emoji keep the emoji picker free of glyphs the test font lacks.
+    s.custom_emoji_capability = true;
     for code in ["partyparrot", "partyparty"] {
         s.provider.add_custom_emoji(CustomEmoji {
             shortcode: code.into(),
@@ -3074,6 +3125,7 @@ pub fn all() -> Vec<Scenario> {
         composer_mention_groups(),
         composer_picker("composer_channel_picker", "Moving this to #ge"),
         composer_picker("composer_emoji_picker", "Shipped :partypar"),
+        emoji_picker_custom(),
         snippet_card("snippet_card", false),
         snippet_card("snippet_card_expanded", true),
         clip_controls(),

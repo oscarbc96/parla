@@ -2186,6 +2186,11 @@ impl<S: ComposerSource + 'static> Composer<S> {
             .border_color(colors.border)
             .bg(colors.elevated_surface_background);
         for (i, item) in p.items.iter().enumerate() {
+            let image = item
+                .image
+                .clone()
+                .filter(|_| cx.has_global::<crate::media::ImageCache>());
+            let alt = item.label.clone();
             list = list.child(
                 div()
                     .id(("completion", i))
@@ -2199,6 +2204,9 @@ impl<S: ComposerSource + 'static> Composer<S> {
                     .text_color(colors.text)
                     .when(i == p.selected, |d| {
                         d.bg(colors.accent_soft).text_color(colors.text_accent)
+                    })
+                    .when_some(image, |d, image| {
+                        d.child(crate::media::emoji_hook(&image, alt.trim_matches(':')))
                     })
                     .child(item.label.clone())
                     .when_some(item.detail.clone(), |d, t| {

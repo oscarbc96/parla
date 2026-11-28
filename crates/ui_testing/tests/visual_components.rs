@@ -438,6 +438,7 @@ plain_tests!(
     composer_mention_groups,
     composer_channel_picker,
     composer_emoji_picker,
+    emoji_picker_custom,
     composer_composing,
     composer_attachments,
     composer_snippet_offer,

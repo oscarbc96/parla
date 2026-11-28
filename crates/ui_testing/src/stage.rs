@@ -624,6 +624,11 @@ impl Stage {
             }
             if d.emoji_picker {
                 composer.update(cx, |c, cx| c.toggle_emoji_picker(window, cx));
+                if d.emoji_picker_custom {
+                    if let Some(p) = composer.read(cx).emoji_picker().cloned() {
+                        p.update(cx, |p, cx| p.select_tab(components::PickerTab::Custom, cx));
+                    }
+                }
             }
             if let Some(text) = &d.snippet_paste {
                 composer.update(cx, |c, cx| c.offer_snippet(text.clone(), window, cx));
@@ -827,7 +832,7 @@ impl Stage {
                 }
             });
         }
-        if s.chrome.is_some() || s.people.is_some() {
+        if s.chrome.is_some() || s.people.is_some() || s.custom_emoji_capability {
             let dir = std::env::temp_dir().join(format!("parla-ui-testing-{}", std::process::id()));
             cx.set_global(ImageCache::new(Arc::new(IconFetcher), dir, 8 << 20));
         }
