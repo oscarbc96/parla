@@ -46,6 +46,15 @@ fn open_with(cx: &mut TestAppContext, read: Option<&str>) -> bool {
     // divider is part of the same frame), not for a fixed time.
     let ws = vcx.update(|_, cx| cx.global::<parla::workspaces::WorkspacesHandle>().0.clone());
     settle_visual_until(vcx, |cx| ws.read_with(cx, |w, cx| w.ready_to_lock(cx)));
+    // The divider uses the read marker the conversation had before it was
+    // opened, so the bootstrap must have delivered the conversation first:
+    // opening earlier finds no marker and shows no divider.
+    settle_visual_until(vcx, |cx| {
+        ws.read_with(cx, |w, cx| {
+            w.session(&key("w1"))
+                .is_some_and(|s| s.read(cx).state().conversations.get(&cid("C1")).is_some())
+        })
+    });
     view.update_in(vcx, |v, window, cx| {
         v.navigate(key("w1"), cid("C1"), None, window, cx)
     });
