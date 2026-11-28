@@ -33,6 +33,18 @@ mise run test:visual -- --no-fail-fast        # list every failing scenario
 - A failure you did not cause (stale after a rebase): take main's PNG, then
   regenerate only your scenarios.
 
+## Regenerate in CI (no local build)
+
+Without a Mac or a local build, render them on the macOS runner: run the
+`Visual baselines` workflow (`gh workflow run visual-baselines.yml -f
+ref=<branch>`) or add the `update-baselines` label to a same-repository pull
+request. It uploads the changed PNGs (baselines and `site/public/shots`) as
+the artifact `baselines-<run id>` with `CHANGED.txt`, kept for 3 days. Download
+it (`gh run download <run id>`), check the list holds only the scenarios you
+meant to change, copy the files over the tree and commit them in your own
+signed commit; the workflow never pushes, because a commit from its token
+would not start CI.
+
 ## Budgets and follow-ups
 
 - Each PNG at most 200 KB, each platform dir at most 36 MB (hk checks both).
