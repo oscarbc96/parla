@@ -22,7 +22,6 @@
     ".": {
       "package-name": "parla",
       "initial-version": "0.0.1",
-      "release-as": "0.0.1",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         { "type": "toml", "path": "Cargo.toml", "jsonpath": "$.workspace.package.version" },
