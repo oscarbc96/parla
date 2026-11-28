@@ -4,15 +4,17 @@
 use std::ops::Range;
 
 use gpui::{
-    App, Bounds, ContentMask, CursorStyle, Element, ElementId, ElementInputHandler, Entity,
-    GlobalElementId, Hitbox, HitboxBehavior, InspectorElementId, LayoutId, MouseButton,
-    MouseDownEvent, MouseMoveEvent, MouseUpEvent, Pixels, Point, SharedString, Size, Style,
-    TextAlign, TextRun, UnderlineStyle, Window, WrappedLine, fill, point, px, relative, size,
+    AnyElement, App, AvailableSpace, Bounds, ContentMask, CursorStyle, Element, ElementId,
+    ElementInputHandler, Entity, GlobalElementId, Hitbox, HitboxBehavior, InspectorElementId,
+    IntoElement, LayoutId, MouseButton, MouseDownEvent, MouseMoveEvent, MouseUpEvent, Pixels,
+    Point, SharedString, Size, Style, TextAlign, TextRun, UnderlineStyle, Window, WrappedLine,
+    fill, point, px, relative, size,
 };
 use themes::ActiveTheme;
 use unicode_segmentation::UnicodeSegmentation;
 
 use super::TextInput;
+use crate::media::MediaImage;
 
 /// The shaped hard lines and their shared geometry. Byte offsets stay relative to `text`.
 struct Shaped {
@@ -299,8 +301,8 @@ impl Shaped {
 /// What the last paint laid out, kept for hit testing and caret moves.
 pub struct Laid {
     shaped: Shaped,
-    /// The real text when `shaped` shows bullets for it (a masked input).
-    pub real: Option<SharedString>,
+    /// How the real text maps onto the painted text (bullets, replaced spans).
+    display: Display,
     /// Where the text's top-left sits in the window (scroll applied).
     pub origin: Point<Pixels>,
     pub line_height: Pixels,
@@ -309,43 +311,156 @@ pub struct Laid {
 /// What a masked input shows for each character.
 const BULLET: char = '\u{2022}';
 
+/// What a replaced span shows: one glyph, painted transparently under its image.
+const PLACEHOLDER: char = 'W';
+
 /// The text a masked input paints for `real`: one bullet per character.
 fn mask_text(real: &str) -> String {
     real.chars().map(|_| BULLET).collect()
 }
 
+/// How the real text maps onto the painted text: bullets for a masked input,
+/// one placeholder glyph per span the image resolver knows.
+struct Display {
+    /// The text the input holds, whatever it paints.
+    real: SharedString,
+    /// The text painted: `real`, its bullets, or placeholders in place of spans.
+    text: SharedString,
+    masked: bool,
+    /// Spans painted as their image instead of their text, in real order.
+    replaced: Vec<Replaced>,
+}
+
+struct Replaced {
+    real: Range<usize>,
+    /// The placeholder glyph's byte range in the painted text.
+    disp: Range<usize>,
+    image: domain::ImageRef,
+    alt: SharedString,
+}
+
+impl Display {
+    fn new(i: &TextInput, cx: &App) -> Self {
+        let real = SharedString::from(i.text().to_string());
+        if i.masked {
+            let text = SharedString::from(mask_text(&real));
+            return Self {
+                real,
+                text,
+                masked: true,
+                replaced: Vec::new(),
+            };
+        }
+        // Nothing to replace: the painted text is the real text.
+        if i.spans().is_empty()
+            || !i.has_span_images()
+            || !cx.has_global::<crate::media::ImageCache>()
+        {
+            return Self {
+                text: real.clone(),
+                real,
+                masked: false,
+                replaced: Vec::new(),
+            };
+        }
+        let mut text = String::with_capacity(real.len());
+        let mut replaced = Vec::new();
+        let mut last = 0;
+        for span in i.spans() {
+            let (start, end) = (span.range.start, span.range.end);
+            if start < last
+                || start >= end
+                || end > real.len()
+                || !real.is_char_boundary(start)
+                || !real.is_char_boundary(end)
+            {
+                continue;
+            }
+            let Some(image) = i.span_image(&span.inline, cx) else {
+                continue;
+            };
+            text.push_str(&real[last..start]);
+            let disp_start = text.len();
+            text.push(PLACEHOLDER);
+            replaced.push(Replaced {
+                real: span.range.clone(),
+                disp: disp_start..disp_start + PLACEHOLDER.len_utf8(),
+                image,
+                alt: SharedString::from(real[start..end].to_string()),
+            });
+            last = end;
+        }
+        text.push_str(&real[last..]);
+        Self {
+            real,
+            text: SharedString::from(text),
+            masked: false,
+            replaced,
+        }
+    }
+
+    /// The painted ranges painted transparently, under their images.
+    fn hidden(&self) -> impl Iterator<Item = Range<usize>> + '_ {
+        self.replaced.iter().map(|r| r.disp.clone())
+    }
+
+    /// Real byte offset to the painted text's offset.
+    fn disp(&self, i: usize) -> usize {
+        if self.masked {
+            let mut i = i.min(self.real.len());
+            while !self.real.is_char_boundary(i) {
+                i -= 1;
+            }
+            return self.real[..i].chars().count() * BULLET.len_utf8();
+        }
+        let mut d = i;
+        for r in &self.replaced {
+            if i <= r.real.start {
+                break;
+            }
+            // Inside a span, both edges collapse to its placeholder.
+            if i < r.real.end {
+                return r.disp.start;
+            }
+            d -= (r.real.end - r.real.start) - r.disp.len();
+        }
+        d
+    }
+
+    /// The painted text's offset to a real byte offset. A click inside a
+    /// placeholder lands on the nearer edge of its span.
+    fn real_at(&self, d: usize) -> usize {
+        if self.masked {
+            return self
+                .real
+                .char_indices()
+                .nth(d / BULLET.len_utf8())
+                .map_or(self.real.len(), |(b, _)| b);
+        }
+        let mut real = d;
+        for r in &self.replaced {
+            if d < r.disp.start {
+                break;
+            }
+            if d < r.disp.end {
+                let left = d - r.disp.start;
+                let right = r.disp.end - d;
+                return if left < right {
+                    r.real.start
+                } else {
+                    r.real.end
+                };
+            }
+            real += (r.real.end - r.real.start) - r.disp.len();
+        }
+        real.min(self.real.len())
+    }
+}
+
 impl Laid {
     /// Whether this layout was made for `text`.
     pub fn matches(&self, text: &str) -> bool {
-        match &self.real {
-            Some(r) => r.as_ref() == text,
-            None => self.shaped.text.as_ref() == text,
-        }
-    }
-
-    /// Real byte offset to the shaped text's offset.
-    fn disp(&self, i: usize) -> usize {
-        match &self.real {
-            Some(r) => {
-                let mut i = i.min(r.len());
-                while !r.is_char_boundary(i) {
-                    i -= 1;
-                }
-                r[..i].chars().count() * BULLET.len_utf8()
-            }
-            None => i,
-        }
-    }
-
-    /// The shaped text's offset to a real byte offset.
-    fn real_at(&self, d: usize) -> usize {
-        match &self.real {
-            Some(r) => r
-                .char_indices()
-                .nth(d / BULLET.len_utf8())
-                .map_or(r.len(), |(b, _)| b),
-            None => d,
-        }
+        self.display.real.as_ref() == text
     }
 
     fn local(&self, p: Point<Pixels>) -> Point<Pixels> {
@@ -357,16 +472,17 @@ impl Laid {
             .shaped
             .closest_byte_index_for_pixel_point(self.local(p))
         {
-            Ok(i) | Err(i) => self.real_at(i),
+            Ok(i) | Err(i) => self.display.real_at(i),
         }
     }
 
     pub fn word_at(&self, p: Point<Pixels>) -> Range<usize> {
-        if let Some(r) = &self.real {
+        if self.display.masked {
             // A masked value gives no word boundaries away.
-            return 0..r.len();
+            return 0..self.display.real.len();
         }
-        self.shaped.selection_from_pixel_point(self.local(p))
+        let r = self.shaped.selection_from_pixel_point(self.local(p));
+        self.display.real_at(r.start)..self.display.real_at(r.end)
     }
 
     /// Visual rows in the layout.
@@ -376,14 +492,14 @@ impl Laid {
 
     /// Start or end of the visual row holding `at`.
     pub fn row_edge(&self, at: usize, end: bool, upstream: bool) -> (usize, bool) {
-        let (index, upstream) = self.shaped.row_edge(self.disp(at), end, upstream);
-        (self.real_at(index), upstream)
+        let (index, upstream) = self.shaped.row_edge(self.display.disp(at), end, upstream);
+        (self.display.real_at(index), upstream)
     }
 
     /// The visual row holding the caret at `at`.
     pub fn row_of(&self, at: usize, upstream: bool) -> Option<usize> {
         self.shaped
-            .row_for_index(self.disp(at), upstream)
+            .row_for_index(self.display.disp(at), upstream)
             .map(|row| row.index)
     }
 
@@ -395,8 +511,10 @@ impl Laid {
         x: Option<Pixels>,
         upstream: bool,
     ) -> (usize, Option<Pixels>, bool) {
-        let (index, x, upstream) = self.shaped.vertical(self.disp(at), down, x, upstream);
-        (self.real_at(index), x, upstream)
+        let (index, x, upstream) = self
+            .shaped
+            .vertical(self.display.disp(at), down, x, upstream);
+        (self.display.real_at(index), x, upstream)
     }
 
     /// Window bounds of the text in `r` (a caret-wide box for an empty range).
@@ -406,7 +524,7 @@ impl Laid {
         }
         let rects = self
             .shaped
-            .selection_bounds(self.disp(r.start)..self.disp(r.end));
+            .selection_bounds(self.display.disp(r.start)..self.display.disp(r.end));
         let (first, rest) = rects.split_first().map(|(f, r)| (*f, r))?;
         let mut b = first;
         for q in rest {
@@ -418,7 +536,7 @@ impl Laid {
     fn caret(&self, at: usize, upstream: bool) -> Option<Bounds<Pixels>> {
         let p = self
             .shaped
-            .visual_position_for_byte_index(self.disp(at), upstream)?;
+            .visual_position_for_byte_index(self.display.disp(at), upstream)?;
         Some(Bounds::new(
             self.origin + p,
             size(themes::metrics::LAYOUT_CARET, self.line_height),
@@ -441,6 +559,7 @@ impl TextElement {
         len: usize,
         marked: Option<Range<usize>>,
         color: gpui::Hsla,
+        hidden: &[Range<usize>],
     ) -> Vec<TextRun> {
         let font = window.text_style().font();
         let plain = |len| TextRun {
@@ -451,27 +570,81 @@ impl TextElement {
             underline: None,
             strikethrough: None,
         };
-        match marked {
-            Some(m) if m.end <= len && !m.is_empty() => {
-                let mut v = Vec::new();
-                if m.start > 0 {
-                    v.push(plain(m.start));
-                }
+        // Every boundary where a run's look changes: the composition's edges
+        // and the placeholders painted under an image.
+        let mut cuts = vec![0, len];
+        if let Some(m) = &marked {
+            cuts.extend([m.start.min(len), m.end.min(len)]);
+        }
+        for r in hidden {
+            cuts.extend([r.start.min(len), r.end.min(len)]);
+        }
+        cuts.sort_unstable();
+        cuts.dedup();
+        cuts.retain(|c| *c <= len);
+        let mut v = Vec::new();
+        for pair in cuts.windows(2) {
+            let (a, b) = (pair[0], pair[1]);
+            if a >= b {
+                continue;
+            }
+            let transparent = hidden.iter().any(|r| r.start <= a && b <= r.end);
+            let underlined = marked.as_ref().is_some_and(|m| m.start <= a && b <= m.end);
+            if transparent {
+                v.push(TextRun {
+                    color: color.opacity(0.0),
+                    ..plain(b - a)
+                });
+            } else if underlined {
                 v.push(TextRun {
                     underline: Some(UnderlineStyle {
                         thickness: px(1.0),
                         color: Some(color),
                         wavy: false,
                     }),
-                    ..plain(m.end - m.start)
+                    ..plain(b - a)
                 });
-                if m.end < len {
-                    v.push(plain(len - m.end));
-                }
-                v
+            } else {
+                v.push(plain(b - a));
             }
-            _ => vec![plain(len)],
         }
+        v
+    }
+
+    /// Lays out and prepaints the custom emoji images over their placeholders:
+    /// a square, centred on the line and on the placeholder glyph.
+    fn images(
+        laid: &Laid,
+        font_size: Pixels,
+        window: &mut Window,
+        cx: &mut App,
+    ) -> Vec<AnyElement> {
+        let side = laid.line_height.min(font_size * 1.25);
+        let mut images = Vec::with_capacity(laid.display.replaced.len());
+        for r in &laid.display.replaced {
+            let Some(rect) = laid
+                .shaped
+                .selection_bounds(r.disp.clone())
+                .into_iter()
+                .next()
+            else {
+                continue;
+            };
+            let rect = Bounds::new(laid.origin + rect.origin, rect.size);
+            let origin = point(
+                rect.origin.x + (rect.size.width - side) * 0.5,
+                rect.origin.y + (rect.size.height - side) * 0.5,
+            );
+            let box_size = size(side, side);
+            let mut image = MediaImage::new(r.image.clone(), r.alt.to_string())
+                .max_size(side.as_f32(), side.as_f32())
+                .fixed()
+                .into_any_element();
+            image.layout_as_root(box_size.map(AvailableSpace::Definite), window, cx);
+            image.prepaint_at(origin, window, cx);
+            images.push(image);
+        }
+        images
     }
 }
 
@@ -481,6 +654,8 @@ pub struct Prepaint {
     hitbox: Hitbox,
     selection: Vec<Bounds<Pixels>>,
     caret: Option<Bounds<Pixels>>,
+    /// Custom emoji painted over their placeholders.
+    images: Vec<AnyElement>,
 }
 
 impl Element for TextElement {
@@ -502,21 +677,18 @@ impl Element for TextElement {
         window: &mut Window,
         cx: &mut App,
     ) -> (LayoutId, ()) {
-        let (text, placeholder) = {
+        let (text, placeholder, hidden) = {
             let i = self.input.read(cx);
-            let text = if i.masked {
-                mask_text(i.text())
-            } else {
-                i.text().to_string()
-            };
-            (SharedString::from(text), i.placeholder.clone())
+            let display = Display::new(i, cx);
+            let hidden: Vec<_> = display.hidden().collect();
+            (display.text, i.placeholder.clone(), hidden)
         };
         let shown = if text.is_empty() { placeholder } else { text };
         let font_size = window.text_style().font_size.to_pixels(window.rem_size());
         let line_height = window.line_height();
         let max_h = line_height * self.max_rows;
         let color = window.text_style().color;
-        let runs = Self::runs(window, shown.len(), None, color);
+        let runs = Self::runs(window, shown.len(), None, color, &hidden);
         let mut style = Style::default();
         style.size.width = relative(1.0).into();
         let id = window.request_measured_layout(style, move |known, available, window, _| {
@@ -549,16 +721,10 @@ impl Element for TextElement {
         cx: &mut App,
     ) -> Prepaint {
         let colors = cx.theme().colors();
-        let (text, real, placeholder, placeholder_color, marked, sel, scroll, upstream) = {
+        let (display, placeholder, placeholder_color, marked, sel, scroll, upstream) = {
             let i = self.input.read(cx);
-            let real = i.masked.then(|| SharedString::from(i.text().to_string()));
-            let text = match &real {
-                Some(r) => SharedString::from(mask_text(r)),
-                None => SharedString::from(i.text().to_string()),
-            };
             (
-                text,
-                real,
+                Display::new(i, cx),
                 i.placeholder.clone(),
                 i.placeholder_color,
                 i.buf.marked(),
@@ -567,27 +733,18 @@ impl Element for TextElement {
                 i.caret_upstream(),
             )
         };
+        let hidden: Vec<_> = display.hidden().collect();
         let style = window.text_style();
         let font_size = style.font_size.to_pixels(window.rem_size());
         let line_height = window.line_height();
-        let empty = text.is_empty();
+        let empty = display.text.is_empty();
         let (shown, color) = if empty {
             (placeholder, placeholder_color.unwrap_or(colors.text_muted))
         } else {
-            (text, style.color)
+            (display.text.clone(), style.color)
         };
-        let to_disp = |i: usize| match &real {
-            Some(r) => {
-                let mut i = i.min(r.len());
-                while !r.is_char_boundary(i) {
-                    i -= 1;
-                }
-                r[..i].chars().count() * BULLET.len_utf8()
-            }
-            None => i,
-        };
-        let marked = marked.map(|m| to_disp(m.start)..to_disp(m.end));
-        let runs = Self::runs(window, shown.len(), marked, color);
+        let marked = marked.map(|m| display.disp(m.start)..display.disp(m.end));
+        let runs = Self::runs(window, shown.len(), marked, color, &hidden);
         // A shaping failure (for example a font load error) paints nothing
         // rather than panicking the app.
         let Ok(shaped) = Shaped::shape(
@@ -604,6 +761,7 @@ impl Element for TextElement {
                 hitbox: window.insert_hitbox(bounds, HitboxBehavior::Normal),
                 selection: Vec::new(),
                 caret: None,
+                images: Vec::new(),
             };
         };
         // Keep the caret in view when the text is taller than the box.
@@ -611,7 +769,7 @@ impl Element for TextElement {
         let mut scroll_y = scroll.min((content_h - bounds.size.height).max(px(0.0)));
         let mut laid = Laid {
             shaped,
-            real: if empty { None } else { real },
+            display,
             origin: bounds.origin,
             line_height,
         };
@@ -619,7 +777,7 @@ impl Element for TextElement {
             None
         } else {
             laid.shaped
-                .visual_position_for_byte_index(laid.disp(sel.head), upstream)
+                .visual_position_for_byte_index(laid.display.disp(sel.head), upstream)
         };
         if let Some(p) = caret_row {
             if p.y < scroll_y {
@@ -641,7 +799,9 @@ impl Element for TextElement {
         } else {
             let sel_rects = laid
                 .shaped
-                .selection_bounds(laid.disp(sel.range().start)..laid.disp(sel.range().end))
+                .selection_bounds(
+                    laid.display.disp(sel.range().start)..laid.display.disp(sel.range().end),
+                )
                 .into_iter()
                 .map(|r| Bounds::new(laid.origin + r.origin, r.size))
                 .collect();
@@ -652,6 +812,7 @@ impl Element for TextElement {
                     .flatten(),
             )
         };
+        let images = Self::images(&laid, font_size, window, cx);
         let hitbox = window.insert_hitbox(bounds, HitboxBehavior::Normal);
         Prepaint {
             laid: Some(laid),
@@ -659,6 +820,7 @@ impl Element for TextElement {
             hitbox,
             selection,
             caret,
+            images,
         }
     }
 
@@ -686,6 +848,7 @@ impl Element for TextElement {
             return;
         };
         let origin = laid.origin;
+        let images = &mut pre.images;
         window.with_content_mask(Some(ContentMask { bounds }), |window| {
             if focused {
                 for r in &pre.selection {
@@ -693,6 +856,9 @@ impl Element for TextElement {
                 }
             }
             let _ = laid.shaped.paint(origin, bounds, window, cx);
+            for image in images.iter_mut() {
+                image.paint(window, cx);
+            }
             if focused && let Some(c) = pre.caret {
                 window.paint_quad(fill(c, text_color));
             }

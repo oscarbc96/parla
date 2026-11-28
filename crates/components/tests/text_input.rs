@@ -10,6 +10,7 @@ use gpui::{
     VisualTestContext, point, px,
 };
 use std::cell::RefCell;
+use std::ops::Range;
 use std::rc::Rc;
 
 fn setup(cx: &mut TestAppContext) -> (Entity<TextInput>, &mut VisualTestContext) {
@@ -23,6 +24,120 @@ fn setup(cx: &mut TestAppContext) -> (Entity<TextInput>, &mut VisualTestContext)
         w.focus(&handle, cx);
     });
     (input, vcx)
+}
+
+struct FailFetch;
+
+impl components::media::MediaFetcher for FailFetch {
+    fn fetch(
+        &self,
+        _: &domain::ImageRef,
+        _: u64,
+    ) -> futures::future::BoxFuture<'static, Result<Vec<u8>, components::media::MediaError>> {
+        Box::pin(std::future::ready(Err(
+            components::media::MediaError::Network("offline".into()),
+        )))
+    }
+}
+
+/// A custom emoji `:partyparrot:` (13 bytes) inserted as a span over `range`.
+fn custom_span(i: &Entity<TextInput>, vcx: &mut VisualTestContext, range: Range<usize>) {
+    i.update(vcx, |t, cx| {
+        t.insert_span(
+            range,
+            ":partyparrot:",
+            domain::Inline::Emoji(domain::EmojiRef {
+                shortcode: "partyparrot".into(),
+                unicode: None,
+                skin_tone: None,
+            }),
+            cx,
+        )
+    });
+}
+
+fn setup_with_images(cx: &mut TestAppContext) -> (Entity<TextInput>, &mut VisualTestContext) {
+    cx.update(|cx| {
+        themes::init_default(cx);
+        components::init(cx);
+        let dir = std::env::temp_dir().join(format!("parla-text-input-{}", std::process::id()));
+        cx.set_global(components::media::ImageCache::new(
+            std::sync::Arc::new(FailFetch),
+            dir,
+            1 << 20,
+        ));
+    });
+    let (input, vcx) = cx.add_window_view(|_w, cx| TextInput::new(cx));
+    vcx.update(|w, cx| {
+        let handle = input.read(cx).focus_handle_for_test();
+        w.focus(&handle, cx);
+    });
+    input.update(vcx, |t, _| {
+        t.set_span_images(Rc::new(|inline, _| match inline {
+            domain::Inline::Emoji(e) if e.unicode.is_none() => Some(domain::ImageRef::Web(
+                format!("https://example.invalid/{}.png", e.shortcode).into(),
+            )),
+            _ => None,
+        }))
+    });
+    (input, vcx)
+}
+
+fn caret(i: &Entity<TextInput>, vcx: &mut VisualTestContext, at: usize) -> Bounds<Pixels> {
+    let b = input_bounds(vcx);
+    vcx.update(|w, cx| i.update(cx, |t, cx| t.bounds_for_range(at..at, b, w, cx)))
+        .expect("caret bounds")
+}
+
+#[gpui::test]
+fn a_custom_emoji_span_paints_one_placeholder(cx: &mut TestAppContext) {
+    let (i, vcx) = setup_with_images(cx);
+    i.update(vcx, |t, cx| t.set_text("hi ", cx));
+    custom_span(&i, vcx, 3..3);
+    i.update(vcx, |t, cx| t.replace_range(16..16, "!", cx));
+    vcx.run_until_parked();
+    assert_eq!(text(&i, vcx), "hi :partyparrot:!");
+    let start = caret(&i, vcx, 3);
+    let end = caret(&i, vcx, 16);
+    // One placeholder, not the thirteen bytes of `:partyparrot:`.
+    let width = end.left() - start.left();
+    assert!(width > px(0.0) && width < px(40.0), "{width:?}");
+    // The buffer, spans and hit testing still speak the real text.
+    assert_eq!(i.read_with(vcx, |t, _| t.spans()[0].range.clone()), 3..16);
+    let b = input_bounds(vcx);
+    let after = vcx
+        .update(|w, cx| {
+            i.update(cx, |t, cx| {
+                t.character_index_for_point(point(end.left(), b.top() + px(6.0)), w, cx)
+            })
+        })
+        .expect("index after the image");
+    assert_eq!(after, 16);
+}
+
+#[gpui::test]
+fn a_custom_emoji_span_deletes_whole(cx: &mut TestAppContext) {
+    let (i, vcx) = setup_with_images(cx);
+    i.update(vcx, |t, cx| t.set_text("hi ", cx));
+    custom_span(&i, vcx, 3..3);
+    vcx.run_until_parked();
+    i.update(vcx, |t, cx| t.select(16..16, cx));
+    vcx.dispatch_action(Backspace);
+    assert_eq!(text(&i, vcx), "hi ");
+    assert!(i.read_with(vcx, |t, _| t.spans().is_empty()));
+}
+
+#[gpui::test]
+fn without_a_resolver_a_span_paints_its_text(cx: &mut TestAppContext) {
+    let (i, vcx) = setup(cx);
+    i.update(vcx, |t, cx| t.set_text("hi ", cx));
+    custom_span(&i, vcx, 3..3);
+    vcx.run_until_parked();
+    let start = caret(&i, vcx, 3);
+    let end = caret(&i, vcx, 16);
+    // The whole token is laid out as text.
+    assert!(end.left() - start.left() > px(60.0));
+    assert_eq!(text(&i, vcx), "hi :partyparrot:");
 }
 
 fn text(i: &Entity<TextInput>, vcx: &mut VisualTestContext) -> String {

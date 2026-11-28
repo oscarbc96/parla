@@ -9,6 +9,7 @@ use gpui::{
     App, Context, Entity, EventEmitter, FocusHandle, Focusable, IntoElement, KeyBinding, Render,
     SharedString, Subscription, Window, actions, div, prelude::*,
 };
+use std::rc::Rc;
 use themes::{ActiveTheme, metrics};
 
 use crate::completion::{Completion, CompletionKind, detect};
@@ -363,6 +364,11 @@ pub trait ComposerSource {
     fn picker_custom_emoji(&self) -> Vec<domain::CustomEmoji> {
         Vec::new()
     }
+    /// The workspace's image for custom emoji `shortcode`, so the input draws
+    /// it in place of `:shortcode:`. `None` paints the token as text.
+    fn custom_emoji_image(&self, _shortcode: &str) -> Option<domain::ImageRef> {
+        None
+    }
     /// Presets, zone and capability for the Send later menu.
     fn send_later(&self, _cx: &App) -> crate::send_later::SendLaterConfig {
         crate::send_later::SendLaterConfig {
@@ -494,12 +500,25 @@ impl<S: ComposerSource + 'static> Composer<S> {
         cx: &mut Context<Self>,
     ) -> Self {
         let input = cx.new(TextInput::new);
+        // Custom emoji show their image in the message box, as in a sent message.
+        let images = session.clone();
+        input.update(cx, |i, _| {
+            i.set_span_images(Rc::new(move |inline, cx| match inline {
+                Inline::Emoji(e) if e.unicode.is_none() => {
+                    images.read(cx).custom_emoji_image(&e.shortcode)
+                }
+                _ => None,
+            }));
+        });
         // Repaint with the input (placeholder, focus ring).
         let sub = cx.observe(&input, |this, _, cx| {
             this.refresh_popup(cx);
             cx.notify();
         });
         let typed = cx.subscribe(&input, |this, input, _: &TextInputEvent, cx| {
+            if this.convert_typed_emoji(cx) {
+                return;
+            }
             let i = input.read(cx);
             if !i.user_edit() || this.editing.is_some() || i.text().trim().is_empty() {
                 return;
@@ -1611,6 +1630,91 @@ impl<S: ComposerSource + 'static> Composer<S> {
             this.update(cx, |c, _| c.picker_just_closed = false)
         });
         cx.notify();
+    }
+
+    /// Turns the `:name:` the user just typed (the closing colon) into the
+    /// custom emoji span or the standard emoji glyph. Pasting, `10:30:` and
+    /// unknown codes stay text. True when it converted something.
+    fn convert_typed_emoji(&mut self, cx: &mut Context<Self>) -> bool {
+        let (typed, text, spans, caret, composing) = {
+            let i = self.input.read(cx);
+            // Most edits are not a typed closing colon: leave before copying anything.
+            match (i.typed_range(), i.caret()) {
+                (Some(t), Some(c)) if t.end == c && i.text()[..c].ends_with(':') => {}
+                _ => return false,
+            }
+            (
+                i.typed_range(),
+                i.text().to_string(),
+                i.spans().to_vec(),
+                i.caret(),
+                i.is_composing(),
+            )
+        };
+        let (Some(typed), Some(caret)) = (typed, caret) else {
+            return false;
+        };
+        if composing || typed.end != caret || !text[..caret].ends_with(':') {
+            return false;
+        }
+        // The opening colon starts a word, as the `:` picker's trigger rule.
+        let start = text[..caret]
+            .char_indices()
+            .rev()
+            .find(|(_, c)| c.is_whitespace())
+            .map_or(0, |(i, c)| i + c.len_utf8());
+        let word = &text[start..caret];
+        let Some(code) = word
+            .strip_prefix(':')
+            .and_then(|w| w.strip_suffix(':'))
+            .filter(|c| {
+                !c.is_empty()
+                    && c.chars()
+                        .all(|c| c.is_alphanumeric() || matches!(c, '_' | '+' | '-'))
+            })
+        else {
+            return false;
+        };
+        // A picked span never reopens or converts: it is already a unit.
+        if spans
+            .iter()
+            .any(|s| s.range.start < caret && start < s.range.end)
+        {
+            return false;
+        }
+        let custom = {
+            let s = self.session.read(cx);
+            (s.capabilities().custom_emoji && s.custom_emoji_image(code).is_some()).then(|| {
+                EmojiRef {
+                    shortcode: code.into(),
+                    unicode: None,
+                    skin_tone: None,
+                }
+            })
+        };
+        if let Some(e) = custom {
+            let label = format!(":{}:", e.shortcode);
+            self.input.update(cx, |i, cx| {
+                i.insert_span(start..caret, &label, Inline::Emoji(e.clone()), cx)
+            });
+            self.session.update(cx, |s, cx| s.emoji_used(e, cx));
+            cx.notify();
+            return true;
+        }
+        let Some(glyph) = emojis::get_by_shortcode(code) else {
+            return false;
+        };
+        let unicode: std::sync::Arc<str> = glyph.as_str().into();
+        let e = EmojiRef {
+            shortcode: code.into(),
+            unicode: Some(unicode.clone()),
+            skin_tone: None,
+        };
+        self.input
+            .update(cx, |i, cx| i.replace_range(start..caret, &unicode, cx));
+        self.session.update(cx, |s, cx| s.emoji_used(e, cx));
+        cx.notify();
+        true
     }
 
     /// Inserts `e` at the caret (or over the selection) and closes the picker: a

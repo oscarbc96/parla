@@ -661,6 +661,12 @@ impl ComposerSource for ScenarioSession {
     fn picker_custom_emoji(&self) -> Vec<CustomEmoji> {
         self.state.custom_emoji.values().cloned().collect()
     }
+    fn custom_emoji_image(&self, shortcode: &str) -> Option<domain::ImageRef> {
+        self.state
+            .custom_emoji
+            .get(shortcode)
+            .map(|e| e.image.clone())
+    }
 
     fn read_only(&self) -> bool {
         self.state.session == domain::Session::Expired

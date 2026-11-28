@@ -8,6 +8,7 @@ mod element;
 mod history;
 
 use std::ops::Range;
+use std::rc::Rc;
 
 use gpui::{
     App, Bounds, ClipboardItem, Context, Entity, EntityInputHandler, EventEmitter, FocusHandle,
@@ -127,6 +128,9 @@ pub enum TextInputEvent {
 /// Rows kept visible before the input scrolls.
 const MAX_ROWS: f32 = 10.0;
 
+/// Resolves the image to draw in place of a span's text (a custom emoji).
+pub type SpanImages = Rc<dyn Fn(&domain::Inline, &App) -> Option<domain::ImageRef>>;
+
 pub struct TextInput {
     buf: Buffer,
     history: History,
@@ -153,6 +157,12 @@ pub struct TextInput {
     /// The last text change came from the user (typing, paste, delete, undo),
     /// not from a program setting the text.
     user_edit: bool,
+    /// The range the platform typed into the input on the last change, if it
+    /// was typing (not paste, an insert or a program setting the text).
+    last_typed: Option<Range<usize>>,
+    /// Draws an image in place of a span's text (custom emoji), when it
+    /// returns one and the image cache is loaded.
+    span_images: Option<SpanImages>,
 }
 
 impl EventEmitter<TextInputEvent> for TextInput {}
@@ -186,6 +196,8 @@ impl TextInput {
             masked: false,
             single_line: false,
             user_edit: false,
+            last_typed: None,
+            span_images: None,
         }
     }
 
@@ -193,6 +205,26 @@ impl TextInput {
     /// delete, undo) rather than a program setting the text (a restored draft).
     pub fn user_edit(&self) -> bool {
         self.user_edit
+    }
+
+    /// The range the platform typed on the last change; `None` for paste, an
+    /// insert via [`Self::insert_span`], undo and a restored draft.
+    pub(crate) fn typed_range(&self) -> Option<Range<usize>> {
+        self.last_typed.clone()
+    }
+
+    /// Paints an image in place of a span's text when `f` returns one and the
+    /// image cache is loaded. The default (`None`) paints every span as text.
+    pub fn set_span_images(&mut self, f: SpanImages) {
+        self.span_images = Some(f);
+    }
+
+    pub(crate) fn has_span_images(&self) -> bool {
+        self.span_images.is_some()
+    }
+
+    pub(crate) fn span_image(&self, inline: &domain::Inline, cx: &App) -> Option<domain::ImageRef> {
+        self.span_images.as_ref().and_then(|f| f(inline, cx))
     }
 
     pub fn text(&self) -> &str {
@@ -292,6 +324,7 @@ impl TextInput {
         if self.buf.text() == s && !self.is_composing() {
             self.buf.set_selection(s.len(), s.len());
             self.history.clear();
+            self.last_typed = None;
             cx.notify();
             return;
         }
@@ -300,6 +333,7 @@ impl TextInput {
         self.vertical_x = None;
         self.upstream_at = None;
         self.user_edit = false;
+        self.last_typed = None;
         cx.emit(TextInputEvent::Changed);
         cx.notify();
     }
@@ -316,6 +350,7 @@ impl TextInput {
         self.vertical_x = None;
         self.upstream_at = None;
         self.user_edit = false;
+        self.last_typed = None;
         cx.emit(TextInputEvent::Changed);
         cx.notify();
     }
@@ -366,6 +401,18 @@ impl TextInput {
 
     /// Runs one edit: history, change event, repaint.
     fn apply(&mut self, kind: Edit, cx: &mut Context<Self>, f: impl FnOnce(&mut Buffer)) {
+        self.apply_typed(kind, None, cx, f);
+    }
+
+    /// [`Self::apply`] for a change the platform typed, recording its range so
+    /// the host can react to the text as typed.
+    fn apply_typed(
+        &mut self,
+        kind: Edit,
+        typed: Option<Range<usize>>,
+        cx: &mut Context<Self>,
+        f: impl FnOnce(&mut Buffer),
+    ) {
         if !self.is_composing() {
             let before = self.snapshot();
             self.history.record(before, kind == Edit::Typing);
@@ -374,6 +421,7 @@ impl TextInput {
         self.vertical_x = None;
         self.upstream_at = None;
         self.user_edit = true;
+        self.last_typed = typed;
         cx.emit(TextInputEvent::Changed);
         cx.notify();
     }
@@ -597,6 +645,7 @@ impl TextInput {
         self.user_edit = true;
         self.vertical_x = None;
         self.upstream_at = None;
+        self.last_typed = None;
         cx.emit(TextInputEvent::Changed);
         cx.notify();
     }
@@ -728,7 +777,12 @@ impl EntityInputHandler for TextInput {
         let typing = r.is_empty() && !text.contains('\n') && !self.is_composing();
         let kind = if typing { Edit::Typing } else { Edit::Other };
         let text = self.one_line(text);
-        self.apply(kind, cx, |b| b.replace(r, &text));
+        if typing {
+            let typed = r.start..r.start + text.len();
+            self.apply_typed(kind, Some(typed), cx, |b| b.replace(r, &text));
+        } else {
+            self.apply(kind, cx, |b| b.replace(r, &text));
+        }
     }
 
     fn replace_and_mark_text_in_range(

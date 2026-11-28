@@ -24,9 +24,11 @@ pub enum Banner {
 }
 
 /// An unsent composer draft.
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct Draft {
     pub text: String,
+    /// Picked mentions and custom emoji, as atomic spans of `text`.
+    pub spans: Vec<domain::ComposedSpan>,
     /// The draft edits an existing message instead of composing a new one.
     pub editing: bool,
     /// Bytes of `text` selected, with the composer focused.
@@ -2139,6 +2141,33 @@ fn collections(name: &'static str, show: CollectionsShow, menu: bool) -> Scenari
     s
 }
 
+/// A drafted message whose custom emoji is an atomic span, drawn as its image.
+fn composer_custom_emoji() -> Scenario {
+    let text = "Shipped it :partyparrot: nice";
+    let mut s = composer(
+        "composer_custom_emoji",
+        Some(Draft {
+            text: text.into(),
+            spans: vec![domain::ComposedSpan {
+                range: 11..24,
+                inline: Inline::Emoji(EmojiRef {
+                    shortcode: "partyparrot".into(),
+                    unicode: None,
+                    skin_tone: None,
+                }),
+            }],
+            select: Some(text.len()..text.len()),
+            ..Default::default()
+        }),
+    );
+    s.custom_emoji_capability = true;
+    s.provider.add_custom_emoji(CustomEmoji {
+        shortcode: "partyparrot".into(),
+        image: ImageRef::Web("https://example.invalid/emoji/partyparrot.png".into()),
+    });
+    s
+}
+
 /// The composer's emoji button picker on the Custom tab, over many custom emoji.
 fn emoji_picker_custom() -> Scenario {
     let mut s = composer(
@@ -2995,6 +3024,7 @@ pub fn all() -> Vec<Scenario> {
                 ..Default::default()
             }),
         ),
+        composer_custom_emoji(),
         composer_send_later("composer_send_later_menu", SendLaterStage::Menu, true),
         composer_send_later(
             "composer_send_later_custom",

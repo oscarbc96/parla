@@ -607,6 +607,10 @@ impl Stage {
                     .input()
                     .clone()
                     .update(cx, |i, cx| i.replace_selection(&d.text, cx)),
+                _ if !d.spans.is_empty() => {
+                    let t = domain::ComposedText::new(&d.text, d.spans.clone());
+                    c.set_composed(&t, cx);
+                }
                 _ => c.set_text(d.text.clone(), cx),
             });
             let input = composer.read(cx).input().clone();

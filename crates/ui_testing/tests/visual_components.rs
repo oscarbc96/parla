@@ -379,6 +379,7 @@ plain_tests!(
     composer_slash_menu,
     composer_link_prompt,
     composer_emoji_button_picker,
+    composer_custom_emoji,
     composer_send_later_menu,
     composer_send_later_custom,
     scheduled_view,

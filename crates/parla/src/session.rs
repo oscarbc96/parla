@@ -3655,6 +3655,13 @@ impl ComposerSource for WorkspaceSession {
         self.state.custom_emoji.values().cloned().collect()
     }
 
+    fn custom_emoji_image(&self, shortcode: &str) -> Option<domain::ImageRef> {
+        self.state
+            .custom_emoji
+            .get(shortcode)
+            .map(|e| e.image.clone())
+    }
+
     fn provider_name(&self) -> &str {
         &self.provider_name
     }

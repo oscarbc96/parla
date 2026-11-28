@@ -11,6 +11,10 @@ glob = "crates/components/src/composer.rs"
 scenarios = ["composer_*", "empty_conversation"]
 
 [[map]]
+glob = "crates/components/src/text_input/**"
+scenarios = ["composer_custom_emoji"]
+
+[[map]]
 glob = "crates/domain/src/typing.rs"
 scenarios = ["composer_typing"]
 
