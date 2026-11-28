@@ -115,7 +115,9 @@ fn shipped_defaults_are_valid() {
         // formatting keys, the send-later key, the 2 focus-cycle keys, the command palette key, the 2 pop-out keys, then the text input keys (macOS has no Home/End/Ctrl-Y).
         // Close window everywhere; macOS also binds hide, hide others and minimize.
         let window_keys = if os == "macos" { 4 } else { 1 };
-        let text_input = if os == "macos" { 27 } else { 28 };
+        // Both include the line and word deletes, shift-backspace and paste; macOS adds
+        // the Cocoa control keys, the others the insert-key clipboard keys.
+        let text_input = if os == "macos" { 45 } else { 36 };
         assert_eq!(
             bindings.len(),
             5 + 1

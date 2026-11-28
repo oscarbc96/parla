@@ -484,6 +484,9 @@ impl RootView {
             this.on_workspaces(ev, window, cx)
         });
         cx.set_global(WorkspacesHandle(workspaces.clone()));
+        // Re-check notification permission when the window comes back to the
+        // front (the user may have changed it in System Settings).
+        crate::notifications::watch_activation(window, cx);
         // A click on an expired-session notification takes the same route as
         // the banner's "Sign in again" button, for the workspace that expired.
         if let Some(hub) = cx.try_global::<crate::notifications::Notifications>() {

@@ -11,6 +11,108 @@ pub fn is_bundled() -> bool {
         .is_some()
 }
 
+/// Maps a `UNAuthorizationStatus` to the app's three-way permission. The
+/// provisional and ephemeral grants can post notifications, so they count as
+/// allowed.
+#[cfg(target_os = "macos")]
+fn permission_from_status(
+    status: objc2_user_notifications::UNAuthorizationStatus,
+) -> super::NotificationPermission {
+    use super::NotificationPermission;
+    use objc2_user_notifications::UNAuthorizationStatus;
+    if status == UNAuthorizationStatus::Authorized
+        || status == UNAuthorizationStatus::Provisional
+        || status == UNAuthorizationStatus::Ephemeral
+    {
+        NotificationPermission::Allowed
+    } else if status == UNAuthorizationStatus::Denied {
+        NotificationPermission::Denied
+    } else {
+        NotificationPermission::Undetermined
+    }
+}
+
+/// Asks for permission and then reads the resulting setting. The completion
+/// handlers run on arbitrary threads, so the answer travels to the app through
+/// the channel. Outside an app bundle this does nothing: UserNotifications
+/// aborts there.
+#[cfg(target_os = "macos")]
+pub fn request_notification_permission(
+    tx: futures::channel::mpsc::UnboundedSender<super::NotificationPermission>,
+) {
+    use core::ptr::NonNull;
+    use objc2::runtime::Bool;
+    use objc2_foundation::NSError;
+    use objc2_user_notifications::{
+        UNAuthorizationOptions, UNNotificationSettings, UNUserNotificationCenter,
+    };
+
+    if !is_bundled() {
+        return;
+    }
+    let center = UNUserNotificationCenter::currentNotificationCenter();
+    let requested = block2::RcBlock::new(move |_granted: Bool, _error: *mut NSError| {
+        let center = UNUserNotificationCenter::currentNotificationCenter();
+        let tx = tx.clone();
+        let answered = block2::RcBlock::new(move |settings: NonNull<UNNotificationSettings>| {
+            // SAFETY: the system hands us a live settings object for the
+            // duration of the callback.
+            let status = unsafe { settings.as_ref() }.authorizationStatus();
+            let _ = tx.unbounded_send(permission_from_status(status));
+        });
+        center.getNotificationSettingsWithCompletionHandler(&answered);
+    });
+    center.requestAuthorizationWithOptions_completionHandler(
+        UNAuthorizationOptions::Alert | UNAuthorizationOptions::Sound,
+        &requested,
+    );
+}
+
+/// Opens System Settings at Parla's own notification pane.
+#[cfg(target_os = "macos")]
+pub fn open_notification_settings() {
+    use objc2_app_kit::NSWorkspace;
+    use objc2_foundation::{NSString, NSURL};
+    let Some(url) = NSURL::URLWithString(&NSString::from_str(
+        "x-apple.systempreferences:com.apple.Notifications-Settings.extension?id=com.justparla.parla",
+    )) else {
+        return;
+    };
+    NSWorkspace::sharedWorkspace().openURL(&url);
+}
+
+#[cfg(test)]
+mod tests {
+    use objc2_user_notifications::UNAuthorizationStatus;
+
+    use super::*;
+    use crate::platform::NotificationPermission;
+
+    #[test]
+    fn authorization_statuses_map_to_the_three_way_permission() {
+        assert_eq!(
+            permission_from_status(UNAuthorizationStatus::Authorized),
+            NotificationPermission::Allowed
+        );
+        assert_eq!(
+            permission_from_status(UNAuthorizationStatus::Provisional),
+            NotificationPermission::Allowed
+        );
+        assert_eq!(
+            permission_from_status(UNAuthorizationStatus::Ephemeral),
+            NotificationPermission::Allowed
+        );
+        assert_eq!(
+            permission_from_status(UNAuthorizationStatus::Denied),
+            NotificationPermission::Denied
+        );
+        assert_eq!(
+            permission_from_status(UNAuthorizationStatus::NotDetermined),
+            NotificationPermission::Undetermined
+        );
+    }
+}
+
 pub fn set_badge(count: Option<u32>) {
     let Some(mtm) = MainThreadMarker::new() else {
         return;

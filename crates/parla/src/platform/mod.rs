@@ -13,6 +13,47 @@ pub fn is_bundled() -> bool {
     true
 }
 
+/// What macOS says about Parla's notification permission.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum NotificationPermission {
+    /// Authorized, provisional or ephemeral: notifications can be posted.
+    Allowed,
+    Denied,
+    /// The system has never asked (or the bundle cannot ask).
+    Undetermined,
+}
+
+impl NotificationPermission {
+    /// The word used in the log line.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Allowed => "allowed",
+            Self::Denied => "denied",
+            Self::Undetermined => "undetermined",
+        }
+    }
+}
+
+/// Asks for notification permission (the system prompt appears the first
+/// time) and then reports the resulting setting through `tx`, on whichever
+/// thread the system answers. Does nothing outside an app bundle: there the
+/// UserNotifications framework aborts the process.
+pub fn request_notification_permission(
+    tx: futures::channel::mpsc::UnboundedSender<NotificationPermission>,
+) {
+    #[cfg(target_os = "macos")]
+    macos::request_notification_permission(tx);
+    #[cfg(not(target_os = "macos"))]
+    let _ = tx;
+}
+
+/// Opens System Settings at Parla's notification pane (macOS only; a no-op
+/// elsewhere).
+pub fn open_notification_settings() {
+    #[cfg(target_os = "macos")]
+    macos::open_notification_settings();
+}
+
 /// Sets the dock badge (`None` clears it).
 pub fn set_badge(count: Option<u32>) {
     #[cfg(target_os = "macos")]

@@ -100,7 +100,9 @@ png = "0.18"
 libc = "0.2"
 objc2 = "0.6"
 objc2-app-kit = { version = "0.3", features = ["NSApplication", "NSDockTile", "NSResponder", "NSScreen", "NSSound", "NSWorkspace"] }
-objc2-foundation = { version = "0.3", features = ["NSBundle", "NSData", "NSNotification", "NSOperation", "NSString", "block2"] }
+objc2-foundation = { version = "0.3", features = ["NSBundle", "NSData", "NSNotification", "NSOperation", "NSString", "NSURL", "block2"] }
+# Notification permission: asked at launch and re-read on activation.
+objc2-user-notifications = { version = "0.3", default-features = false, features = ["std", "block2", "UNNotificationSettings", "UNUserNotificationCenter"] }
 # The block for the accessibility display change observer and the idle
 # lock's sleep and wake observer (already in the tree).
 block2 = "0.6"

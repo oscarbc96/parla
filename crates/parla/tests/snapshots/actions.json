@@ -1053,18 +1053,34 @@
         {
           "context": "TextInput",
           "keys": "backspace"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-backspace"
         }
       ],
       "macos": [
         {
           "context": "TextInput",
           "keys": "backspace"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-h"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-backspace"
         }
       ],
       "windows": [
         {
           "context": "TextInput",
           "keys": "backspace"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-backspace"
         }
       ]
     }
@@ -1076,6 +1092,10 @@
         {
           "context": "TextInput",
           "keys": "ctrl-c"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-insert"
         }
       ],
       "macos": [
@@ -1088,6 +1108,10 @@
         {
           "context": "TextInput",
           "keys": "ctrl-c"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-insert"
         }
       ]
     }
@@ -1099,6 +1123,10 @@
         {
           "context": "TextInput",
           "keys": "ctrl-x"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-delete"
         }
       ],
       "macos": [
@@ -1111,6 +1139,10 @@
         {
           "context": "TextInput",
           "keys": "ctrl-x"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-delete"
         }
       ]
     }
@@ -1127,6 +1159,10 @@
       "macos": [
         {
           "context": "TextInput",
+          "keys": "ctrl-d"
+        },
+        {
+          "context": "TextInput",
           "keys": "delete"
         }
       ],
@@ -1134,6 +1170,56 @@
         {
           "context": "TextInput",
           "keys": "delete"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::DeleteToLineEnd",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-delete"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-delete"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-k"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-delete"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::DeleteToLineStart",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-backspace"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-backspace"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-backspace"
         }
       ]
     }
@@ -1151,12 +1237,43 @@
         {
           "context": "TextInput",
           "keys": "alt-backspace"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-alt-backspace"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-backspace"
         }
       ],
       "windows": [
         {
           "context": "TextInput",
           "keys": "ctrl-backspace"
+        }
+      ]
+    }
+  },
+  {
+    "action": "text_input::DeleteWordRight",
+    "defaults": {
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-delete"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "alt-delete"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-delete"
         }
       ]
     }
@@ -1219,6 +1336,10 @@
       "macos": [
         {
           "context": "TextInput",
+          "keys": "ctrl-n"
+        },
+        {
+          "context": "TextInput",
           "keys": "down"
         }
       ],
@@ -1240,6 +1361,10 @@
         }
       ],
       "macos": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-b"
+        },
         {
           "context": "TextInput",
           "keys": "left"
@@ -1266,6 +1391,10 @@
         {
           "context": "TextInput",
           "keys": "cmd-right"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-e"
         }
       ],
       "windows": [
@@ -1289,6 +1418,10 @@
         {
           "context": "TextInput",
           "keys": "cmd-left"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-a"
         }
       ],
       "windows": [
@@ -1302,9 +1435,32 @@
   {
     "action": "text_input::Paste",
     "defaults": {
-      "linux": [],
-      "macos": [],
-      "windows": []
+      "linux": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-v"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-insert"
+        }
+      ],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "cmd-v"
+        }
+      ],
+      "windows": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-v"
+        },
+        {
+          "context": "TextInput",
+          "keys": "shift-insert"
+        }
+      ]
     }
   },
   {
@@ -1348,6 +1504,10 @@
         }
       ],
       "macos": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-f"
+        },
         {
           "context": "TextInput",
           "keys": "right"
@@ -1489,6 +1649,10 @@
         {
           "context": "TextInput",
           "keys": "cmd-shift-right"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-e"
         }
       ],
       "windows": [
@@ -1512,6 +1676,10 @@
         {
           "context": "TextInput",
           "keys": "cmd-shift-left"
+        },
+        {
+          "context": "TextInput",
+          "keys": "ctrl-shift-a"
         }
       ],
       "windows": [
@@ -1641,7 +1809,12 @@
     "action": "text_input::Up",
     "defaults": {
       "linux": [],
-      "macos": [],
+      "macos": [
+        {
+          "context": "TextInput",
+          "keys": "ctrl-p"
+        }
+      ],
       "windows": []
     }
   },

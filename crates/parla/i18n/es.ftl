@@ -148,6 +148,7 @@ notification-reminder-title = Recordatorio
 reminder-about-message = Hacer seguimiento de este mensaje
 session-expired-title = Inicia sesión en { $workspace } de nuevo
 session-expired-body = Tu sesión terminó. Haz clic para iniciar sesión.
+notifications-permission-denied = Las notificaciones de Parla están desactivadas en los Ajustes del Sistema. Actívalas en Notificaciones > Parla.
 
 ## Mensajes programados
 schedule-late-title =

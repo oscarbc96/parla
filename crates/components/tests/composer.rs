@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
 use components::{
@@ -61,14 +61,7 @@ impl ComposerSource for Src {
 
 type Events = Rc<RefCell<Vec<ComposerEvent>>>;
 
-fn setup(
-    cx: &mut TestAppContext,
-    caps: Capabilities,
-) -> (Entity<Composer<Src>>, Events, &mut VisualTestContext) {
-    cx.update(|cx| {
-        themes::init_default(cx);
-        components::init(cx);
-    });
+fn composer_source(cx: &mut TestAppContext, caps: Capabilities) -> Entity<Src> {
     let mut state = WorkspaceState::new(WorkspaceKey::new("fake", "w1"), 1000);
     let mut own_old = msg("C1", "1000.000001", "old own");
     own_old.author = Some(uid("u1"));
@@ -98,11 +91,28 @@ fn setup(
         must_join: false,
         joins: Vec::new(),
     });
+    SRC.with(|s| *s.borrow_mut() = Some(src.clone()));
+    src
+}
+
+fn composer(cx: &mut TestAppContext, caps: Capabilities) -> Entity<Composer<Src>> {
+    let src = composer_source(cx, caps);
+    cx.new(|cx| Composer::new(src, cid("C1"), cx))
+}
+
+fn setup(
+    cx: &mut TestAppContext,
+    caps: Capabilities,
+) -> (Entity<Composer<Src>>, Events, &mut VisualTestContext) {
+    cx.update(|cx| {
+        themes::init_default(cx);
+        components::init(cx);
+    });
+    let src = composer_source(cx, caps);
     let (view, vcx) = cx.add_window_view({
         let src = src.clone();
         move |_w, cx| Composer::new(src, cid("C1"), cx)
     });
-    SRC.with(|s| *s.borrow_mut() = Some(src));
     let events: Events = Rc::default();
     let sink = events.clone();
     vcx.update(|w, cx| {
@@ -155,6 +165,63 @@ fn enter_key_is_bound_to_send(cx: &mut TestAppContext) {
             body: ComposedText::plain("hi")
         }]
     );
+}
+
+#[gpui::test]
+fn delete_to_line_start_in_the_composer_never_deletes_the_message(cx: &mut TestAppContext) {
+    // The platform's "delete to line start" key; the timeline binds the
+    // same key to its message delete here, as the macOS keymap does.
+    let key = if cfg!(target_os = "macos") {
+        "cmd-backspace"
+    } else {
+        "ctrl-shift-backspace"
+    };
+    cx.update(|cx| {
+        themes::init_default(cx);
+        components::init(cx);
+    });
+    let comp = composer(cx, edit_caps());
+    let deletes = Rc::new(Cell::new(0));
+    struct InTimeline {
+        composer: Entity<Composer<Src>>,
+        deletes: Rc<Cell<usize>>,
+    }
+    impl gpui::Render for InTimeline {
+        fn render(
+            &mut self,
+            _: &mut gpui::Window,
+            _: &mut gpui::Context<Self>,
+        ) -> impl gpui::IntoElement {
+            use gpui::{InteractiveElement as _, ParentElement as _, Styled as _, div};
+            let deletes = self.deletes.clone();
+            div()
+                .key_context("Timeline")
+                .size_full()
+                .on_action(move |_: &components::timeline::DeleteMessage, _, _| {
+                    deletes.set(deletes.get() + 1);
+                })
+                .child(self.composer.clone())
+        }
+    }
+    let host = InTimeline {
+        composer: comp.clone(),
+        deletes: deletes.clone(),
+    };
+    let (_host, vcx) = cx.add_window_view(move |_w, _| host);
+    vcx.update(|w, cx| {
+        let handle = comp.read(cx).focus_handle(cx);
+        w.focus(&handle, cx);
+        cx.bind_keys([gpui::KeyBinding::new(
+            key,
+            components::timeline::DeleteMessage,
+            Some("Timeline"),
+        )]);
+    });
+    comp.update(vcx, |c, cx| c.set_text("one\ntwo\nthree".into(), cx));
+    vcx.run_until_parked();
+    vcx.simulate_keystrokes(key);
+    assert_eq!(deletes.get(), 0, "the message delete action must not fire");
+    assert_eq!(text(&comp, vcx), "one\ntwo\n");
 }
 
 #[gpui::test]

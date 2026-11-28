@@ -51,6 +51,9 @@ actions!(
         Backspace,
         Delete,
         DeleteWordLeft,
+        DeleteWordRight,
+        DeleteToLineStart,
+        DeleteToLineEnd,
         Cut,
         Copy,
         Paste,
@@ -75,7 +78,9 @@ pub fn init(cx: &mut App) {
         KeyBinding::new("shift-down", SelectDown, c),
         KeyBinding::new("backspace", Backspace, c),
         KeyBinding::new("delete", Delete, c),
+        KeyBinding::new("shift-backspace", Backspace, c),
     ];
+    let mac = cfg!(target_os = "macos");
     // macOS and the other platforms differ only in the modifier names.
     for (word, line, doc, cmd) in [
         ("alt", "cmd", "cmd", "cmd"),
@@ -87,11 +92,14 @@ pub fn init(cx: &mut App) {
             binding(&format!("{word}-shift-left"), SelectWordLeft, c, cx),
             binding(&format!("{word}-shift-right"), SelectWordRight, c, cx),
             binding(&format!("{word}-backspace"), DeleteWordLeft, c, cx),
-            binding(&format!("{cmd}-a"), SelectAll, c, cx),
             binding(&format!("{cmd}-x"), Cut, c, cx),
             binding(&format!("{cmd}-c"), Copy, c, cx),
             binding(&format!("{cmd}-z"), Undo, c, cx),
         ]);
+        // On macOS ctrl-a is the Cocoa "start of line" key, not Select All.
+        if !(mac && cmd == "ctrl") {
+            keys.push(binding(&format!("{cmd}-a"), SelectAll, c, cx));
+        }
         if line != "none" {
             keys.extend([
                 binding(&format!("{line}-left"), LineStart, c, cx),
@@ -116,6 +124,38 @@ pub fn init(cx: &mut App) {
         KeyBinding::new("shift-home", SelectLineStart, c),
         KeyBinding::new("shift-end", SelectLineEnd, c),
     ]);
+    if mac {
+        // The standard Cocoa emacs-style editing keys.
+        keys.extend([
+            KeyBinding::new("ctrl-a", LineStart, c),
+            KeyBinding::new("ctrl-e", LineEnd, c),
+            KeyBinding::new("ctrl-f", Right, c),
+            KeyBinding::new("ctrl-b", Left, c),
+            KeyBinding::new("ctrl-n", Down, c),
+            KeyBinding::new("ctrl-p", Up, c),
+            KeyBinding::new("ctrl-d", Delete, c),
+            KeyBinding::new("ctrl-h", Backspace, c),
+            KeyBinding::new("ctrl-backspace", DeleteWordLeft, c),
+            KeyBinding::new("ctrl-alt-backspace", DeleteWordLeft, c),
+            KeyBinding::new("cmd-backspace", DeleteToLineStart, c),
+            KeyBinding::new("ctrl-shift-a", SelectLineStart, c),
+            KeyBinding::new("ctrl-shift-e", SelectLineEnd, c),
+            KeyBinding::new("alt-delete", DeleteWordRight, c),
+            KeyBinding::new("cmd-delete", DeleteToLineEnd, c),
+            KeyBinding::new("ctrl-k", DeleteToLineEnd, c),
+            KeyBinding::new("cmd-v", Paste, c),
+        ]);
+    } else {
+        keys.extend([
+            KeyBinding::new("ctrl-delete", DeleteWordRight, c),
+            KeyBinding::new("shift-delete", Cut, c),
+            KeyBinding::new("ctrl-insert", Copy, c),
+            KeyBinding::new("shift-insert", Paste, c),
+            KeyBinding::new("ctrl-shift-backspace", DeleteToLineStart, c),
+            KeyBinding::new("ctrl-shift-delete", DeleteToLineEnd, c),
+            KeyBinding::new("ctrl-v", Paste, c),
+        ]);
+    }
     cx.bind_keys(keys);
 }
 
@@ -604,6 +644,59 @@ impl TextInput {
         self.delete_range(r, cx);
     }
 
+    fn delete_word_right(&mut self, cx: &mut Context<Self>) {
+        let s = self.buf.selection();
+        let r = if s.is_empty() && self.masked {
+            s.head..self.buf.text().len()
+        } else if s.is_empty() {
+            s.head..self.buf.word_right(s.head)
+        } else {
+            s.range()
+        };
+        self.delete_range(r, cx);
+    }
+
+    /// Start or end of the visual row holding the caret (the hard line when
+    /// nothing wraps), the same edge [`Self::line_edge`] uses.
+    fn caret_row_edge(&self, end: bool) -> usize {
+        let h = self.buf.selection().head;
+        match self.wrapped_layout() {
+            Some(l) => l.row_edge(h, end, self.caret_upstream()).0,
+            None if end => self.buf.line_end(h),
+            None => self.buf.line_start(h),
+        }
+    }
+
+    fn delete_to_line_start(&mut self, cx: &mut Context<Self>) {
+        let s = self.buf.selection();
+        if !s.is_empty() {
+            self.delete_range(s.range(), cx);
+            return;
+        }
+        let start = self.caret_row_edge(false);
+        let r = if start == s.head {
+            self.buf.prev_boundary(s.head)..s.head
+        } else {
+            start..s.head
+        };
+        self.delete_range(r, cx);
+    }
+
+    fn delete_to_line_end(&mut self, cx: &mut Context<Self>) {
+        let s = self.buf.selection();
+        if !s.is_empty() {
+            self.delete_range(s.range(), cx);
+            return;
+        }
+        let end = self.caret_row_edge(true);
+        let r = if end == s.head {
+            s.head..self.buf.next_boundary(s.head)
+        } else {
+            s.head..end
+        };
+        self.delete_range(r, cx);
+    }
+
     fn selected_text(&self) -> Option<String> {
         let r = self.buf.selection().range();
         (!r.is_empty()).then(|| self.buf.text()[r].to_string())
@@ -876,6 +969,9 @@ impl Render for TextInput {
             Backspace => |t, cx| t.backspace(cx),
             Delete => |t, cx| t.delete_forward(cx),
             DeleteWordLeft => |t, cx| t.delete_word_left(cx),
+            DeleteWordRight => |t, cx| t.delete_word_right(cx),
+            DeleteToLineStart => |t, cx| t.delete_to_line_start(cx),
+            DeleteToLineEnd => |t, cx| t.delete_to_line_end(cx),
             Cut => |t, cx| t.cut(cx),
             Copy => |t, cx| t.copy(cx),
             Paste => |t, cx| t.paste(cx),
