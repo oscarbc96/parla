@@ -23,10 +23,17 @@ describe("classify", () => {
     expect(classify(["site/bun.lock"])).toMatchObject({ rust: false, deps: true });
   });
   test("package inputs gate the CI packaging job", () => {
-    expect(classify(["crates/parla/src/main.rs"])).toMatchObject({ rust: true, package: true });
+    expect(classify(["crates/parla/src/main.rs"])).toMatchObject({ rust: true, package: false });
+    expect(classify(["crates/parla/Cargo.toml"])).toMatchObject({ package: true });
+    expect(classify(["crates/parla/build.rs"])).toMatchObject({ package: true });
+    expect(classify(["crates/parla/macos/Info.plist"])).toMatchObject({ package: true });
+    expect(classify(["assets/icons/app/icon-32.png"])).toMatchObject({ package: true });
+    expect(classify(["Cargo.lock"])).toMatchObject({ package: true });
+    expect(classify([".github/workflows/release-build.yml"])).toMatchObject({ package: true });
     expect(classify(["mise-tasks/release/app"])).toMatchObject({ rust: true, package: true });
     expect(classify(["Cargo.toml"])).toMatchObject({ rust: true, deps: true, package: true });
     expect(classify(["mise.toml"])).toMatchObject({ rust: true, site: true, package: true });
+    expect(classify(["crates/components/src/lib.rs"])).toMatchObject({ package: false });
   });
   test("renovate.json runs the repo checks, not the Rust jobs", () => {
     expect(classify(["renovate.json"])).toMatchObject({ rust: false, site: true });

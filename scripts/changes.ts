@@ -10,8 +10,10 @@
  * `--all` marks every part changed (CI uses it for pushes to main: a pending
  * main run can be replaced by a newer one, so each main run checks everything).
  *
- * Outputs: rust, site, deps, package ("true" or "false"). An empty or
- * unreadable diff, or a path nobody claims, runs the Rust checks (fail safe).
+ * Outputs: rust, site, deps, package ("true" or "false"). `package` marks the
+ * inputs of packaging (the app bundle, its icons, the release tasks and the
+ * release workflows), not app source. An empty or unreadable diff, or a path
+ * nobody claims, runs the Rust checks (fail safe).
  */
 import { appendFileSync } from "node:fs";
 import { git as libGit } from "./lib";
@@ -58,6 +60,24 @@ const isSite = (f: string) =>
   /^crates\/.*\/i18n\//.test(f) ||
   starts(f, "i18n/");
 
+/** Inputs of packaging; source changes are covered by the Rust jobs, and every push to main still runs the package job (`--all`). */
+const isPackage = (f: string) =>
+  starts(
+    f,
+    "crates/parla/macos/",
+    "assets/icons/app/",
+    "mise-tasks/release/",
+    ".github/actions/",
+  ) ||
+  f === "crates/parla/Cargo.toml" ||
+  f === "crates/parla/build.rs" ||
+  f === "Cargo.toml" ||
+  f === "Cargo.lock" ||
+  f === "mise.toml" ||
+  f === ".github/workflows/ci.yml" ||
+  f === ".github/workflows/release.yml" ||
+  f === ".github/workflows/release-build.yml";
+
 export function classify(files: string[]): Changes {
   if (files.length === 0) return { ...ALL };
   const out = { ...NONE };
@@ -65,14 +85,7 @@ export function classify(files: string[]): Changes {
     if (isRust(f)) out.rust = true;
     if (isSite(f)) out.site = true;
     if (/(^|\/)(Cargo\.toml|Cargo\.lock|deny\.toml|bun\.lock|package\.json)$/.test(f)) out.deps = true;
-    if (
-      starts(f, "crates/parla/", "mise-tasks/release/") ||
-      f === "Cargo.toml" ||
-      f === "mise.toml" ||
-      f === ".github/workflows/ci.yml" ||
-      f === ".github/workflows/release.yml" ||
-      starts(f, ".github/actions/")
-    ) out.package = true;
+    if (isPackage(f)) out.package = true;
   }
   return out;
 }
