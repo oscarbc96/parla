@@ -872,7 +872,7 @@ dependencies = [
 
 [[package]]
 name = "calls"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "block2 0.6.2",
  "chime_signal",
@@ -1007,7 +1007,7 @@ dependencies = [
 
 [[package]]
 name = "chime_signal"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "prost",
  "prost-build",
@@ -1191,7 +1191,7 @@ dependencies = [
 
 [[package]]
 name = "components"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "dirs 7.0.0",
  "domain",
@@ -2043,7 +2043,7 @@ dependencies = [
 
 [[package]]
 name = "domain"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "domain",
  "futures",
@@ -4074,7 +4074,7 @@ dependencies = [
 
 [[package]]
 name = "i18n"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "fixed_decimal",
  "fluent-bundle",
@@ -5312,7 +5312,7 @@ dependencies = [
 
 [[package]]
 name = "mcp"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "base64 0.23.1",
  "domain",
@@ -6611,7 +6611,7 @@ dependencies = [
 
 [[package]]
 name = "parla"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "anyhow",
  "auto-launch",
@@ -6666,7 +6666,7 @@ dependencies = [
 
 [[package]]
 name = "parla_plugin_api"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "wit-parser",
 ]
@@ -7014,7 +7014,7 @@ dependencies = [
 
 [[package]]
 name = "plugin_host"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "domain",
  "flate2",
@@ -7751,7 +7751,7 @@ dependencies = [
 
 [[package]]
 name = "recon"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "clap",
  "redact",
@@ -7773,7 +7773,7 @@ checksum = "d3edd4d5d42c92f0a659926464d4cce56b562761267ecf0f469d85b7de384175"
 
 [[package]]
 name = "redact"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "regex",
  "serde",
@@ -8586,7 +8586,7 @@ dependencies = [
 
 [[package]]
 name = "settings"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "dirs 7.0.0",
  "gpui-fast",
@@ -8737,7 +8737,7 @@ checksum = "0c790de23124f9ab44544d7ac05d60440adc586479ce501c1d6d7da3cd8c9cf5"
 
 [[package]]
 name = "slack"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "chime_signal",
  "components",
@@ -8767,7 +8767,7 @@ dependencies = [
 
 [[package]]
 name = "slack_api"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "backon",
  "futures",
@@ -8792,7 +8792,7 @@ dependencies = [
 
 [[package]]
 name = "slack_auth"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "block2 0.6.2",
  "cookie",
@@ -8818,7 +8818,7 @@ dependencies = [
 
 [[package]]
 name = "slack_markup"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "domain",
  "emojis",
@@ -8830,7 +8830,7 @@ dependencies = [
 
 [[package]]
 name = "slack_realtime"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "backon",
  "futures",
@@ -8849,7 +8849,7 @@ dependencies = [
 
 [[package]]
 name = "slack_recon"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "recon",
  "slack_redact",
@@ -8858,7 +8858,7 @@ dependencies = [
 
 [[package]]
 name = "slack_redact"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "recon",
  "redact",
@@ -9103,7 +9103,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "store"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "domain",
  "futures",
@@ -9115,7 +9115,7 @@ dependencies = [
 
 [[package]]
 name = "store_sqlite"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "domain",
  "futures",
@@ -9511,7 +9511,7 @@ dependencies = [
 
 [[package]]
 name = "themes"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "anyhow",
  "gpui-base",
@@ -10046,7 +10046,7 @@ dependencies = [
 
 [[package]]
 name = "ui_testing"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "anyhow",
  "components",
@@ -11781,7 +11781,7 @@ dependencies = [
 
 [[package]]
 name = "write_confirm"
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
  "domain",
  "futures",
