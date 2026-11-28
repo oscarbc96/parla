@@ -162,8 +162,14 @@ fn enter_key_is_bound_to_send(cx: &mut TestAppContext) {
 }
 
 #[gpui::test]
-#[cfg(target_os = "macos")]
-fn cmd_backspace_in_the_composer_never_deletes_the_message(cx: &mut TestAppContext) {
+fn delete_to_line_start_in_the_composer_never_deletes_the_message(cx: &mut TestAppContext) {
+    // The platform's "delete to line start" key; the timeline binds the
+    // same key to its message delete here, as the macOS keymap does.
+    let key = if cfg!(target_os = "macos") {
+        "cmd-backspace"
+    } else {
+        "ctrl-shift-backspace"
+    };
     cx.update(|cx| {
         themes::init_default(cx);
         components::init(cx);
@@ -200,14 +206,14 @@ fn cmd_backspace_in_the_composer_never_deletes_the_message(cx: &mut TestAppConte
         let handle = comp.read(cx).focus_handle(cx);
         w.focus(&handle, cx);
         cx.bind_keys([gpui::KeyBinding::new(
-            "cmd-backspace",
+            key,
             components::timeline::DeleteMessage,
             Some("Timeline"),
         )]);
     });
     comp.update(vcx, |c, cx| c.set_text("one\ntwo\nthree".into(), cx));
     vcx.run_until_parked();
-    vcx.simulate_keystrokes("cmd-backspace");
+    vcx.simulate_keystrokes(key);
     assert_eq!(deletes.get(), 0, "the message delete action must not fire");
     assert_eq!(text(&comp, vcx), "one\ntwo\n");
 }

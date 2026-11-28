@@ -1,7 +1,9 @@
 //! Standard text-field editing keys: delete to line start and end, word
 //! right, Cocoa control keys and insert-key clipboard keys.
 
-use components::text_input::{Selection, TextInput};
+#[cfg(target_os = "macos")]
+use components::text_input::Selection;
+use components::text_input::TextInput;
 use gpui::{Entity, TestAppContext, VisualTestContext};
 
 fn setup(cx: &mut TestAppContext) -> (Entity<TextInput>, &mut VisualTestContext) {
@@ -21,6 +23,7 @@ fn text(i: &Entity<TextInput>, vcx: &mut VisualTestContext) -> String {
     i.read_with(vcx, |t, _| t.text().to_string())
 }
 
+#[cfg(target_os = "macos")]
 fn sel(i: &Entity<TextInput>, vcx: &mut VisualTestContext) -> Selection {
     i.read_with(vcx, |t, _| t.selection())
 }
