@@ -18,8 +18,8 @@ pub fn safari_user_agent(os_major: u32) -> String {
     )
 }
 
-/// Major macOS version from `sw_vers`, or 26 when it cannot be read.
-#[cfg(target_os = "macos")]
+/// Major macOS version from `sw_vers`, or 26 when it cannot be read (always
+/// 26 off macOS, where `sw_vers` does not exist).
 pub fn os_major() -> u32 {
     std::process::Command::new("sw_vers")
         .arg("-productVersion")
