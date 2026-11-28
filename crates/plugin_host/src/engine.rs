@@ -18,6 +18,7 @@ use wasmtime::component::{Component, Func, Instance, Linker, Val};
 use wasmtime::{Config, Engine, Store, Strategy};
 
 use crate::cache::{CacheError, PrecompileCache};
+use crate::context::PluginContext;
 use crate::epoch::{EpochTicker, InFlight, TICK};
 use crate::limits::MemoryLimiter;
 use crate::linker::{self, PluginState};
@@ -180,17 +181,27 @@ impl PluginEngine {
     }
 
     /// A new instance in its own store, capped at `memory_mb` (manifest
-    /// value; `None` is the default 16 MiB).
+    /// value; `None` is the default 16 MiB), with an empty grant and a
+    /// backend that refuses every call. The app uses
+    /// [`instantiate_with`](Self::instantiate_with) instead.
     pub async fn instantiate(
         &self,
         component: &Component,
         memory_mb: Option<u32>,
     ) -> Result<PluginInstance, EngineError> {
+        self.instantiate_with(component, PluginContext::with_memory(memory_mb))
+            .await
+    }
+
+    /// A new instance in its own store for `context`: its grant, manifest,
+    /// backend and memory cap.
+    pub async fn instantiate_with(
+        &self,
+        component: &Component,
+        context: PluginContext,
+    ) -> Result<PluginInstance, EngineError> {
         let parts = self.parts()?;
-        let mut store = Store::new(
-            &parts.engine,
-            PluginState::new(MemoryLimiter::new(memory_mb)),
-        );
+        let mut store = Store::new(&parts.engine, PluginState::with_context(context));
         store.limiter(|s| &mut s.limiter);
         store.epoch_deadline_trap();
         // Start functions run during instantiation: bound them too.
@@ -292,6 +303,11 @@ impl PluginInstance {
             .instance
             .get_export_index(&mut self.store, Some(&iface), name)?;
         self.instance.get_func(&mut self.store, func)
+    }
+
+    /// The instance's grant.
+    pub fn grant(&self) -> &std::sync::Arc<crate::caps::Grant> {
+        self.store.data().grant()
     }
 
     /// True after a trap: drop this instance and make a new one.

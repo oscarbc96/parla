@@ -33,12 +33,14 @@ use themes::{ActiveTheme as _, Appearance, ThemeRegistry, metrics};
 mod accounts_page;
 mod advanced_page;
 mod calls_page;
+mod gif_page;
 mod keymap_page;
 mod mcp_page;
 
 pub use accounts_page::{CACHE_MB_STEPS, PrivacyChange, RETENTION_STEPS, StorageChange};
 pub use advanced_page::{AdvancedChange, IMAGE_CACHE_STEPS, LEAN_STEPS, MESSAGE_WINDOW_STEPS};
 pub use calls_page::{CallsChange, RINGTONE_CHIME, RINGTONE_NONE};
+pub use gif_page::GifChange;
 pub use mcp_page::{McpChange, McpWorkspaceField, mcp_client_config};
 
 /// A page of the Settings window, in the order of the navigation.
@@ -535,6 +537,10 @@ pub struct SettingsView {
     /// Why the last edit did not reach the file, shown above the page.
     error: Option<String>,
     inputs: Option<Inputs>,
+    /// The Plugins page's API key fields, made on first use.
+    gifs: Option<gif_page::GifUi>,
+    /// The Plugins page asked the secret store for the key names.
+    gifs_primed: bool,
     /// The Keymap page's search, recording and filter, made on first use.
     keymap: Option<keymap_page::KeymapUi>,
     /// Copy client config was pressed on this visit of the MCP page.
@@ -586,6 +592,8 @@ impl SettingsView {
             pending: Vec::new(),
             error: None,
             inputs: None,
+            gifs: None,
+            gifs_primed: false,
             keymap: None,
             copied: false,
             workspaces_sub: None,
@@ -2257,6 +2265,7 @@ impl Render for SettingsView {
             Page::Workspaces | Page::Privacy => self.accounts_page(&l, cx),
             Page::Calls => self.calls_page(window, &l, cx),
             Page::Mcp => self.mcp_page(&l, cx),
+            Page::Plugins => self.plugins_page(window, &l, cx),
             Page::Advanced => self.advanced_page(&l, cx),
             other => self.placeholder(other, &l, cx),
         };

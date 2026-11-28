@@ -8,6 +8,10 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
+[features]
+# The in-memory host backend, for tests and fixtures.
+test-support = []
+
 # Exact pins: wasmtime 48 is the LTS line.
 # No `parallel-compilation` feature (M8 A1 spike: it saves 0.17 s per
 # compile but costs +45 MB and leaves 12 threads running). `cranelift` is
@@ -15,6 +19,7 @@ path = "src/lib.rs"
 [dependencies]
 domain = { path = "../domain" }
 flate2 = "1"
+futures.workspace = true
 semver.workspace = true
 serde.workspace = true
 serde_json.workspace = true
@@ -38,6 +43,8 @@ wasmtime-wasi-io = { version = "=48.0.10", default-features = false, features = 
 
 [dev-dependencies]
 futures.workspace = true
+# The host API and media tests use the scripted in-memory backend.
+plugin_host = { path = ".", features = ["test-support"] }
 serde_json.workspace = true
 tokio = { workspace = true, features = ["rt", "time"] }
 wasm-encoder = "0.254"

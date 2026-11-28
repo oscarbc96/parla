@@ -127,6 +127,7 @@ fn shipped_defaults_are_valid() {
                 + 2
                 + 9
                 + 1 // send later
+                + 1 // GIF picker
                 + 1
                 + 1
                 + 11

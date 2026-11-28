@@ -462,6 +462,45 @@ impl MediaFetcher for IconFetcher {
                 .map_err(|_| MediaError::Decode);
             return Box::pin(std::future::ready(r));
         }
+        let gif = match src {
+            ImageRef::Web(u) => u.strip_prefix("https://gifs.example.test/"),
+            ImageRef::Provider(u) => u.0.strip_prefix("https://gifs.example.test/"),
+        };
+        if let Some(id) = gif {
+            // GIF tiles: a flat picture with two diagonal bands and a disc, a
+            // different colour per id, so a tile's crop and its rounded edge show.
+            let hue = id
+                .bytes()
+                .fold(3u32, |h, b| h.wrapping_mul(37) ^ u32::from(b))
+                % 4;
+            let (bg, band, fg) = match hue {
+                0 => ([40, 60, 120], [90, 130, 220], [235, 240, 255]),
+                1 => ([110, 50, 70], [200, 100, 130], [255, 235, 240]),
+                2 => ([30, 90, 80], [70, 180, 160], [230, 255, 250]),
+                _ => ([120, 90, 30], [220, 180, 80], [255, 250, 230]),
+            };
+            let img = RgbaImage::from_fn(96, 72, |x, y| {
+                let disc = {
+                    let (dx, dy) = (x as i32 - 48, y as i32 - 36);
+                    dx * dx + dy * dy < 400
+                };
+                let stripe = ((x as i32 + y as i32) / 12) % 2 == 0;
+                let c = if disc {
+                    fg
+                } else if stripe {
+                    band
+                } else {
+                    bg
+                };
+                image::Rgba([c[0], c[1], c[2], 255])
+            });
+            let mut out = std::io::Cursor::new(Vec::new());
+            let r = img
+                .write_to(&mut out, image::ImageFormat::Png)
+                .map(|()| out.into_inner())
+                .map_err(|_| MediaError::Decode);
+            return Box::pin(std::future::ready(r));
+        }
         let img = RgbaImage::from_fn(72, 72, |x, y| {
             let on_ring = {
                 let (dx, dy) = (x as f32 - 36.0, y as f32 - 36.0);
@@ -624,6 +663,13 @@ impl Stage {
             }
             if d.emoji_picker {
                 composer.update(cx, |c, cx| c.toggle_emoji_picker(window, cx));
+            }
+            if let Some(g) = &d.gif_picker {
+                // The scripted provider tab(s) answer the trending load at once.
+                let fake = components::gif_picker::fake::FakeGifSource::new(g.tabs.clone())
+                    .with_answer(Ok(g.page.clone()));
+                cx.set_global(components::gif_picker::GifSources(Arc::new(fake)));
+                composer.update(cx, |c, cx| c.toggle_gif_picker(window, cx));
             }
             if let Some(text) = &d.snippet_paste {
                 composer.update(cx, |c, cx| c.offer_snippet(text.clone(), window, cx));
@@ -827,7 +873,10 @@ impl Stage {
                 }
             });
         }
-        if s.chrome.is_some() || s.people.is_some() {
+        if s.chrome.is_some()
+            || s.people.is_some()
+            || s.draft.as_ref().is_some_and(|d| d.gif_picker.is_some())
+        {
             let dir = std::env::temp_dir().join(format!("parla-ui-testing-{}", std::process::id()));
             cx.set_global(ImageCache::new(Arc::new(IconFetcher), dir, 8 << 20));
         }

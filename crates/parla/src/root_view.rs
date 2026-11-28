@@ -3293,7 +3293,10 @@ impl RootView {
             return true;
         }
         // Text input and picker actions are internal to their widgets.
-        if name.starts_with("text_input::") || name.starts_with("picker::") {
+        if name.starts_with("text_input::")
+            || name.starts_with("picker::")
+            || name.starts_with("gif_picker::")
+        {
             return true;
         }
         // GPUI Base primitives' own actions (registered by `gpui_base::init`).

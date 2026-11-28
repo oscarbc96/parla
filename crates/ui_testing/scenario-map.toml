@@ -19,6 +19,10 @@ glob = "crates/components/src/{format_toolbar,slash_menu,send_later,datetime_pic
 scenarios = ["composer_*", "emoji_picker_open"]
 
 [[map]]
+glob = "crates/components/src/{gif_picker,gif_picker/**.rs}"
+scenarios = ["gif_picker_*"]
+
+[[map]]
 glob = "crates/components/src/{timeline,message_row,rich_text,reactions,message_actions}.rs"
 scenarios = ["timeline_*", "reactions", "message_actions_menu", "long_names", "unresolved_names", "thread_open", "dm_header", "dm_intro", "people_directory*"]
 

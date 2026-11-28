@@ -394,7 +394,7 @@ fn the_source_badge_names_where_a_command_comes_from(cx: &mut TestAppContext) {
         components::init(cx);
     });
     assert!(
-        entries(&all_caps(), "")
+        cx.update(|cx| entries(&all_caps(), "", cx))
             .iter()
             .all(|e| e.source == SlashSource::Builtin)
     );

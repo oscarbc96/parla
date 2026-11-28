@@ -1,0 +1,97 @@
+{
+  "data": [
+    {
+      "type": "gif",
+      "id": "synthAlpha01",
+      "slug": "synthetic-hello-alpha",
+      "url": "https://giphy.com/gifs/synthetic-hello-alpha",
+      "title": "Synthetic hello",
+      "alt_text": "A synthetic wave",
+      "rating": "g",
+      "username": "synthetic",
+      "images": {
+        "fixed_width_small": {
+          "url": "https://media.giphy.com/media/synthAlpha01/100w.gif",
+          "width": "100",
+          "height": "71",
+          "size": "12000"
+        },
+        "fixed_width": {
+          "url": "https://media1.giphy.com/media/synthAlpha01/200w.gif",
+          "width": "200",
+          "height": "142",
+          "size": "30000"
+        },
+        "original": {
+          "url": "https://media0.giphy.com/media/synthAlpha01/giphy.gif",
+          "width": "480",
+          "height": "340",
+          "size": "180000"
+        },
+        "downsized": {
+          "url": "https://i.giphy.com/media/synthAlpha01/downsized.gif",
+          "width": "320",
+          "height": "227",
+          "size": "90000"
+        }
+      }
+    },
+    {
+      "type": "gif",
+      "id": "synthBeta02",
+      "slug": "synthetic-beta-two",
+      "url": "https://giphy.com/gifs/synthetic-beta-two",
+      "title": "",
+      "alt_text": "Synthetic beta alt",
+      "rating": "pg-13",
+      "username": "synthetic",
+      "images": {
+        "fixed_width": {
+          "url": "https://media2.giphy.com/media/synthBeta02/200w.gif",
+          "width": "220",
+          "height": "150",
+          "size": "35000"
+        },
+        "original": {},
+        "downsized": {
+          "url": "https://i.giphy.com/media/synthBeta02/downsized.gif",
+          "width": "300",
+          "height": "205",
+          "size": "95000"
+        }
+      }
+    },
+    {
+      "type": "gif",
+      "id": "synthGamma03",
+      "slug": "synthetic-gamma-three",
+      "url": "https://giphy.com/gifs/synthetic-gamma-three",
+      "title": "Synthetic gamma",
+      "alt_text": "",
+      "rating": "g",
+      "username": "synthetic",
+      "images": {
+        "fixed_width_small": {
+          "url": "https://media3.giphy.com/media/synthGamma03/100w.gif",
+          "width": "100",
+          "height": "100",
+          "size": "8000"
+        },
+        "original": {
+          "url": "https://media4.giphy.com/media/synthGamma03/giphy.gif",
+          "size": "70000"
+        }
+      }
+    }
+  ],
+  "pagination": {
+    "total_count": 10,
+    "count": 3,
+    "offset": 0
+  },
+  "meta": {
+    "status": 200,
+    "msg": "OK",
+    "response_id": "synthetic-search"
+  }
+}

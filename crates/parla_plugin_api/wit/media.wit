@@ -5,6 +5,8 @@
 interface media-provider {
   use types.{error, cursor};
 
+  /// Ratings are ordered `g` < `pg` < `pg13` < `r`; `unrated` means the
+  /// source gave no rating.
   enum content-rating { g, pg, pg13, r, unrated }
 
   record media-item {
@@ -25,8 +27,10 @@ interface media-provider {
   record media-page { items: list<media-item>, next: cursor }
 
   /// `id` is the manifest's `[[media]]` id; `query` at most 256 bytes;
-  /// `limit` 1 to 50.
-  media-search: func(id: string, query: string, cursor: cursor, limit: u32) -> result<media-page, error>;
-  media-trending: func(id: string, cursor: cursor, limit: u32) -> result<media-page, error>;
+  /// `limit` 1 to 50; `max-rating` is the user's limit; return nothing
+  /// rated above it.
+  media-search: func(id: string, query: string, cursor: cursor, limit: u32, max-rating: content-rating) -> result<media-page, error>;
+  /// `max-rating` is the user's limit; return nothing rated above it.
+  media-trending: func(id: string, cursor: cursor, limit: u32, max-rating: content-rating) -> result<media-page, error>;
   media-resolve: func(id: string, item-id: string) -> result<media-item, error>;
 }

@@ -14,9 +14,9 @@ or click the Settings button at the bottom of the workspace rail. Parla has one
 Settings window; the shortcut brings it to the front if it is already open.
 
 The pages are General, Appearance, Notifications, Keymap, Workspaces, Privacy and
-storage, Calls, AI, Plugins, MCP and Advanced. AI and Plugins do not have controls
-yet; they point you to `settings.json`. Workspaces and Privacy and storage show
-the same page.
+storage, Calls, AI, Plugins, MCP and Advanced. AI does not have controls yet; it
+points you to `settings.json`. Workspaces and Privacy and storage show the same
+page.
 
 Every control writes its key into `settings.json` with a comment-preserving edit,
 so the running app applies it like a hand edit. If the file is rejected, for
@@ -124,6 +124,21 @@ encrypted store and saved sign-ins. Your settings stay.
 
 Cache limit and retention apply the next time Parla starts. The other privacy
 controls apply at once.
+
+## GIF search
+
+Settings, Plugins has the built-in GIF providers. Parla ships GIPHY and KLIPY;
+nothing runs and nothing leaves your computer until you paste an API key and turn
+the provider on. The key is stored in the system keychain (in a debug build, in
+the development credentials file), never in `settings.json`. The page lists the
+hosts a provider talks to and links to where you get a key.
+
+| Key                    | What it does                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `gifs.providers`       | The provider tabs, in order. Ids that are not built in are skipped           |
+| `plugins.<id>.enabled` | Whether provider `<id>` runs. The built-in providers start off               |
+| `gifs.rating`          | Highest rating to show: `g`, `pg`, `pg-13` or `r`                            |
+| `gifs.send_as`         | `link` sends the GIF's address; `upload` downloads it and sends it as a file |
 
 ## AI and MCP
 

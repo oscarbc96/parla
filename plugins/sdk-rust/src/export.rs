@@ -86,6 +86,7 @@ pub trait Plugin {
         query: String,
         cursor: Option<String>,
         limit: u32,
+        max_rating: media::ContentRating,
     ) -> Result<media::MediaPage, Error> {
         Err(Error::Unsupported)
     }
@@ -94,6 +95,7 @@ pub trait Plugin {
         id: String,
         cursor: Option<String>,
         limit: u32,
+        max_rating: media::ContentRating,
     ) -> Result<media::MediaPage, Error> {
         Err(Error::Unsupported)
     }
@@ -199,15 +201,17 @@ impl<T: Plugin> media::Guest for T {
         query: String,
         cursor: Option<String>,
         limit: u32,
+        max_rating: media::ContentRating,
     ) -> Result<media::MediaPage, Error> {
-        <T as Plugin>::media_search(id, query, cursor, limit)
+        <T as Plugin>::media_search(id, query, cursor, limit, max_rating)
     }
     fn media_trending(
         id: String,
         cursor: Option<String>,
         limit: u32,
+        max_rating: media::ContentRating,
     ) -> Result<media::MediaPage, Error> {
-        <T as Plugin>::media_trending(id, cursor, limit)
+        <T as Plugin>::media_trending(id, cursor, limit, max_rating)
     }
     fn media_resolve(id: String, item_id: String) -> Result<media::MediaItem, Error> {
         <T as Plugin>::media_resolve(id, item_id)

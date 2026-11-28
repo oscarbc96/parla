@@ -14,6 +14,9 @@ use themes::{ActiveTheme, metrics};
 use crate::completion::{Completion, CompletionKind, detect};
 use crate::files::{StagedFile, StagedState};
 use crate::format_toolbar::{Format, format_edit};
+use crate::gif_picker::{
+    GifItem, GifPickMode, GifPicked, GifPicker as GifPickerView, GifPickerDismissed,
+};
 use crate::keys::binding;
 use crate::send_later::SendLaterRow;
 use crate::slash_menu::{self, SlashEntry};
@@ -42,7 +45,8 @@ actions!(
         BulletList,
         NumberedList,
         Link,
-        SendLater
+        SendLater,
+        GifPicker
     ]
 );
 
@@ -223,6 +227,7 @@ pub fn init(cx: &mut App) {
         binding(&format!("{m}-shift-8"), BulletList, Some(KEY_CONTEXT), cx),
         binding(&format!("{m}-shift-7"), NumberedList, Some(KEY_CONTEXT), cx),
         binding(&format!("{m}-shift-u"), Link, Some(KEY_CONTEXT), cx),
+        binding(&format!("{m}-shift-g"), GifPicker, Some(KEY_CONTEXT), cx),
     ];
     cx.bind_keys(format_keys);
 }
@@ -317,6 +322,19 @@ pub trait ComposerSource {
         _text: Option<String>,
         _cx: &mut App,
     ) {
+    }
+    /// Sends the picked GIF as an uploaded file (`gifs.send_as = upload`);
+    /// `send` is false when it goes into the draft instead. Returns whether the
+    /// session took it: the default is false, and the composer sends the link.
+    fn send_gif_upload(
+        &mut self,
+        _c: ConversationId,
+        _thread: Option<MessageTs>,
+        _item: &GifItem,
+        _send: bool,
+        _cx: &mut App,
+    ) -> bool {
+        false
     }
     /// Rows for the `@`, `#` and `:` pickers matching `query`, best first.
     fn completions(&self, _kind: CompletionKind, _query: &str) -> Vec<Completion> {
@@ -438,11 +456,14 @@ pub struct Composer<S: ComposerSource + 'static> {
     send_later: Option<SendLaterState>,
     /// The emoji picker opened by the emoji button.
     emoji_picker: Option<Entity<crate::emoji_picker::EmojiPicker>>,
+    /// The GIF picker opened by the GIF button or `/gif`.
+    gif_picker: Option<Entity<GifPickerView>>,
     /// An outside click just closed the picker (so the click on its button does not reopen it).
     picker_just_closed: bool,
     /// The text the edit started from, to leave the message alone when nothing changed.
     edit_original: Option<ComposedText>,
     _picker_subs: Vec<Subscription>,
+    _gif_subs: Vec<Subscription>,
     /// Move focus back to the text field on the next frame.
     refocus: bool,
     /// The Join of a channel the user is not in; it takes the focus while
@@ -556,9 +577,11 @@ impl<S: ComposerSource + 'static> Composer<S> {
             key_context: Self::key_context(crate::live_settings::send_key(cx)),
             send_later: None,
             emoji_picker: None,
+            gif_picker: None,
             picker_just_closed: false,
             edit_original: None,
             _picker_subs: Vec::new(),
+            _gif_subs: Vec::new(),
             refocus: false,
             join_focus: cx.focus_handle(),
             join_shown: false,
@@ -683,8 +706,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn paste(&mut self, _: &Paste, window: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         let Some(item) = cx.read_from_clipboard() else {
@@ -1177,7 +1200,7 @@ impl<S: ComposerSource + 'static> Composer<S> {
         }
         let restored = std::mem::take(&mut self.quiet_slash);
         let items = match &query {
-            Some(q) => slash_menu::entries(self.session.read(cx).capabilities(), q),
+            Some(q) => slash_menu::entries(self.session.read(cx).capabilities(), q, cx),
             None => Vec::new(),
         };
         if query.is_none() || items.is_empty() {
@@ -1277,8 +1300,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         // Tab moves between the custom date and time fields.
@@ -1296,8 +1319,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn format_action(&mut self, f: Format, window: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         if self.focused_field(window, cx).is_some() {
@@ -1308,8 +1331,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn link_action(&mut self, _: &Link, window: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         self.begin_link(window, cx);
@@ -1507,8 +1530,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn toggle_broadcast(&mut self, _: &ToggleBroadcast, _: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         if self.reply_root.is_some() {
@@ -1531,6 +1554,7 @@ impl<S: ComposerSource + 'static> Composer<S> {
             self.send_later = None;
             self.emoji_picker = None;
             self._picker_subs.clear();
+            self.close_gif_picker(cx);
             self.popup = None;
             self.dismissed = None;
             self.slash = None;
@@ -1631,6 +1655,185 @@ impl<S: ComposerSource + 'static> Composer<S> {
         self.session.update(cx, |s, cx| s.emoji_used(e, cx));
         self.refocus = true;
         cx.notify();
+    }
+
+    /// Whether the emoji or GIF picker has the focus.
+    fn picker_open(&self) -> bool {
+        self.emoji_picker.is_some() || self.gif_picker.is_some()
+    }
+
+    /// Whether the GIF button shows: a source is installed, the composer is
+    /// composing (not editing) and, in upload mode, the provider takes files.
+    fn gif_button_shown(&self, cx: &App) -> bool {
+        if self.editing.is_some() || !crate::gif_picker::enabled(cx) {
+            return false;
+        }
+        let upload = cx
+            .try_global::<settings::SettingsStore>()
+            .is_some_and(|s| s.current().gifs.send_as == settings::GifSendAs::Upload);
+        !upload || self.session.read(cx).capabilities().files
+    }
+
+    /// The GIF picker, while it is open.
+    pub fn gif_picker(&self) -> Option<&Entity<GifPickerView>> {
+        self.gif_picker.as_ref()
+    }
+
+    /// Opens the GIF picker, or closes it when it is open.
+    pub fn toggle_gif_picker(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if self.gif_picker.take().is_some() {
+            self._gif_subs.clear();
+            crate::gif_picker::notify_closed(cx);
+            self.refocus = true;
+            cx.notify();
+            return;
+        }
+        self.open_gif_picker(window, None, cx);
+    }
+
+    /// Opens the GIF picker on the active provider tab, closing the emoji one.
+    /// `query` pre-fills the search (`/gif <query>`).
+    fn open_gif_picker(
+        &mut self,
+        window: &mut Window,
+        query: Option<String>,
+        cx: &mut Context<Self>,
+    ) {
+        if self.editing.is_some() || !crate::gif_picker::enabled(cx) {
+            return;
+        }
+        if self.emoji_picker.take().is_some() {
+            self._picker_subs.clear();
+        }
+        let picker = cx.new(|cx| match query {
+            Some(query) => GifPickerView::new_with_query(cx, query),
+            None => GifPickerView::new(cx),
+        });
+        self._gif_subs = vec![
+            cx.subscribe(&picker, |this, _, ev: &GifPicked, cx| {
+                this.on_gif_picked(ev.item.clone(), ev.mode, cx)
+            }),
+            cx.subscribe(&picker, |this, _, _: &GifPickerDismissed, cx| {
+                this.close_gif_picker(cx);
+                this.refocus = true;
+                cx.notify();
+            }),
+        ];
+        window.focus(&picker.read(cx).search_focus(cx), cx);
+        self.gif_picker = Some(picker);
+        cx.notify();
+    }
+
+    /// Closes the picker for a press outside it, remembering that for the press's own handlers.
+    fn close_gif_picker_by_click(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if self.gif_picker.take().is_none() {
+            return;
+        }
+        self._gif_subs.clear();
+        crate::gif_picker::notify_closed(cx);
+        self.picker_just_closed = true;
+        self.refocus = true;
+        let this = cx.entity();
+        // The press reaches the button's handler before this runs.
+        window.defer(cx, move |_, cx| {
+            this.update(cx, |c, _| c.picker_just_closed = false)
+        });
+        cx.notify();
+    }
+
+    /// Drops the GIF picker and lets the source go idle.
+    fn close_gif_picker(&mut self, cx: &mut Context<Self>) {
+        if self.gif_picker.take().is_none() {
+            return;
+        }
+        self._gif_subs.clear();
+        crate::gif_picker::notify_closed(cx);
+    }
+
+    fn on_gif_picked(&mut self, item: GifItem, mode: GifPickMode, cx: &mut Context<Self>) {
+        self.close_gif_picker(cx);
+        match mode {
+            GifPickMode::Insert => self.insert_gif_link(&item, cx),
+            GifPickMode::Send => self.send_gif(&item, cx),
+        }
+        self.refocus = true;
+        cx.notify();
+    }
+
+    /// Puts the GIF's link into the draft at the caret, with a separating space
+    /// or newline when the text around it needs one.
+    fn insert_gif_link(&mut self, item: &GifItem, cx: &mut Context<Self>) {
+        let range = self.input.read(cx).selection().range();
+        let (before, after) = {
+            let text = self.input.read(cx).text();
+            (
+                text[..range.start].chars().next_back(),
+                text[range.end..].chars().next(),
+            )
+        };
+        let mut link = String::new();
+        if before.is_some_and(|c| !c.is_whitespace()) {
+            link.push(' ');
+        }
+        link.push_str(&item.full_url);
+        if after.is_some_and(|c| !c.is_whitespace()) {
+            link.push(' ');
+        }
+        self.input
+            .update(cx, |i, cx| i.replace_range(range, &link, cx));
+    }
+
+    /// Sends the GIF as a message of its own, through the composer's normal
+    /// submit path, leaving the draft text as it is.
+    fn send_gif(&mut self, item: &GifItem, cx: &mut Context<Self>) {
+        if self.editing.is_some() {
+            self.insert_gif_link(item, cx);
+            return;
+        }
+        let upload = cx
+            .try_global::<settings::SettingsStore>()
+            .is_some_and(|s| s.current().gifs.send_as == settings::GifSendAs::Upload)
+            && self.session.read(cx).capabilities().files;
+        if upload {
+            let (c, thread) = (self.conversation.clone(), self.thread_ts());
+            let taken = self
+                .session
+                .update(cx, |s, cx| s.send_gif_upload(c, thread, item, true, cx));
+            if taken {
+                self.broadcast = false;
+                return;
+            }
+        }
+        let body = ComposedText::plain(item.full_url.as_ref());
+        let ev = match self.reply_root.clone() {
+            Some(root) => ComposerEvent::SubmitReply {
+                root,
+                body,
+                broadcast: std::mem::take(&mut self.broadcast),
+            },
+            None => ComposerEvent::Submit { body },
+        };
+        cx.emit(ev);
+    }
+
+    /// `/gif <query>`: opens the picker on the query, without reaching the
+    /// provider as a slash command. False when the line is another command.
+    fn run_gif_command(&mut self, line: &str, window: &mut Window, cx: &mut Context<Self>) -> bool {
+        let Some(rest) = line.trim_start().strip_prefix('/') else {
+            return false;
+        };
+        let name_len = rest.find(char::is_whitespace).unwrap_or(rest.len());
+        if !rest[..name_len].eq_ignore_ascii_case("gif") {
+            return false;
+        }
+        if !crate::gif_picker::enabled(cx) {
+            return false;
+        }
+        let query = rest[name_len..].trim().to_string();
+        self.reset(cx);
+        self.open_gif_picker(window, Some(query), cx);
+        cx.notify();
+        true
     }
 
     /// Enters edit mode on `id` with its current `text`.
@@ -1820,6 +2023,9 @@ impl<S: ComposerSource + 'static> Composer<S> {
             && !is_shrug
         {
             let line = b.text.to_string();
+            if self.run_gif_command(&line, window, cx) {
+                return;
+            }
             self.run_slash(&line, cx);
             return;
         }
@@ -2051,8 +2257,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn send_later_action(&mut self, _: &SendLater, window: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         if self.send_later.is_some() {
@@ -2066,8 +2272,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn newline(&mut self, _: &Newline, window: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         if self.focused_field(window, cx).is_some() {
@@ -2077,8 +2283,8 @@ impl<S: ComposerSource + 'static> Composer<S> {
     }
 
     fn edit_last(&mut self, _: &EditLast, window: &mut Window, cx: &mut Context<Self>) {
-        // The picker has the focus: the hidden input must not take its keys.
-        if self.emoji_picker.is_some() {
+        // A picker has the focus: the hidden input must not take its keys.
+        if self.picker_open() {
             return;
         }
         if self.step_language(-1, cx) {
@@ -3273,6 +3479,14 @@ const INPUT_INSET_X: gpui::Pixels = metrics::SPACE_5;
 
 impl<S: ComposerSource + 'static> Render for Composer<S> {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        // A session that ends or a channel the user is not in takes the
+        // composer away: the picker goes with it.
+        if (self.session.read(cx).read_only()
+            || self.session.read(cx).must_join(&self.conversation))
+            && self.gif_picker.is_some()
+        {
+            self.close_gif_picker(cx);
+        }
         if self.session.read(cx).read_only() {
             return self.render_read_only(cx).into_any_element();
         }
@@ -3308,6 +3522,8 @@ impl<S: ComposerSource + 'static> Render for Composer<S> {
         use crate::icon::IconName;
         let toolbar = self.render_toolbar(cx);
         let emoji_picker = self.emoji_picker.clone();
+        let gif_picker = self.gif_picker.clone();
+        let gif_button = self.gif_button_shown(cx);
         let send_later_menu = self.render_send_later(cx);
         let slash_notice = self.slash_notice(cx.localizer());
         let slash_open = self.slash_open_label(cx);
@@ -3509,6 +3725,61 @@ impl<S: ComposerSource + 'static> Render for Composer<S> {
                                         ))
                                     }),
                             )
+                            .when(gif_button, |d| {
+                                d.child(
+                                    div()
+                                        .relative()
+                                        .child(
+                                            action_button(
+                                                "composer-gif",
+                                                IconName::Gif,
+                                                |cx| t!(cx, "composer-gif").into_owned(),
+                                                colors,
+                                            )
+                                            // On press, not click: an outside press has
+                                            // just closed the picker, and this one must
+                                            // not reopen it.
+                                            .on_mouse_down(
+                                                gpui::MouseButton::Left,
+                                                cx.listener(|this, _, w, cx| {
+                                                    if !std::mem::take(&mut this.picker_just_closed)
+                                                    {
+                                                        this.toggle_gif_picker(w, cx);
+                                                    }
+                                                }),
+                                            ),
+                                        )
+                                        .when_some(gif_picker, |d, p| {
+                                            d.child(gpui::deferred(
+                                                gpui::anchored()
+                                                    .anchor(gpui::Anchor::BottomLeft)
+                                                    // Above the button: the anchor is below it.
+                                                    .offset(gpui::point(
+                                                        gpui::px(0.),
+                                                        -themes::metrics::LAYOUT_ROW_COMPACT,
+                                                    ))
+                                                    .snap_to_window_with_margin(
+                                                        themes::metrics::SPACE_2,
+                                                    )
+                                                    .child(
+                                                        div()
+                                                            .debug_selector(|| {
+                                                                "composer-gif-picker".into()
+                                                            })
+                                                            .pb_1()
+                                                            .on_mouse_down_out(cx.listener(
+                                                                |this, _, window, cx| {
+                                                                    this.close_gif_picker_by_click(
+                                                                        window, cx,
+                                                                    )
+                                                                },
+                                                            ))
+                                                            .child(p),
+                                                    ),
+                                            ))
+                                        }),
+                                )
+                            })
                             .when(can_send_later, |d| {
                                 d.child(
                                     action_button(

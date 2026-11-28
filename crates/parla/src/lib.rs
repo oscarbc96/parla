@@ -37,6 +37,7 @@ pub mod offline_banner;
 #[cfg(feature = "fixture")]
 pub mod perf;
 pub mod platform;
+pub mod plugins;
 pub mod popout;
 pub mod process_stats;
 mod provider_calls;

@@ -4,6 +4,7 @@
 //! typed after a `/` is "not supported in Parla".
 
 use domain::Capabilities;
+use gpui::App;
 use i18n::Localizer;
 
 /// Where a slash command comes from, shown as the row's badge.
@@ -54,6 +55,9 @@ const COMMANDS: [(&str, Enabled); 6] = [
 /// The command that appends [`SHRUG_TEXT`] to a message.
 pub const SHRUG: &str = "shrug";
 
+/// The command that opens the GIF picker.
+pub const GIF: &str = "gif";
+
 /// What `/shrug` appends.
 pub const SHRUG_TEXT: &str = "\u{af}\\_(\u{30c4})_/\u{af}";
 
@@ -95,16 +99,24 @@ pub fn available(caps: &Capabilities, name: &str) -> bool {
 }
 
 /// The commands offered for the typed `prefix` (the name so far, without the slash).
-pub fn entries(caps: &Capabilities, prefix: &str) -> Vec<SlashEntry> {
+pub fn entries(caps: &Capabilities, prefix: &str, cx: &App) -> Vec<SlashEntry> {
     let p = prefix.to_ascii_lowercase();
-    COMMANDS
+    let mut out: Vec<SlashEntry> = COMMANDS
         .iter()
         .filter(|(n, on)| n.starts_with(&p) && on(caps))
         .map(|(name, _)| SlashEntry {
             name,
             source: SlashSource::Builtin,
         })
-        .collect()
+        .collect();
+    // `/gif` is Parla's own picker, offered only when a GIF source is installed.
+    if GIF.starts_with(&p) && crate::gif_picker::enabled(cx) {
+        out.push(SlashEntry {
+            name: GIF,
+            source: SlashSource::Builtin,
+        });
+    }
+    out
 }
 
 /// The command name being typed when `text` is a `/` plus name characters only
@@ -123,6 +135,7 @@ pub fn description(l: &Localizer, name: &str) -> String {
         "away" => t!(l, "slash-desc-away"),
         "active" => t!(l, "slash-desc-active"),
         "shrug" => t!(l, "slash-desc-shrug"),
+        "gif" => t!(l, "slash-desc-gif"),
         _ => return String::new(),
     }
     .into_owned()
@@ -137,6 +150,7 @@ pub fn usage(l: &Localizer, name: &str) -> String {
         "away" => t!(l, "slash-usage-away"),
         "active" => t!(l, "slash-usage-active"),
         "shrug" => t!(l, "slash-usage-shrug"),
+        "gif" => t!(l, "slash-usage-gif"),
         other => return format!("/{other}"),
     }
     .into_owned()

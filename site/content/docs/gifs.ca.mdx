@@ -1,0 +1,54 @@
+---
+title: GIF
+description: Cerca, envia i insereix GIF des del compositor amb la teva pròpia clau de GIPHY o KLIPY.
+---
+
+## Obrir el selector
+
+El botó de GIF a la barra d'accions del compositor obre el selector. Només hi és
+quan hi ha almenys un proveïdor de GIF activat.
+
+- `cmd-majúscules-g` al macOS, `ctrl-majúscules-g` a Windows i Linux.
+- Escriu `/gif` i una cerca, per exemple `/gif gats`. L'ordre no surt mai del
+  teu equip: obre el selector amb el quadre de cerca ja omplert.
+
+## La teva clau, el teu proveïdor
+
+Parla ofereix dos proveïdors, **GIPHY** i **KLIPY**, però no té cap clau d'API
+pròpia: no s'envia res a cap dels dos serveis fins que n'actives un amb la teva
+pròpia clau. Un proveïdor que encara no has configurat mostra una targeta de
+configuració a la seva pestanya:
+
+1. Obre la pàgina de claus del proveïdor: [GIPHY](https://developers.giphy.com/dashboard)
+   o [KLIPY](https://partner.klipy.com).
+2. Crea una aplicació i copia'n la clau d'API.
+3. Enganxa la clau al camp **Clau d'API** i tria **Activa**.
+
+La clau es desa al clauer del sistema, no a l'arxiu d'ajustos de Parla ni als
+seus registres. La targeta indica els servidors amb què parla el proveïdor. Als
+ajustos, `gifs.providers` tria quins proveïdors ofereix el selector.
+
+## Què s'envia
+
+Només després d'activar un proveïdor, i només per a la pestanya que estàs fent
+servir, Parla envia el text del quadre de cerca (o res, quan la pestanya mostra
+tendències) i la teva classificació de contingut als servidors d'aquell
+proveïdor. La classificació és `gifs.rating`, `pg-13` per defecte. El proveïdor
+retorna els resultats; Parla no en guarda cap còpia més enllà de la llista que
+mostra el selector obert.
+
+## Enviar o inserir
+
+- **Retorn** envia el GIF seleccionat com a missatge propi. L'esborrany que
+  estaves escrivint es queda al compositor.
+- **Majúscules-Retorn** insereix l'enllaç del GIF a l'esborrany, a la posició
+  del cursor, amb un espai on el text el necessita.
+- Fes clic en un GIF per enviar-lo. Les fletxes es mouen per la quadrícula,
+  Amunt des de la primera fila torna al quadre de cerca, Tab canvia de pestanya
+  de proveïdor i Escape tanca el selector.
+
+`gifs.send_as` decideix què fa l'enviament. Amb **link**, el missatge és l'URL
+del GIF, que els serveis mostren en línia. Amb **upload**, Parla baixa el GIF i
+el puja com a fitxer, cosa que també funciona on els enllaços no es despleguen.
+`gifs.autoplay_in_messages` decideix si els GIF dels missatges es reprodueixen
+sempre, en passar-hi el punter o mai.

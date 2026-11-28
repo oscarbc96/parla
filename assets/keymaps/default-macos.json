@@ -73,6 +73,7 @@
       "cmd-shift-8": "composer::BulletList",
       "cmd-shift-7": "composer::NumberedList",
       "cmd-shift-u": "composer::Link",
+      "cmd-shift-g": "composer::GifPicker",
       "cmd-shift-enter": "composer::SendLater",
       "tab": "composer::AcceptCompletion"
     }

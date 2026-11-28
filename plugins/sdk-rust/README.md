@@ -29,6 +29,9 @@ Build with `cargo build --release --target wasm32-wasip2`; the `.wasm` in
 - `Plugin`: one static method per extension point.
   `activate` succeeds by default; every other method returns
   `Error::Unsupported` until you implement it.
+- Media providers: `media_search` and `media_trending` take the user's
+  `media::ContentRating` limit last (`max_rating`) and must return nothing
+  rated above it; `media_resolve` takes no rating.
 - `export!(Type with [..])`: exports `lifecycle` plus the listed extension
   points, which must match the contributions in `plugin.toml`. Names:
   `deactivation`, `migration`, `commands`, `slash_commands`,

@@ -30,6 +30,7 @@ pub mod emoji_picker;
 pub mod files;
 pub mod files_tab;
 pub mod format_toolbar;
+pub mod gif_picker;
 pub mod header;
 pub mod huddle_bar;
 pub mod icon;
@@ -285,6 +286,7 @@ pub fn init(cx: &mut gpui::App) {
     composer::init(cx);
     text_input::init(cx);
     emoji_picker::init(cx);
+    gif_picker::init(cx);
     confirm_write::init(cx);
     sidebar::init(cx);
 }

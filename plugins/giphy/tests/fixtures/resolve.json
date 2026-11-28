@@ -1,0 +1,31 @@
+{
+  "data": {
+    "type": "gif",
+    "id": "synthAlpha01",
+    "slug": "synthetic-hello-alpha",
+    "url": "https://giphy.com/gifs/synthetic-hello-alpha",
+    "title": "Synthetic hello",
+    "alt_text": "A synthetic wave",
+    "rating": "g",
+    "username": "synthetic",
+    "images": {
+      "fixed_width_small": {
+        "url": "https://media.giphy.com/media/synthAlpha01/100w.gif",
+        "width": "100",
+        "height": "71",
+        "size": "12000"
+      },
+      "original": {
+        "url": "https://media0.giphy.com/media/synthAlpha01/giphy.gif",
+        "width": "480",
+        "height": "340",
+        "size": "180000"
+      }
+    }
+  },
+  "meta": {
+    "status": 200,
+    "msg": "OK",
+    "response_id": "synthetic-resolve"
+  }
+}

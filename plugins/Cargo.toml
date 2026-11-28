@@ -3,7 +3,13 @@
 # compiles these crates.
 [workspace]
 resolver = "3"
-members = ["sdk-rust", "examples/hello-command", "examples/test-guests/*"]
+members = [
+  "sdk-rust",
+  "examples/hello-command",
+  "examples/test-guests/*",
+  "giphy",
+  "klipy",
+]
 
 [workspace.package]
 version = "0.0.0"

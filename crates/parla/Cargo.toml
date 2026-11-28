@@ -41,6 +41,7 @@ gpui.workspace = true
 gpui_platform.workspace = true
 settings.path = "../settings"
 mcp = { path = "../mcp" }
+plugin_host = { path = "../plugin_host" }
 uuid = { version = "1", features = ["v4"] }
 write_confirm = { path = "../write_confirm" }
 calls = { path = "../calls" }
@@ -86,6 +87,9 @@ libc = "0.2"
 regex.workspace = true
 png = "0.18"
 url.workspace = true
+# Reads the bundled component's exports (tests/builtin_plugins.rs); the host
+# already depends on this exact version.
+wasmparser = "0.254"
 # gpui-fast uses resvg 0.46.0, so this 0.48.1 builds a second copy; renders the app icons (mise run assets:icons).
 resvg = { version = "0.48.1", default-features = false }
 tray-icon = "0.26"

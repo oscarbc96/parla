@@ -16,10 +16,13 @@ use wasmtime_wasi::{WasiCtx, WasiCtxBuilder, WasiCtxView, WasiView};
 use wasmtime_wasi_io::bytes::Bytes;
 use wasmtime_wasi_io::streams::{OutputStream, StreamResult};
 
+use crate::caps::Grant;
+use crate::context::{HttpLimiter, PluginContext};
 use crate::limits::MemoryLimiter;
+use crate::manifest::{Manifest, PluginId};
 
-/// Interfaces of the `parla:plugin` package a plugin may import. The host
-/// functions themselves are linked by the host API tasks (plan M8 C2 to C4).
+/// Interfaces of the `parla:plugin` package a plugin may import. Every one
+/// the `plugin` world imports is linked in [`linker`].
 pub const PLUGIN_PACKAGE: &str = "parla:plugin/";
 
 /// WASI 0.2 interfaces a plugin may import, without the `@version`.
@@ -76,10 +79,22 @@ pub struct PluginState {
     table: ResourceTable,
     pub(crate) limiter: MemoryLimiter,
     log: LogPipe,
+    ctx: PluginContext,
 }
 
 impl PluginState {
+    /// An instance with `limiter` and the host's empty context.
     pub fn new(limiter: MemoryLimiter) -> Self {
+        Self::build(PluginContext::default(), limiter)
+    }
+
+    /// An instance for `ctx`, its memory cap from the context.
+    pub fn with_context(ctx: PluginContext) -> Self {
+        let limiter = MemoryLimiter::new(ctx.memory_mb);
+        Self::build(ctx, limiter)
+    }
+
+    fn build(ctx: PluginContext, limiter: MemoryLimiter) -> Self {
         let log = LogPipe::default();
         // Empty stdin, environment, arguments and cwd; no preopened
         // directories and no network (neither is linked anyway).
@@ -94,11 +109,44 @@ impl PluginState {
             table,
             limiter,
             log,
+            ctx,
         }
     }
 
     pub fn limiter(&self) -> &MemoryLimiter {
         &self.limiter
+    }
+
+    /// The id, grant, manifest and backend of the instance.
+    pub fn context(&self) -> &PluginContext {
+        &self.ctx
+    }
+
+    pub fn plugin_id(&self) -> &PluginId {
+        &self.ctx.id
+    }
+
+    pub fn grant(&self) -> &Arc<Grant> {
+        &self.ctx.grant
+    }
+
+    pub fn manifest(&self) -> &Arc<Manifest> {
+        &self.ctx.manifest
+    }
+
+    /// The memory cap in bytes.
+    pub fn cap_bytes(&self) -> usize {
+        self.limiter.cap_bytes()
+    }
+
+    pub(crate) fn http(&self) -> &Arc<HttpLimiter> {
+        &self.ctx.http
+    }
+
+    /// Appends one line to the instance log; `message` is already cut to
+    /// 4 KB and `debug` calls never reach here.
+    pub(crate) fn log_line(&self, level: &str, message: &str) {
+        self.log.push(format!("[{level}] {message}\n").as_bytes());
     }
 
     /// The instance's stdout and stderr, at most [`LOG_CAPACITY`] bytes.
@@ -122,7 +170,8 @@ impl wasmtime_wasi_io::IoView for PluginState {
     }
 }
 
-/// The linker every plugin instance uses: the allowed WASI interfaces only.
+/// The linker every plugin instance uses: the allowed WASI interfaces and
+/// every `parla:plugin` host interface of the `plugin` world.
 pub fn linker(engine: &Engine) -> wasmtime::Result<Linker<PluginState>> {
     use wasmtime_wasi::cli::{WasiCli, WasiCliView};
     use wasmtime_wasi::clocks::{WasiClocks, WasiClocksView};
@@ -147,6 +196,7 @@ pub fn linker(engine: &Engine) -> wasmtime::Result<Linker<PluginState>> {
     cli::terminal_stdin::add_to_linker::<S, WasiCli>(&mut l, S::cli)?;
     cli::terminal_stdout::add_to_linker::<S, WasiCli>(&mut l, S::cli)?;
     cli::terminal_stderr::add_to_linker::<S, WasiCli>(&mut l, S::cli)?;
+    crate::api::add_to_linker(&mut l)?;
     Ok(l)
 }
 

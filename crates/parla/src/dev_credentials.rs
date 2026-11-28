@@ -109,6 +109,26 @@ impl DevFile {
         })
     }
 
+    /// The process-wide file for `path`: every reader and writer shares one
+    /// lock, so their read-modify-write cycles never interleave. The path is
+    /// fixed for a run (the data dir), so one slot is enough.
+    pub(crate) fn shared(path: PathBuf) -> Arc<Self> {
+        type Shared = Mutex<Option<(PathBuf, Arc<DevFile>)>>;
+        static SHARED: std::sync::OnceLock<Shared> = std::sync::OnceLock::new();
+        let mut slot = SHARED
+            .get_or_init(Default::default)
+            .lock()
+            .unwrap_or_else(|p| p.into_inner());
+        if let Some((p, file)) = &*slot
+            && *p == path
+        {
+            return file.clone();
+        }
+        let file = DevFile::new(path.clone());
+        *slot = Some((path, file.clone()));
+        file
+    }
+
     pub fn path(&self) -> &Path {
         &self.path
     }

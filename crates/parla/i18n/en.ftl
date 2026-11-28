@@ -11,6 +11,7 @@
 # unused-ok: action-app-hide action-app-hide-others action-app-show-all action-app-minimize action-app-zoom action-app-close-window action-app-bring-all-to-front action-app-open-docs action-app-open-keyboard-shortcuts action-app-report-issue
 # unused-ok: settings-accounts-list-title settings-accounts-list-desc settings-calls-ringing-title settings-calls-ringing-desc settings-calls-join-title settings-calls-join-desc settings-danger-title settings-danger-desc settings-mcp-server-title settings-mcp-server-desc settings-mcp-connect-title settings-mcp-connect-desc settings-mcp-workspaces-title settings-mcp-workspaces-desc settings-mcp-tools-desc settings-mcp-audit-title settings-mcp-audit-desc settings-mcp-ws-enabled settings-mcp-ws-writes settings-mcp-ws-confirm settings-memory-title settings-memory-desc settings-logs-title settings-logs-desc settings-store-title settings-store-desc settings-privacy-title settings-privacy-desc
 # unused-ok: settings-calls-devices-title settings-calls-devices-desc call-native-no-speaker
+# unused-ok: action-composer-gif-picker gif-upload-failed settings-gif-providers-title settings-gif-providers-desc settings-gif-send-title settings-gif-send-desc
 
 ## Actions (titles in the command palette and the keymap docs)
 action-app-quit = Quit Parla
@@ -20,6 +21,7 @@ action-app-command-palette = Command palette
 action-app-reload-config = Reload configuration
 action-app-check-for-updates = Check for updates
 action-app-about = About Parla
+action-composer-gif-picker = GIF picker
 action-theme-toggle-mode = Toggle light and dark mode
 action-store-rebuild-cache = Rebuild cache
 action-mcp-rebuild-audit-log = Rebuild audit log
@@ -104,6 +106,7 @@ file-error-no-download = This file cannot be downloaded
 file-error-download-failed = Download failed: { $reason }
 file-error-needs-connection = Uploads need a connection: go online and try again (uploads are not queued)
 file-error-refused = { $reasons }
+gif-upload-failed = Could not fetch the GIF, so nothing was sent.
 
 ## Media viewer
 media-viewer-meta = { $sender } in { $place } · { $time } · { $size }
@@ -632,3 +635,29 @@ code-viewer-lines =
         [one] 1 line
        *[other] { $count } lines
     }
+
+# GIF search (the Plugins page)
+settings-gif-title = GIF search
+settings-gif-subtitle = Search and send GIFs from the built-in providers.
+settings-gif-providers-title = Providers
+settings-gif-providers-desc = Nothing leaves your computer until you add a key and turn a provider on. Keys are kept in your system keychain, never in settings.json.
+settings-gif-no-providers = No GIF provider is included in this build.
+settings-gif-enabled = Use this provider
+settings-gif-key = API key
+settings-gif-key-saved = Key saved
+settings-gif-key-help = Stored in your system keychain, never in settings.json.
+settings-gif-key-placeholder = Paste your API key
+settings-gif-save = Save
+settings-gif-remove = Remove
+settings-gif-get-key = Get an API key
+settings-gif-hosts = Talks to { $hosts }
+settings-gif-send-title = Sending
+settings-gif-send-desc = How a picked GIF goes into the conversation.
+settings-gif-rating = Highest rating
+settings-gif-rating-help = Providers that filter by rating hide anything above this.
+settings-gif-send-as = Send GIFs as
+settings-gif-send-help = Uploading fetches the GIF and sends it as a file; a link sends only the address.
+settings-gif-send-link = Link
+settings-gif-send-upload = Upload
+settings-gif-key-failed = Could not save the key. Try again.
+settings-gif-unavailable = GIF search is not available in this build.
