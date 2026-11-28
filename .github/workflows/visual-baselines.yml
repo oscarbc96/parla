@@ -57,7 +57,6 @@ jobs:
           files: |
             crates/ui_testing/baselines/**
             site/public/shots/**
-          separator: "\n"
       - name: Collect changed files
         id: changed
         if: steps.verify.outputs.files_changed == 'true'
@@ -66,7 +65,8 @@ jobs:
           CHANGED: ${{ steps.verify.outputs.changed_files }}
         run: |
           mkdir -p "$RUNNER_TEMP/baselines"
-          printf '%s\n' "$CHANGED" | sed '/^$/d' > "$RUNNER_TEMP/changed.txt"
+          # Space-separated (the action's default); no repo path has a space.
+          printf '%s' "$CHANGED" | tr ' ' '\n' | sed '/^$/d' > "$RUNNER_TEMP/changed.txt"
           while read -r f; do
             [ -f "$f" ] || continue
             mkdir -p "$RUNNER_TEMP/baselines/$(dirname "$f")"
