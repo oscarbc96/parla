@@ -496,6 +496,29 @@
     }
   },
   {
+    "action": "composer::GifPicker",
+    "defaults": {
+      "linux": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-g"
+        }
+      ],
+      "macos": [
+        {
+          "context": "Composer",
+          "keys": "cmd-shift-g"
+        }
+      ],
+      "windows": [
+        {
+          "context": "Composer",
+          "keys": "ctrl-shift-g"
+        }
+      ]
+    }
+  },
+  {
     "action": "composer::Italic",
     "defaults": {
       "linux": [

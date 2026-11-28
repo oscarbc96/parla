@@ -67,6 +67,7 @@ async fn every_registered_action_is_bound_or_in_palette(cx: &mut TestAppContext)
             || name.starts_with("buffer::")
             || name.starts_with("text_input::")
             || name.starts_with("picker::")
+            || name.starts_with("gif_picker::")
             // GPUI Base primitives' own actions (registered by `gpui_base::init`).
             || name.starts_with("grid_layout::")
             || name.starts_with("input::")

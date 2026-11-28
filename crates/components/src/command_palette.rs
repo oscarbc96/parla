@@ -19,9 +19,11 @@ pub struct CommandItem {
 }
 
 /// Whether `name` belongs in the command palette. Text-input editing actions
-/// and the picker's own actions are internal and never listed.
+/// and the pickers' own actions are internal and never listed.
 pub fn is_palette_action(name: &str) -> bool {
-    !name.starts_with("text_input::") && !name.starts_with("picker::")
+    !name.starts_with("text_input::")
+        && !name.starts_with("picker::")
+        && !name.starts_with("gif_picker::")
 }
 
 /// The subset of `known` action names the palette lists, in order.
