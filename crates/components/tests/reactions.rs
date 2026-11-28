@@ -338,7 +338,7 @@ fn custom_tab_lists_more_than_the_standard_cap(cx: &mut TestAppContext) {
 
 #[gpui::test]
 fn keyboard_selection_advances_by_a_row_in_a_long_custom_tab(cx: &mut TestAppContext) {
-    let (_s, _v, vcx) = setup(cx, Capabilities::default());
+    let (_s, _v, _vcx) = setup(cx, Capabilities::default());
     let custom: Vec<CustomEmoji> = (0..500)
         .map(|i| CustomEmoji {
             shortcode: format!("custom{i:03}").into(),
