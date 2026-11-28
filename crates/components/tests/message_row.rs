@@ -22,6 +22,7 @@ impl Render for Host {
             MessageRow {
                 author: "Bob".into(),
                 status: None,
+                is_bot: false,
                 author_link: None,
                 time: "10:00".into(),
                 text: "hello".into(),
@@ -36,6 +37,7 @@ impl Render for Host {
                 failed_actions: None,
                 grouped: self.grouped,
                 selected: false,
+                ground: theme.colors().background,
                 density: Density::Compact,
                 show_avatar: true,
                 avatar: None,
@@ -87,6 +89,7 @@ impl Render for FailedHost {
             MessageRow {
                 author: "Bob".into(),
                 status: None,
+                is_bot: false,
                 author_link: None,
                 time: "10:00".into(),
                 text: "hello".into(),
@@ -102,6 +105,7 @@ impl Render for FailedHost {
                 }),
                 grouped: false,
                 selected: false,
+                ground: theme.colors().background,
                 density: Density::Compact,
                 show_avatar: true,
                 avatar: None,

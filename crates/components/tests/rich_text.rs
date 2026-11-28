@@ -5,7 +5,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 use components::{
     LinkAction, Node, RenderCache, RichColors, RichTextCx, Role, Timeline, TimelineSource,
-    build_nodes, open_link, render_rich_text,
+    build_nodes, open_link, render_rich_text, role_highlight,
 };
 use domain::test_support::{cid, member, mid, msg, uid};
 use domain::{
@@ -249,6 +249,40 @@ fn self_mention_highlighted() {
             }
         ]
     );
+}
+
+#[gpui::test]
+fn mentions_carry_the_mention_chip_in_both_themes(cx: &mut TestAppContext) {
+    cx.update(|cx| {
+        themes::init_default(cx);
+        let reg = themes::ThemeRegistry::global(cx);
+        for name in [themes::DEFAULT_LIGHT, themes::DEFAULT_DARK] {
+            let theme = reg.get(name).unwrap();
+            let colors = RichColors::from_theme(&theme);
+            for me in [true, false] {
+                let style = role_highlight(Some(&Role::Mention { me, user: None }), &colors);
+                assert_eq!(
+                    style.color,
+                    Some(colors.mention_text),
+                    "{name}: a mention reads in mention.text"
+                );
+                assert_eq!(
+                    style.background_color,
+                    Some(colors.mention_bg),
+                    "{name}: every mention, mine or not, sits on the mention chip"
+                );
+                assert_eq!(
+                    style.font_weight,
+                    Some(gpui::FontWeight::SEMIBOLD),
+                    "{name}: a mention is semibold"
+                );
+            }
+            // A link keeps its own colour and never takes the chip ground.
+            let link = role_highlight(Some(&Role::Link(Arc::from("https://example.com"))), &colors);
+            assert_eq!(link.color, Some(colors.link), "{name}: link colour");
+            assert_eq!(link.background_color, None, "{name}: a link has no chip");
+        }
+    });
 }
 
 #[test]
@@ -1025,6 +1059,7 @@ fn a_faded_palette_dims_every_colour_the_rich_text_draws_with(cx: &mut TestAppCo
                 ("code_bg", base.code_bg, faded.code_bg),
                 ("border", base.border, faded.border),
                 ("mention_bg", base.mention_bg, faded.mention_bg),
+                ("mention_text", base.mention_text, faded.mention_text),
                 ("raised", base.raised, faded.raised),
                 ("success", base.success, faded.success),
                 ("on_success", base.on_success, faded.on_success),

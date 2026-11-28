@@ -63,6 +63,7 @@ pub struct ParlaOverrides {
     pub sidebar_text: Option<Hsla>,
     pub sidebar_active: Option<Hsla>,
     pub message_mention_background: Option<Hsla>,
+    pub mention_background: Option<Hsla>,
     pub presence_active: Option<Hsla>,
     pub presence_away: Option<Hsla>,
     pub avatar_text: Option<Hsla>,

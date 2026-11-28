@@ -1,18 +1,27 @@
 //! The "N replies" row shown under a thread root.
 
-use domain::{Message, MessageTs};
+use domain::{ImageRef, Message, MessageTs};
 use i18n::Localizer;
 use jiff::Timestamp;
 
 /// At most this many reply authors are listed.
 pub const MAX_AUTHORS: usize = 3;
 
+/// One reply author in a thread summary's avatar stack.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct SummaryAuthor {
+    /// Display name, also the initials' source when there is no picture.
+    pub name: String,
+    pub image: Option<ImageRef>,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ThreadSummary {
     /// `"1 reply"` or `"N replies"`.
     pub label: String,
-    pub authors: Vec<String>,
-    /// Relative time of the latest reply, e.g. `"5m ago"`; empty when unknown.
+    pub authors: Vec<SummaryAuthor>,
+    /// Relative time of the latest reply, e.g. `"5 minutes ago"`; empty when
+    /// unknown.
     pub latest: String,
 }
 
@@ -28,11 +37,11 @@ pub fn relative_time(then: i64, now: i64, l: &Localizer) -> String {
     }
 }
 
-/// Summary of the thread rooted at `m`, if it has replies. `names` are the
-/// display names of `m.reply_users` in order.
+/// Summary of the thread rooted at `m`, if it has replies. `authors` are the
+/// reply authors of `m.reply_users` in order.
 pub fn summary_for(
     m: &Message,
-    names: Vec<String>,
+    authors: Vec<SummaryAuthor>,
     now: i64,
     l: &Localizer,
 ) -> Option<ThreadSummary> {
@@ -48,22 +57,7 @@ pub fn summary_for(
         .unwrap_or_default();
     Some(ThreadSummary {
         label,
-        authors: names.into_iter().take(MAX_AUTHORS).collect(),
+        authors: authors.into_iter().take(MAX_AUTHORS).collect(),
         latest,
     })
-}
-
-/// One line: `"Bob, Cy  2 replies  5m ago"`.
-pub fn summary_text(s: &ThreadSummary) -> String {
-    let mut out = String::new();
-    if !s.authors.is_empty() {
-        out.push_str(&s.authors.join(", "));
-        out.push_str("  ");
-    }
-    out.push_str(&s.label);
-    if !s.latest.is_empty() {
-        out.push_str("  ");
-        out.push_str(&s.latest);
-    }
-    out
 }

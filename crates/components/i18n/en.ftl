@@ -128,6 +128,7 @@ header-members =
 ## Messages
 author-unknown = Unknown
 message-edited = (edited)
+message-app-tag = APP
 message-not-sent = Not sent.
 message-failed-maybe-sent = May have been sent. Check before retrying.
 message-retry = Retry
@@ -152,6 +153,8 @@ thread-replies =
         [one] 1 reply
        *[other] { $count } replies
     }
+thread-summary-last-reply = Last reply { $time }
+thread-summary-open = Open in panel
 
 ## Composer
 composer-placeholder = Write a message

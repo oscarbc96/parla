@@ -190,6 +190,8 @@ pub struct MessageRow {
     pub author: SharedString,
     /// The author's status emoji (a glyph), shown after the name.
     pub status: Option<SharedString>,
+    /// The author is an app or bot: the name carries the APP tag.
+    pub is_bot: bool,
     pub author_link: Option<AuthorLink>,
     pub time: SharedString,
     pub text: SharedString,
@@ -203,6 +205,8 @@ pub struct MessageRow {
     pub failed_actions: Option<FailedActions>,
     pub grouped: bool,
     pub selected: bool,
+    /// The ground under the row, for compositing a dimmed pending avatar.
+    pub ground: Hsla,
     pub density: Density,
     /// `messages.show_avatars`; off keeps the indent and leaves the avatar out.
     pub show_avatar: bool,
@@ -533,6 +537,26 @@ fn status_glyph(glyph: SharedString, alpha: f32, colors: &themes::ThemeColors) -
         .child(glyph)
 }
 
+/// The APP tag after an app or bot author's name (AppMessagesDrafts board).
+/// Letter spacing waits for GPUI's text layout.
+fn app_tag(theme: &Theme, l: &Localizer) -> AnyElement {
+    let colors = theme.colors();
+    div()
+        .debug_selector(|| "message-app-tag".into())
+        .flex()
+        .flex_none()
+        .items_center()
+        .h(themes::metrics::SPACE_6)
+        .px(themes::metrics::SPACE_2)
+        .rounded(themes::metrics::RADIUS_XS)
+        .bg(colors.element_active)
+        .text_color(colors.text_muted)
+        .text_size(themes::metrics::FONT_SIZE_3XS)
+        .font_weight(themes::metrics::FONT_WEIGHT_BOLD)
+        .child(t!(l, "message-app-tag").into_owned())
+        .into_any_element()
+}
+
 impl MessageRow {
     pub fn render(mut self, theme: &Theme, l: &Localizer) -> AnyElement {
         let colors = theme.colors();
@@ -573,6 +597,7 @@ impl MessageRow {
                             .into_any_element(),
                     })
                     .children(self.status.take().map(|e| status_glyph(e, alpha, colors)))
+                    .when(self.is_bot, |d| d.child(app_tag(theme, l)))
                     .child(if queued {
                         queued_label(theme, l).into_any_element()
                     } else {
@@ -652,7 +677,7 @@ impl MessageRow {
                                 theme,
                                 self.avatar.as_ref(),
                                 alpha,
-                                colors.editor_background,
+                                self.ground,
                             )
                         } else {
                             avatar(&self.author, theme, self.avatar.as_ref())

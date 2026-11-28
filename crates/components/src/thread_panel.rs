@@ -101,6 +101,9 @@ impl<S: ThreadSource + ComposerSource + TimelineSource + 'static> ThreadPanel<S>
             cx.new(|cx| {
                 let mut comp = Composer::new(s, c, cx);
                 comp.set_reply_root(Some(r), cx);
+                // The panel is a surface: its composer keeps that ground, not
+                // the main pane's app ground.
+                comp.set_app_ground(false, cx);
                 comp
             })
         };
@@ -401,6 +404,11 @@ impl<S: ThreadSource + ComposerSource + TimelineSource + 'static> ThreadPanel<S>
             rich: Some(render_rich_text(&rich, &rcx)),
             author,
             status: None,
+            is_bot: m
+                .author
+                .as_ref()
+                .and_then(|u| ThreadSource::member(s, u))
+                .is_some_and(|mem| mem.is_bot),
             author_link: None,
             time: format_time(&m.id.ts, self.clock, &self.tz, l).into(),
             text: gpui::SharedString::default(),
@@ -419,6 +427,7 @@ impl<S: ThreadSource + ComposerSource + TimelineSource + 'static> ThreadPanel<S>
             },
             grouped,
             selected: false,
+            ground: theme.colors().editor_background,
             density: self.density,
             show_avatar: self.show_avatars,
             avatar: m

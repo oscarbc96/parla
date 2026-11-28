@@ -35,8 +35,10 @@ pub struct RichColors {
     pub link: Hsla,
     pub code_bg: Hsla,
     pub border: Hsla,
-    /// Background of mentions of the current user (`message.mention.background`).
+    /// Background of an @mention chip (`mention.bg`).
     pub mention_bg: Hsla,
+    /// Text of an @mention chip (`mention.text`).
+    pub mention_text: Hsla,
     /// Raised ground of cards (`surface_background`).
     pub raised: Hsla,
     /// Live and join marks (`status.success`).
@@ -56,7 +58,8 @@ impl RichColors {
             link: c.text_accent,
             code_bg: parla_tokens(theme).bg_sunken,
             border: c.border,
-            mention_bg: parla_tokens(theme).message_mention_background,
+            mention_bg: parla_tokens(theme).mention_background,
+            mention_text: parla_tokens(theme).mention_text,
             raised: c.surface_background,
             success: theme.status().success,
             // Borrows `text_on_accent`: it is white on the accent fill, and both built-in themes keep the success green dark enough for it to read.
@@ -78,6 +81,7 @@ impl RichColors {
             code_bg: fade(self.code_bg),
             border: fade(self.border),
             mention_bg: fade(self.mention_bg),
+            mention_text: fade(self.mention_text),
             raised: fade(self.raised),
             success: fade(self.success),
             on_success: fade(self.on_success),
@@ -557,7 +561,7 @@ fn next_id(cx: &RichTextCx, ids: &Cell<usize>) -> (&'static str, usize) {
 }
 
 fn highlight(span: &Span, cx: &RichTextCx) -> HighlightStyle {
-    let mut h = HighlightStyle::default();
+    let mut h = role_highlight(span.role.as_ref(), &cx.colors);
     if span.style.bold {
         h.font_weight = Some(FontWeight::BOLD);
     }
@@ -570,24 +574,30 @@ fn highlight(span: &Span, cx: &RichTextCx) -> HighlightStyle {
             color: None,
         });
     }
-    match &span.role {
-        Some(Role::Code) => h.background_color = Some(cx.colors.code_bg),
+    h
+}
+
+/// The colours and weight a span's role gives it: links carry the link colour,
+/// mentions the mention chip (every mention, the user's own or not), code the
+/// sunken ground.
+pub fn role_highlight(role: Option<&Role>, colors: &RichColors) -> HighlightStyle {
+    let mut h = HighlightStyle::default();
+    match role {
+        Some(Role::Code) => h.background_color = Some(colors.code_bg),
         Some(Role::Link(_)) => {
-            h.color = Some(cx.colors.link);
+            h.color = Some(colors.link);
             h.underline = Some(UnderlineStyle {
                 thickness: px(1.0),
-                color: Some(cx.colors.link),
+                color: Some(colors.link),
                 wavy: false,
             });
         }
-        Some(Role::Mention { me, .. }) => {
-            h.color = Some(cx.colors.link);
-            h.font_weight = Some(FontWeight::MEDIUM);
-            if *me {
-                h.background_color = Some(cx.colors.mention_bg);
-            }
+        Some(Role::Mention { .. }) => {
+            h.color = Some(colors.mention_text);
+            h.font_weight = Some(FontWeight::SEMIBOLD);
+            h.background_color = Some(colors.mention_bg);
         }
-        Some(Role::Conversation(_)) => h.color = Some(cx.colors.link),
+        Some(Role::Conversation(_)) => h.color = Some(colors.link),
         Some(Role::CustomEmoji(_)) => {}
         None => {}
     }

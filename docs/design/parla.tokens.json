@@ -113,6 +113,7 @@
     "avatar-sm": { "$value": "26px", "$description": "Diameter of a small avatar in the huddle bar." },
     "avatar-xs": { "$value": "22px", "$description": "Diameter of an avatar in a message preview line (All unreads)." },
     "avatar-2xs": { "$value": "18px", "$description": "Side of a conversation avatar in the sidebar." },
+    "avatar-thread": { "$value": "20px", "$description": "Side of an avatar in a thread summary stack (the board's .av-sm)." },
     "timeline-min": { "$value": "320px", "$description": "Narrowest the timeline gets for a second right-column pane (search in context)." },
     "context-pane-min": { "$value": "280px", "$description": "Narrowest search in-context pane; below it the pane hides." },
     "avatar-lg": { "$value": "72px", "$description": "Side of the large avatar on a direct message intro." },

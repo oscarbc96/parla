@@ -71,6 +71,8 @@ All unreads lists unread conversations, mentions first. You can mark one
 conversation or all of them read from there. Looking at the view itself marks
 nothing read.
 
+Messages from apps and bots carry an **APP** tag after the author's name.
+
 ## Write and send
 
 Click the composer and type. By default, Enter sends and Shift-Enter makes a new
@@ -106,7 +108,8 @@ close the list.
 
 A picked mention or channel is one unit: Backspace deletes all of it, and it is
 sent as a real mention. A name you only type, such as `@ana` without picking it,
-is sent as plain text.
+is sent as plain text. Mentions are drawn as tinted chips, whether or not they
+name you.
 
 The row above the composer formats the selection, or inserts an empty pair when
 nothing is selected. Press the same shortcut again to remove the markers.
@@ -141,8 +144,10 @@ Reactions appear as pills under a message. Click a pill to add or remove your
 own reaction, and hover it to see who reacted. Press `cmd-shift-\` on a selected
 message to open the emoji picker and add a reaction.
 
-A message with replies shows a summary line under it. Click it, or press
-`cmd-shift-t` on the message, to open the thread in the right panel. Press
+A message with replies shows a summary under it: the reply authors' avatars, the
+reply count and when the last reply arrived. Click it, or press `cmd-shift-t` on
+the message, to open the thread in the right panel. While the thread is open, the
+root message is highlighted and the summary reads **Open in panel**. Press
 Escape to close the panel.
 
 The thread composer sends replies to the thread. The thread header has a bell:

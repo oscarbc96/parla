@@ -169,7 +169,7 @@ pub use reminders_view::{
 pub use render_cache::RenderCache;
 pub use rich_text::{
     ImageHook, Node, OpenConversation, OpenUrl, OpenUser, RichColors, RichTextCx, Role, Span,
-    TextNode, break_long_tokens, build_nodes, render_rich_text,
+    TextNode, break_long_tokens, build_nodes, render_rich_text, role_highlight,
 };
 pub use ring_banner::{RingBannerData, ring_banner};
 pub use saved_view::{CollectionEvent, CollectionsSource, Preview, SavedRow, SavedView, preview};

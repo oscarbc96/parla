@@ -597,6 +597,9 @@ impl TimelineSource for ScenarioSession {
     fn window(&self, c: &ConversationId) -> Option<&MessageWindow> {
         self.state.windows.get(c)
     }
+    fn thread_open(&self, root: &MessageId) -> bool {
+        self.state.threads.contains_key(root)
+    }
     fn history_failed(&self, _: &ConversationId) -> bool {
         self.history_failed
     }
