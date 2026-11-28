@@ -65,6 +65,7 @@ describe("licensing", () => {
       "assets/keymaps",
       "assets/settings",
       "assets/sounds",
+      "assets/fonts",
       "site/public/favicon.svg",
       "site/public/shots",
       "crates/ui_testing/fonts",
@@ -116,11 +117,14 @@ describe("licensing", () => {
     // The chime says how it is made and that it is CC0, next to the file.
     expect(read("assets/sounds/README.md")).toContain("CC0 1.0");
     expect(existsSync(join(root, "scripts/gen_chime.ts"))).toBe(true);
-    // Every test font has its OFL text next to it.
-    for (const font of readdirSync(join(root, "crates/ui_testing/fonts")).filter((f) => f.endsWith(".ttf"))) {
-      const family = font.split("-")[0];
-      const licenses = readdirSync(join(root, "crates/ui_testing/fonts")).filter((f) => /LICENSE|OFL/.test(f));
-      expect(licenses.some((f) => f.toLowerCase().includes(family.toLowerCase())), font).toBe(true);
+    // Every bundled font has its OFL text next to it.
+    for (const dir of ["assets/fonts", "crates/ui_testing/fonts"]) {
+      const files = readdirSync(join(root, dir));
+      const licenses = files.filter((f) => /LICENSE|OFL/.test(f));
+      for (const font of files.filter((f) => f.endsWith(".ttf"))) {
+        const family = font.split("-")[0];
+        expect(licenses.some((f) => f.toLowerCase().includes(family.toLowerCase())), font).toBe(true);
+      }
     }
     // Fixture images are generated, not third-party artwork.
     expect(read("crates/domain/src/test_support/fixture.rs")).toContain(

@@ -13,7 +13,8 @@ mod variant;
 pub use baseline::{Config, assert_matches, baseline_rel_path, check, encode_optimised};
 pub use compare::{Comparison, SizeMismatch, Tolerance, compare};
 pub use fonts::{
-    INTER_ITALIC, INTER_REGULAR, JETBRAINS_MONO_REGULAR, NOTO_EMOJI_SUBSET, require_family,
+    INTER_BOLD, INTER_ITALIC, INTER_MEDIUM, INTER_REGULAR, INTER_SEMIBOLD, JETBRAINS_MONO_REGULAR,
+    NOTO_EMOJI_SUBSET, require_family,
 };
 pub use harness::{LOGICAL_H, LOGICAL_W, UiHarness, text_system};
 pub use text_system::{ParleyTextSystem, TestTextSystem};

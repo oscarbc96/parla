@@ -101,7 +101,13 @@ pub fn new_cx() -> HeadlessAppContext {
             gpui_platform::current_headless_renderer()
         });
     cx.text_system()
-        .add_fonts(vec![Cow::Borrowed(ui_testing::INTER_REGULAR)])
+        .add_fonts(vec![
+            Cow::Borrowed(ui_testing::INTER_REGULAR),
+            Cow::Borrowed(ui_testing::INTER_ITALIC),
+            Cow::Borrowed(ui_testing::INTER_MEDIUM),
+            Cow::Borrowed(ui_testing::INTER_SEMIBOLD),
+            Cow::Borrowed(ui_testing::INTER_BOLD),
+        ])
         .expect("add Inter");
     cx
 }

@@ -13,7 +13,8 @@ use image::RgbaImage;
 use settings::{Settings, ThemeMode};
 
 use crate::fonts::{
-    INTER_ITALIC, INTER_REGULAR, JETBRAINS_MONO_REGULAR, NOTO_EMOJI_SUBSET, require_family,
+    INTER_BOLD, INTER_ITALIC, INTER_MEDIUM, INTER_REGULAR, INTER_SEMIBOLD, JETBRAINS_MONO_REGULAR,
+    NOTO_EMOJI_SUBSET, require_family,
 };
 use crate::variant::{Appearance, Variant};
 
@@ -59,6 +60,9 @@ impl UiHarness {
         cx.text_system().add_fonts(vec![
             Cow::Borrowed(INTER_REGULAR),
             Cow::Borrowed(INTER_ITALIC),
+            Cow::Borrowed(INTER_MEDIUM),
+            Cow::Borrowed(INTER_SEMIBOLD),
+            Cow::Borrowed(INTER_BOLD),
             Cow::Borrowed(JETBRAINS_MONO_REGULAR),
             Cow::Borrowed(NOTO_EMOJI_SUBSET),
         ])?;
