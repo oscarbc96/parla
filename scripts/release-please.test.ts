@@ -35,10 +35,10 @@ describe("release-please config", () => {
       expect(config[k]).toBeUndefined();
     }
   });
-  test("the first release is v0.0.1", () => {
+  test("v0.0.1 shipped, so no release-as pin keeps proposing it again", () => {
     expect(config.packages["."]["initial-version"]).toBe("0.0.1");
-    // One-off: release-please proposed 1.0.0 from the 0.0.0 manifest; drop after v0.0.1.
-    expect(config.packages["."]["release-as"]).toBe("0.0.1");
+    expect(config.packages["."]["release-as"]).toBeUndefined();
+    expect((JSON.parse(readFileSync(join(root, ".release-please-manifest.json"), "utf8")) as any)["."]).toBe("0.0.1");
   });
   test("no bootstrap-sha: the repo has no earlier release history to skip", () => {
     expect(config["bootstrap-sha"]).toBeUndefined();
